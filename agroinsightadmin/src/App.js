@@ -20,6 +20,7 @@ import Main from "./components/Main/Main";
 import SuperMain from "./components/SuperAdmin/Main/SuperMain";
 import MarketMain from "./components/MarketAdmin/Main/MarketMain";
 import AgriMain from "./components/AgriAdmin/Main/AgriMain";
+import AgriAdmin from "./components/AgriAdmin/AgriAdmin";
 
 function App() {
   return (
@@ -28,9 +29,9 @@ function App() {
         <Routes>
           <Route path="/" element={<SuperMain />} />
 
-          <Route path="/market" element={<MarketMain />} />
+          <Route path="/market/*" element={<MarketMain />} />
 
-          <Route path="/agri" element={<AgriMain />} />
+          <Route path="/agriadmin/*" element={<AgriAdmin />} />
         </Routes>
       </Router>
     </>
