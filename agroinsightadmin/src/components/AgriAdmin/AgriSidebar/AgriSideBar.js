@@ -1,7 +1,7 @@
 import React from "react";
 import "./SideBar.css";
 import navList from "../../../data/AgriAdmin/navItem";
-import NavItem from "./NavItem";
+import NavItem from "./AgriNavItem";
 
 function SideBar() {
   return (
