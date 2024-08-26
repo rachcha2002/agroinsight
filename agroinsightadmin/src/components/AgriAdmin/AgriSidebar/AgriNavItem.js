@@ -1,20 +1,15 @@
 import React from "react";
-import NavLink from "./NavLink";
+import NavLink from "./AgriNavLink";
 
 function NavItem({ nav }) {
   return (
     <li className="nav-item">
       {nav.children && nav.children.length > 0 ? (
-        <NavLink
-          href={`#nav-${nav._id}`}
-          icon={nav.icon}
-          title={nav.name}
-          hasSubmenu
-        >
+        <NavLink href={nav.href} icon={nav.icon} title={nav.name} hasSubmenu>
           <i className="bi bi-chevron-down ms-auto"></i>
         </NavLink>
       ) : (
-        <NavLink href="#" icon={nav.icon} title={nav.name} />
+        <NavLink href={nav.href} icon={nav.icon} title={nav.name} />
       )}
 
       {nav.children && nav.children.length > 0 && (

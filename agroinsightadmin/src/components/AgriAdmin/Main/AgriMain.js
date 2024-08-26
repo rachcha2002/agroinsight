@@ -1,21 +1,15 @@
 import React from "react";
 import "./Main.css";
-import PageTitle from "./PageTitle";
-import Header from "../Header/Header";
-import SideBar from "../Sidebar/SideBar";
+import PageTitle from "../AgriPageTitle";
 
 function AgriMain() {
   return (
-    <>
-      <Header />
-      <SideBar />
-      <main id="main" className="main">
-        <PageTitle />
-        <div>
-          <h1>Hello, Agri Admin</h1>
-        </div>
-      </main>
-    </>
+    <main id="main" className="main">
+      <PageTitle title="Agriculture Admin Dashboard" url="/agriadmin/" />
+      <div>
+        <h1>Hello, Agri Admin Dashoard</h1>
+      </div>
+    </main>
   );
 }
 
