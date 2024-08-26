@@ -1,6 +1,6 @@
 import React from "react";
 import Header from "../Header/Header";
-import SideBar from "./AgriSidebar/SideBar";
+import SideBar from "./AgriSidebar/AgriSideBar";
 import {
   BrowserRouter as Router,
   Route,
