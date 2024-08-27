@@ -19,8 +19,8 @@ const navList = [
   },
   {
     _id: 4,
-    name: "Desease Management",
-    icon: "bi bi-layout-text-window-reverse",
+    name: "Pest & Desease Management",
+    icon: "bi bi-virus2",
     href: "/agriadmin/diseases",
   },
 ];

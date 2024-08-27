@@ -7,6 +7,10 @@ const PORT = 5000;
 dotenv.config();
 app.use(express.json());
 
+
+
+app.use("/api/disease", require("./routes/diseaseRoutes"));
+
 const server = () => {
   db();
 
