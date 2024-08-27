@@ -56,7 +56,7 @@ const AITool = () => {
             <Form.Label>Upload an Image</Form.Label>
             <Form.Control type="file" accept="image/*" onChange={handleFileChange} />
           </Form.Group>
-          <Button variant="primary" onClick={handleSendRequest} className="w-100">Send Request</Button>
+          <Button variant="primary" onClick={handleSendRequest} className="w-100">Submit</Button>
         </Col>
       </Row>
 
@@ -68,8 +68,8 @@ const AITool = () => {
             <Card className="mb-4">
               <Card.Body>
                 <Card.Title>Is Plant:</Card.Title>
-                <Card.Text>Probability: {response.result.is_plant.probability}</Card.Text>
-                <Card.Text>Threshold: {response.result.is_plant.threshold}</Card.Text>
+                <Card.Text>Probability: {(response.result.is_plant.probability * 100).toFixed(2)}%</Card.Text>
+                <Card.Text>Threshold: {(response.result.is_plant.threshold * 100).toFixed(2)}%</Card.Text>
                 <Card.Text>Binary: {response.result.is_plant.binary ? 'Yes' : 'No'}</Card.Text>
               </Card.Body>
             </Card>
@@ -79,14 +79,14 @@ const AITool = () => {
               <Card key={index} className="mb-4">
                 <Card.Body>
                   <Card.Title>{disease.name}</Card.Title>
-                  <Card.Text>Probability: {disease.probability}</Card.Text>
+                  <Card.Text>Probability: {(disease.probability * 100).toFixed(2)}%</Card.Text>
                   <Row>
                     {disease.similar_images.map((image, imgIndex) => (
                       <Col xs={6} md={4} lg={3} key={imgIndex} className="mb-3">
                         <Card>
                           <Image src={image.url_small} alt={`similarity-${imgIndex}`} rounded fluid />
                           <Card.Body>
-                            <Card.Text className="text-center">Similarity: {image.similarity}</Card.Text>
+                            <Card.Text className="text-center">Similarity: {(image.similarity * 100).toFixed(2)}%</Card.Text>
                             <Card.Text className="text-muted" style={{ fontSize: '12px' }}>
                               Citation: {image.citation}
                             </Card.Text>
