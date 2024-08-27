@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Container, Row, Col, Button, Card, Form, Alert, Image } from 'react-bootstrap';
+import { Container, Row, Col, Button, Card, Form, Image } from 'react-bootstrap';
 
 const AITool = () => {
   const [response, setResponse] = useState(null);
@@ -61,12 +61,12 @@ const AITool = () => {
       </Row>
 
       {response && (
-        <Row className="mt-5">
-          <Col>
-            <h2 className="mb-4 text-success">Health Assessment Results</h2>
+        <Row className="mt-5 justify-content-center">
+          <Col md={8}>
+            <h2 className="mb-4 text-success text-center">Health Assessment Results</h2>
 
             <Card className="mb-4">
-              <Card.Body>
+              <Card.Body className="text-center">
                 <Card.Title>Is Plant:</Card.Title>
                 <Card.Text>Probability: {(response.result.is_plant.probability * 100).toFixed(2)}%</Card.Text>
                 <Card.Text>Threshold: {(response.result.is_plant.threshold * 100).toFixed(2)}%</Card.Text>
@@ -74,19 +74,19 @@ const AITool = () => {
               </Card.Body>
             </Card>
 
-            <h3 className="mb-3">Diseases Identified:</h3>
+            <h3 className="mb-3 text-center">Diseases Identified:</h3>
             {response.result.disease.suggestions.map((disease, index) => (
               <Card key={index} className="mb-4">
                 <Card.Body>
-                  <Card.Title>{disease.name}</Card.Title>
-                  <Card.Text>Probability: {(disease.probability * 100).toFixed(2)}%</Card.Text>
-                  <Row>
+                  <Card.Title className="text-center">{disease.name}</Card.Title>
+                  <Card.Text className="text-center">Probability: {(disease.probability * 100).toFixed(2)}%</Card.Text>
+                  <Row className="justify-content-center">
                     {disease.similar_images.map((image, imgIndex) => (
-                      <Col xs={6} md={4} lg={3} key={imgIndex} className="mb-3">
+                      <Col xs={12} md={6} lg={4} key={imgIndex} className="mb-3 d-flex justify-content-center">
                         <Card>
                           <Image src={image.url_small} alt={`similarity-${imgIndex}`} rounded fluid />
-                          <Card.Body>
-                            <Card.Text className="text-center">Similarity: {(image.similarity * 100).toFixed(2)}%</Card.Text>
+                          <Card.Body className="text-center">
+                            <Card.Text>Similarity: {(image.similarity * 100).toFixed(2)}%</Card.Text>
                             <Card.Text className="text-muted" style={{ fontSize: '12px' }}>
                               Citation: {image.citation}
                             </Card.Text>
