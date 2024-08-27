@@ -7,6 +7,17 @@ const PORT = 5000;
 dotenv.config();
 app.use(express.json());
 
+app.use(express.urlencoded({ extended: false }));
+
+//cors
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE,PATCH');
+  res.setHeader('Access-Control-Allow-Headers', 'authorization, Content-Type');
+
+  next();
+});
+
 
 
 app.use("/api/disease", require("./routes/diseaseRoutes"));
