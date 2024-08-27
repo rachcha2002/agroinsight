@@ -19,7 +19,7 @@
 body {
   font-family: "Open Sans", sans-serif;
   color: #000000;
-  background: rgb(225, 235, 240);
+  background: rgb(206, 242, 195);
 }
 
 a {
@@ -29,7 +29,7 @@ a {
 }
 
 a:hover {
-  color: rgb(113, 15, 241);
+  color: rgb(58, 163, 50);
   text-decoration: none;
 }
 

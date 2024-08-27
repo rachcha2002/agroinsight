@@ -1,7 +1,6 @@
 import React from "react";
 import "./Nav.css";
-import NavNotice from "./NavNotice";
-import NavMessage from "./NavMessage";
+
 import NavAvatar from "./NavAvatar";
 import CurrentDate from "./CurrentDate";
 
@@ -10,8 +9,7 @@ function Nav() {
     <nav className="header-nav ms-auto">
       <ul className="d-flex align-items-center">
         <CurrentDate />
-        <NavNotice />
-        <NavMessage />
+
         <NavAvatar />
       </ul>
     </nav>

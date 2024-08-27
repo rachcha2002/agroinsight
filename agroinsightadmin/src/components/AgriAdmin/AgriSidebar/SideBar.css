@@ -107,7 +107,7 @@
 .sidebar-nav .nav-content a.collapsed,
 .sidebar-nav .nav-content a:hover,
 .sidebar-nav .nav-content a.active {
-  color: #4154f1;
+  color: #4bbd3c;
   background: #e1e1e1; /* Grey background on hover, expand, and active */
 }
 
@@ -147,10 +147,10 @@
 
 .sidebar-nav .nav-content a:hover,
 .sidebar-nav .nav-content a.active {
-  color: #4154f1;
+  color: #58d03d;
   background: #e1e1e1; /* Grey background on hover and active */
 }
 
 .sidebar-nav .nav-content a.active i {
-  background-color: #4154f1;
+  background-color: #5acf2f;
 }

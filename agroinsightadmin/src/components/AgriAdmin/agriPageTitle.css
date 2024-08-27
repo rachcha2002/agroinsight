@@ -9,13 +9,13 @@
   font-size: 24px;
   margin-bottom: 0;
   font-weight: 600;
-  color: #012970;
+  color: #064f05;
 }
 
 /* Breadcrumbs */
 .breadcrumb {
   font-size: 14px;
-  font-family: 'Nunito', sans-serif;
+  font-family: "Nunito", sans-serif;
   color: #899bbd;
   font-weight: 600;
 }
