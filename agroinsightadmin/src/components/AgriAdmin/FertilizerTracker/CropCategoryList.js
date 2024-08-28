@@ -10,6 +10,8 @@ import {
   Modal,
 } from "react-bootstrap";
 import { FaChevronLeft, FaChevronRight, FaEdit, FaTrash } from "react-icons/fa"; // Icons for scrolling
+import { jsPDF } from "jspdf"; // Import jsPDF
+import "jspdf-autotable"; // Import the autoTable plugin
 
 const CropCategoryList = () => {
   const [categories, setCategories] = useState([]);
@@ -71,8 +73,102 @@ const CropCategoryList = () => {
     }
   };
 
+  const generatePDF = () => {
+    const doc = new jsPDF();
+    doc.setFontSize(16);
+    doc.text(
+      "Crop Categories For Fertilizer and Pesticide Recomendation",
+      14,
+      22
+    );
+
+    categories.forEach((category, i) => {
+      doc.setFontSize(14);
+      doc.text(`Category: ${category.name}`, 14, 30 + i * 80);
+      doc.setFontSize(12);
+      // Wrap description text into multiple lines
+      const descriptionLines = doc.splitTextToSize(category.description, 180); // Adjust 180 to control the line width
+      doc.text(descriptionLines, 14, 36 + i * 80);
+
+      // Generate table for crops
+      const crops = category.crops.map((crop) => [
+        crop.name,
+        crop.soilType,
+        crop.growthStage,
+        crop.weatherCondition,
+      ]);
+
+      doc.autoTable({
+        head: [["Crop Name", "Soil Type", "Growth Stage", "Weather Condition"]],
+        body: crops,
+        startY: 42 + i * 80,
+        theme: "striped",
+        headStyles: { fillColor: [22, 160, 133] },
+        margin: { left: 14, right: 14 },
+      });
+    });
+
+    doc.save("crop-categories-report.pdf");
+  };
+
+  const generateCSV = () => {
+    // Define the headers for the CSV file
+    const headers = [
+      "Category Name",
+      "Category Description",
+      "Crop Name",
+      "Soil Type",
+      "Growth Stage",
+      "Weather Condition",
+    ];
+
+    // Prepare CSV content
+    let csvContent = headers.join(",") + "\n"; // Add headers
+
+    // Loop through each category and its crops to build the CSV rows
+    categories.forEach((category) => {
+      category.crops.forEach((crop) => {
+        const row = [
+          category.name,
+          category.description.replace(/,/g, ""), // Remove commas from descriptions to avoid CSV formatting issues
+          crop.name,
+          crop.soilType,
+          crop.growthStage,
+          crop.weatherCondition,
+        ];
+        csvContent += row.join(",") + "\n"; // Add the row to the CSV content
+      });
+    });
+
+    // Trigger the CSV download
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "crop-categories-report.csv";
+    link.style.display = "none";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <Container>
+      <Button
+        variant="primary"
+        onClick={generatePDF}
+        style={{ marginLeft: "20px" }}
+      >
+        Generate PDF Report
+      </Button>
+      <Button
+        variant="primary"
+        onClick={generateCSV}
+        style={{ marginLeft: "8px" }}
+      >
+        Download CSV Report
+      </Button>
+      <br />
+      <br />
       <Row>
         {categories.map((category) => (
           <Col key={category.categoryId} sm={12} className="mb-4">
