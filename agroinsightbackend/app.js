@@ -19,7 +19,7 @@ app.use((req, res, next) => {
 });
 
 
-
+app.use("/crop", require("./routes/CropPriceRoutes"));
 app.use("/api/disease", require("./routes/diseaseRoutes"));
 
 const server = () => {
