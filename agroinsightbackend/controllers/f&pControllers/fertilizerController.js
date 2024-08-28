@@ -44,26 +44,6 @@ const giveCurrentDateTime = () => {
 
 // Create a new Fertilizer
 exports.createFertilizer = async (req, res) => {
-  console.log("Came dta", req.body.appregions);
-
-  // Log each field in the request body
-  for (const [key, value] of Object.entries(req.body)) {
-    console.log(`${key}: ${value}`);
-  }
-
-  let regions = [];
-  if (req.body.appregions) {
-    regions = req.body.appregions;
-  }
-
-  /* // Reconstruct the regions array from req.body
-  const regions = Object.keys(req.body)
-    .filter((key) => key.startsWith("regions["))
-    .map((key) => req.body[key]);*/
-
-  console.log("Reconstructed Regions array from frontend:", regions);
-
-  // Call the multer middleware before proceeding
   upload(req, res, async (err) => {
     try {
       if (err instanceof multer.MulterError) {

@@ -45,7 +45,7 @@ const giveCurrentDateTime = () => {
 
 // Create a new Pesticide
 exports.createPesticide = async (req, res) => {
-  console.log("Came dta", req.body);
+  //console.log("Came dta", req.body);
   // Call the multer middleware before proceeding
   upload(req, res, async (err) => {
     try {

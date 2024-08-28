@@ -21,6 +21,7 @@ const PesticideForm = () => {
   const [instructions, setInstructions] = useState("");
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
+  const [cropsByCategory, setCropsByCategory] = useState({});
 
   useEffect(() => {
     // Fetch crop categories from the backend
@@ -45,6 +46,7 @@ const PesticideForm = () => {
   const handleCropCategoryChange = (index, value) => {
     const updatedCrops = [...selectedCrops];
     updatedCrops[index].cropCategoryId = value;
+    updatedCrops[index].cropId = ""; // Reset crop ID when category changes
     setSelectedCrops(updatedCrops);
 
     // Fetch crops for the selected category
@@ -55,7 +57,10 @@ const PesticideForm = () => {
     axios
       .get(`http://localhost:5000/api/f&p/crops/${categoryId}`)
       .then((response) => {
-        setCrops(response.data);
+        setCropsByCategory((prevCrops) => ({
+          ...prevCrops,
+          [categoryId]: response.data,
+        }));
         console.log("Crops fetched successfully!", response.data);
       })
       .catch((error) => {
@@ -129,7 +134,7 @@ const PesticideForm = () => {
 
     // Append arrays individually
     targetPests.forEach((pest) => formData.append("targetPests[]", pest));
-    regions.forEach((region) => formData.append("regions[]", region));
+    regions.forEach((region) => formData.append("region[]", region));
     brands.forEach((brand) => formData.append("brands[]", brand));
 
     /* if (image) {
@@ -224,7 +229,7 @@ const PesticideForm = () => {
                       required
                     >
                       <option value="">Select Crop</option>
-                      {crops.map((crop) => (
+                      {cropsByCategory[crop.cropCategoryId]?.map((crop) => (
                         <option key={crop._id} value={crop._id}>
                           {crop.name}
                         </option>

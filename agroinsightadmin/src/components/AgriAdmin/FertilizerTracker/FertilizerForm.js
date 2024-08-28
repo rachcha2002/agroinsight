@@ -21,6 +21,7 @@ const FertilizerForm = () => {
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
   const [type, setType] = useState("");
+  const [cropsByCategory, setCropsByCategory] = useState({});
 
   useEffect(() => {
     // Fetch crop categories from the backend
@@ -45,6 +46,7 @@ const FertilizerForm = () => {
   const handleCropCategoryChange = (index, value) => {
     const updatedCrops = [...selectedCrops];
     updatedCrops[index].cropCategoryId = value;
+    updatedCrops[index].cropId = ""; // Reset crop ID when category changes
     setSelectedCrops(updatedCrops);
 
     // Fetch crops for the selected category
@@ -55,7 +57,11 @@ const FertilizerForm = () => {
     axios
       .get(`http://localhost:5000/api/f&p/crops/${categoryId}`)
       .then((response) => {
-        setCrops(response.data);
+        setCropsByCategory((prevCrops) => ({
+          ...prevCrops,
+          [categoryId]: response.data,
+        }));
+        console.log("Crops fetched successfully!", response.data);
       })
       .catch((error) => {
         console.error("There was an error fetching the crops!", error);
@@ -114,7 +120,7 @@ const FertilizerForm = () => {
 
     // Append regions and brands without stringifying
     regions.forEach((region, index) => {
-      formData.append(`appregions[${index}]`, region);
+      formData.append(`region[${index}]`, region);
     });
 
     brands.forEach((brand, index) => {
@@ -227,7 +233,7 @@ const FertilizerForm = () => {
                       required
                     >
                       <option value="">Select Crop</option>
-                      {crops.map((crop) => (
+                      {cropsByCategory[crop.cropCategoryId]?.map((crop) => (
                         <option key={crop._id} value={crop._id}>
                           {crop.name}
                         </option>
