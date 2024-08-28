@@ -1,7 +1,10 @@
 import { router } from "expo-router";
 import { Alert } from "react-native";
 
-export const uploadDiseaseData = async (form, setUploading, setForm) => {
+
+export const uploadDiseaseData = async (form, setUploading, setForm,user) => {
+
+
   if (form.symptoms === "" || !form.diseaseImage) {
     return Alert.alert("Please provide all fields, including an image.");
   }
@@ -9,7 +12,7 @@ export const uploadDiseaseData = async (form, setUploading, setForm) => {
   setUploading(true);
 
   const formData = new FormData();
-  formData.append("farmerID", "Mobile Test");  // Replace with the actual farmer ID
+  formData.append("farmerID", user.$username);  // Replace with the actual farmer ID
   formData.append("area", "Central Province");
   formData.append("cropAffected", "Tea");
   formData.append("complaintDescription", form.symptoms);

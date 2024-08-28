@@ -14,21 +14,17 @@ import {
 import CustomButton from "../../components/CustomButton";
 import FormField from "../../components/FormField";
 import { useGlobalContext } from "../../context/GlobalProvider";
-import { icons } from "../../constants";
+import { icons, images } from "../../constants";
 import { uploadDiseaseData } from "../../lib/diseaseAPI"; // Adjust the path as needed
 
-const Create = () => {
+const CreateComplaint = () => {
   const { user } = useGlobalContext();
   const [uploading, setUploading] = useState(false);
   const [form, setForm] = useState({
     symptoms: "",
+    cropAffected: "",  // Add cropAffected to the form state
     diseaseImage: null,
   });
-
-  // Monitor form.diseaseImage to see the update
-  // useEffect(() => {
-  //   console.log("Updated diseaseImage:", form.diseaseImage);
-  // }, [form.diseaseImage]);
 
   // Function to open the image picker and set the selected image in form state
   const openPicker = async () => {
@@ -58,13 +54,31 @@ const Create = () => {
   };
 
   const submit = () => {
-    uploadDiseaseData(form, setUploading, setForm);
+    uploadDiseaseData(form, setUploading, setForm, user);
   };
 
   return (
     <SafeAreaView className="bg-white h-full">
+      <View className="justify-between items-center flex-row ">
+        <View className="flex-1 items-center pl-4">
+          <Image
+            source={images.agroinsightlogo}
+            className="w-15 h-10"
+            resizeMode="contain"
+          />
+        </View>
+      </View>
       <ScrollView className="px-4 my-6">
-        <Text className="text-2xl text-black font-semibold">Upload Crop Disease Data</Text>
+        <Text className="text-2xl text-black font-semibold">Report new pest or disease</Text>
+        <FormField
+          title="Crop Affected"
+          value={form.cropAffected}
+          placeholder="What crop is affected?"
+          handleChangeText={(e) => setForm({ ...form, cropAffected: e })}
+          otherStyles="mt-5"
+          textClass="text-black"
+          placeholderTextColor="gray"
+        />
 
         <FormField
           title="Symptoms"
@@ -75,6 +89,7 @@ const Create = () => {
           textClass="text-black"
           placeholderTextColor="gray"
         />
+      
 
         <View className="mt-7 space-y-2">
           <Text className="text-base text-black font-medium">Disease Image</Text>
@@ -101,7 +116,7 @@ const Create = () => {
         </View>
 
         <CustomButton
-          title="Submit"
+          title="Report"
           handlePress={submit}
           containerStyles="mt-7 bg-green-500"
           textClass="text-white"
@@ -112,4 +127,4 @@ const Create = () => {
   );
 };
 
-export default Create;
+export default CreateComplaint;

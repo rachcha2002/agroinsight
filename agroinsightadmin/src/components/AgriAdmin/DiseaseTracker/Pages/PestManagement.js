@@ -27,7 +27,7 @@ const PestManagement = () => {
 
   return (
     <div className='mt-6'>
-      <h2 className='mb-3'>Pest and Disease Management</h2>
+      <h2 className='mb-3'>Pest and Disease Complains</h2>
       <Table striped bordered hover>
         <thead>
           <tr>
