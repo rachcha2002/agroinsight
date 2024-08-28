@@ -12,6 +12,7 @@ import {
 import { FaChevronLeft, FaChevronRight, FaEdit, FaTrash } from "react-icons/fa"; // Icons for scrolling
 import { jsPDF } from "jspdf"; // Import jsPDF
 import "jspdf-autotable"; // Import the autoTable plugin
+import logo from "../../../images/logoNoBack.png";
 
 const CropCategoryList = () => {
   const [categories, setCategories] = useState([]);
@@ -74,41 +75,84 @@ const CropCategoryList = () => {
   };
 
   const generatePDF = () => {
-    const doc = new jsPDF();
-    doc.setFontSize(16);
-    doc.text(
-      "Crop Categories For Fertilizer and Pesticide Recomendation",
-      14,
-      22
-    );
+    convertToBase64(logo, (imgData) => {
+      const doc = new jsPDF();
 
-    categories.forEach((category, i) => {
-      doc.setFontSize(14);
-      doc.text(`Category: ${category.name}`, 14, 30 + i * 80);
+      // Add the logo
+      doc.addImage(imgData, "PNG", 14, 10, 70, 30); // x, y, width, height
+
+      // Add the name, email, and phone number
       doc.setFontSize(12);
-      // Wrap description text into multiple lines
-      const descriptionLines = doc.splitTextToSize(category.description, 180); // Adjust 180 to control the line width
-      doc.text(descriptionLines, 14, 36 + i * 80);
+      doc.text("AgroInsight(By OctagonIT)", 100, 20); // Adjust the position as needed
+      doc.text("Email: teamoctagonit@gmail.com", 100, 26);
+      doc.text("Phone: +94711521161", 100, 32);
 
-      // Generate table for crops
-      const crops = category.crops.map((crop) => [
-        crop.name,
-        crop.soilType,
-        crop.growthStage,
-        crop.weatherCondition,
-      ]);
+      // Add the document title below the header
+      doc.setFontSize(16);
+      doc.text(
+        "Crop Categories For Fertilizer and Pesticide Recommendation",
+        14,
+        50
+      );
 
-      doc.autoTable({
-        head: [["Crop Name", "Soil Type", "Growth Stage", "Weather Condition"]],
-        body: crops,
-        startY: 42 + i * 80,
-        theme: "striped",
-        headStyles: { fillColor: [22, 160, 133] },
-        margin: { left: 14, right: 14 },
+      categories.forEach((category, i) => {
+        doc.setFontSize(14);
+        doc.text(`Category: ${category.name}`, 14, 60 + i * 80);
+        doc.setFontSize(12);
+
+        // Wrap description text into multiple lines
+        const descriptionLines = doc.splitTextToSize(category.description, 180);
+        doc.text(descriptionLines, 14, 66 + i * 80);
+
+        // Generate table for crops
+        const crops = category.crops.map((crop) => [
+          crop.name,
+          crop.soilType,
+          crop.growthStage,
+          crop.weatherCondition,
+        ]);
+
+        doc.autoTable({
+          head: [
+            ["Crop Name", "Soil Type", "Growth Stage", "Weather Condition"],
+          ],
+          body: crops,
+          startY: 72 + i * 80,
+          theme: "striped",
+          headStyles: { fillColor: [22, 160, 133] },
+          margin: { left: 14, right: 14 },
+        });
       });
-    });
 
-    doc.save("crop-categories-report.pdf");
+      // Get the current date and time
+      const currentDate = new Date();
+      const dateString = currentDate.toLocaleDateString();
+      const timeString = currentDate.toLocaleTimeString();
+
+      // Add the date and time at the bottom of the PDF
+      doc.setFontSize(10);
+      doc.text(
+        `Report generated on: ${dateString} at ${timeString}`,
+        14,
+        doc.internal.pageSize.height - 10
+      );
+
+      doc.save("crop-categories-report.pdf");
+    });
+  };
+
+  const convertToBase64 = (url, callback) => {
+    const xhr = new XMLHttpRequest();
+    xhr.onload = function () {
+      const reader = new FileReader();
+      reader.onloadend = function () {
+        callback(reader.result);
+      };
+      reader.readAsDataURL(xhr.response);
+    };
+    xhr.open("GET", url);
+    xhr.responseType = "blob";
+    xhr.send();
   };
 
   const generateCSV = () => {
