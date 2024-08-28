@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Container, Row, Col, Spinner, Button, Modal } from 'react-bootstrap';
+import { Card, Container, Row, Col, Spinner, Button, Modal, Form } from 'react-bootstrap';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-
 
 const DiseaseAlerts = () => {
   const [alerts, setAlerts] = useState([]);
@@ -10,7 +9,12 @@ const DiseaseAlerts = () => {
   const [error, setError] = useState(null);
   const [selectedAlert, setSelectedAlert] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const navigate = useNavigate()
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    details: ''
+  });
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchAlerts = async () => {
@@ -31,6 +35,11 @@ const DiseaseAlerts = () => {
     try {
       const response = await axios.get(`http://localhost:5000/api/disease/disease-alerts/${id}`);
       setSelectedAlert(response.data);
+      setFormData({
+        title: response.data.title,
+        description: response.data.description,
+        details: response.data.details || ''
+      });
       setShowModal(true);
     } catch (err) {
       console.error("Error fetching alert details:", err.message);
@@ -52,7 +61,32 @@ const DiseaseAlerts = () => {
   };
 
   const handleAddNewAlert = () => {
-    navigate('addalert')
+    navigate('addalert');
+  };
+
+  const handleEditAlert = async () => {
+    try {
+      const response = await axios.put(`http://localhost:5000/api/disease/disease-alerts/${selectedAlert._id}`, formData);
+      if (response.status === 200) {
+        // Update the alert in the list with the new data
+        setAlerts(alerts.map(alert => 
+          alert._id === selectedAlert._id ? { ...alert, ...formData } : alert
+        ));
+        setShowModal(false);
+        alert('Alert updated successfully.');
+      } else {
+        alert('Failed to update the alert.');
+      }
+    } catch (err) {
+      console.error("Error updating alert:", err.message);
+    }
+  };
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
   };
 
   if (loading) {
@@ -104,10 +138,10 @@ const DiseaseAlerts = () => {
         ))}
       </Row>
 
-      {/* Modal for displaying detailed information */}
+      {/* Modal for displaying and editing alert information */}
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
-          <Modal.Title>{selectedAlert?.title}</Modal.Title>
+          <Modal.Title>Edit Alert</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {selectedAlert && (
@@ -118,13 +152,38 @@ const DiseaseAlerts = () => {
                 alt={selectedAlert.title} 
                 style={{ height: '200px', width: '100%', objectFit: 'cover' }} 
               />
-              <p className="mt-4">{selectedAlert.description}</p>
-              <p className="text-muted">Date: {new Date(selectedAlert.date).toLocaleDateString()}</p>
-              {selectedAlert.details && (
-                <p className="mt-4">
-                  <strong>Details:</strong> {selectedAlert.details}
-                </p>
-              )}
+              <Form>
+                <Form.Group controlId="alertTitle" className="mt-4">
+                  <Form.Label>Title</Form.Label>
+                  <Form.Control 
+                    type="text" 
+                    name="title" 
+                    value={formData.title} 
+                    onChange={handleChange} 
+                  />
+                </Form.Group>
+                <Form.Group controlId="alertDescription" className="mt-4">
+                  <Form.Label>Description</Form.Label>
+                  <Form.Control 
+                    as="textarea" 
+                    rows={3} 
+                    name="description" 
+                    value={formData.description} 
+                    onChange={handleChange} 
+                  />
+                </Form.Group>
+                <Form.Group controlId="alertDetails" className="mt-4">
+                  <Form.Label>Details</Form.Label>
+                  <Form.Control 
+                    as="textarea" 
+                    rows={3} 
+                    name="details" 
+                    value={formData.details} 
+                    onChange={handleChange} 
+                  />
+                </Form.Group>
+                <p className="text-muted mt-4">Date: {new Date(selectedAlert.date).toLocaleDateString()}</p>
+              </Form>
             </>
           )}
         </Modal.Body>
@@ -132,10 +191,13 @@ const DiseaseAlerts = () => {
           <Button variant="secondary" onClick={handleCloseModal}>
             Close
           </Button>
+          <Button variant="primary" onClick={handleEditAlert}>
+            Save Changes
+          </Button>
         </Modal.Footer>
       </Modal>
     </Container>
   );
-}
+};
 
 export default DiseaseAlerts;
