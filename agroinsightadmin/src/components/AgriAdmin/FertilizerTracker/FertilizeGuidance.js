@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import FertilizerDashboard from "./FertilizerDasboard";
 import CropCategoryForm from "./CropCategotyForm";
+import PesticideForm from "./PesticideForm";
 
 function FertilizeGuidance() {
   return (
@@ -14,6 +15,7 @@ function FertilizeGuidance() {
       <Routes>
         <Route path="/" element={<FertilizerDashboard />} />
         <Route path="/addcropcategory" element={<CropCategoryForm />} />
+        <Route path="/addpesticide" element={<PesticideForm />} />
       </Routes>
     </>
   );

@@ -91,3 +91,29 @@ exports.deleteCropCategory = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+// Function to get crops by category ID
+exports.getCropsByCategoryId = async (req, res) => {
+  try {
+    const categoryId = req.params.id; // Extract categoryId from path parameters
+    console.log("Received categoryId:", categoryId);
+
+    if (!categoryId) {
+      return res.status(400).json({ error: "Category ID is required" });
+    }
+
+    // Find the CropCategory by ObjectId
+    const cropCategory = await CropCategory.findById(categoryId);
+
+    if (!cropCategory) {
+      return res.status(404).json({ error: "CropCategory not found" });
+    }
+
+    // Return the crops array from the found CropCategory
+    console.log(cropCategory.crops);
+    res.status(200).json(cropCategory.crops);
+  } catch (error) {
+    console.error("Error fetching crops:", error.message);
+    res.status(500).json({ error: error.message });
+  }
+};
