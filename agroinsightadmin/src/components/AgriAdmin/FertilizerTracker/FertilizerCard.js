@@ -1,13 +1,33 @@
 import React, { useState, useEffect } from "react";
-import { Card, Button, Container, Row, Col, ListGroup } from "react-bootstrap";
+import {
+  Card,
+  Button,
+  Container,
+  Row,
+  Col,
+  ListGroup,
+  Modal,
+} from "react-bootstrap";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import axios from "axios";
 import { FaEdit, FaTrash } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
-const FertilizerCard = ({ fertilizer }) => {
+const FertilizerCard = ({ fertilizer, onDelete }) => {
   const [expanded, setExpanded] = useState(false);
   const [cropCategories, setCropCategories] = useState({});
   const [crops, setCrops] = useState({});
+
+  const [showModal, setShowModal] = useState(false);
+  const [deletingFertilizer, setDeletingFertilizer] = useState(null);
+  const navigate = useNavigate();
+
+  const handleDeleteClick = (id) => {
+    setDeletingFertilizer(id);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => setShowModal(false);
 
   useEffect(() => {
     // Fetch crop categories and crops by their IDs
@@ -70,9 +90,20 @@ const FertilizerCard = ({ fertilizer }) => {
     console.log("Edit clicked");
   };
 
-  const handleDelete = () => {
-    // Implement delete functionality
-    console.log("Delete clicked");
+  const handleDelete = async () => {
+    try {
+      await axios.delete(
+        `http://localhost:5000/api/f&p/delete-fertilizers/${deletingFertilizer}`
+      );
+      alert("Fertilizer deleted successfully");
+      // Optionally, refresh the page or redirect
+      onDelete();
+    } catch (error) {
+      console.error("Error deleting fertilizer:", error);
+      alert("Failed to delete fertilizer");
+    } finally {
+      setShowModal(false);
+    }
   };
   return (
     <Card
@@ -131,7 +162,7 @@ const FertilizerCard = ({ fertilizer }) => {
               <Button
                 variant="outline-danger"
                 className="mx-1"
-                onClick={handleDelete}
+                onClick={() => handleDeleteClick(fertilizer._id)}
               >
                 <FaTrash />
               </Button>
@@ -185,6 +216,24 @@ const FertilizerCard = ({ fertilizer }) => {
           </div>
         </div>
       )}
+
+      <Modal show={showModal} onHide={handleCloseModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Deletion</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Are you sure you want to delete this fertilizer? This action cannot be
+          undone.
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseModal}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={handleDelete}>
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Card>
   );
 };

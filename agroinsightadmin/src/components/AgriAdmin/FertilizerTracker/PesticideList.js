@@ -18,12 +18,23 @@ const PesticideList = () => {
       });
   }, []);
 
+  const handleDeletePesticide = async () => {
+    // Refetch the updated list of categories from the server
+    const response = await axios.get(
+      "http://localhost:5000/api/f&p/pesticides"
+    );
+    setPesticides(response.data);
+  };
+
   return (
     <Container>
       <Col>
         {pesticides.map((pesticide) => (
           <Row key={pesticide.pesticideId}>
-            <PesticideCard pesticide={pesticide} />
+            <PesticideCard
+              pesticide={pesticide}
+              onDelete={() => handleDeletePesticide()}
+            />
           </Row>
         ))}
       </Col>

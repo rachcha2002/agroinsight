@@ -6,6 +6,7 @@ const {
   ref,
   getDownloadURL,
   uploadBytesResumable,
+  deleteObject,
 } = require("firebase/storage");
 const multer = require("multer");
 const { firebaseConfig } = require("../../config/firebase-config");
@@ -160,10 +161,23 @@ exports.updatePesticide = async (req, res) => {
 // Delete a Pesticide by ID
 exports.deletePesticide = async (req, res) => {
   try {
-    const deletedPesticide = await Pesticide.findByIdAndDelete(req.params.id);
-    if (!deletedPesticide) {
+    const pesticide = await Pesticide.findById(req.params.id);
+    console.log("Pesticide", pesticide);
+    if (!pesticide) {
       return res.status(404).json({ message: "Pesticide not found" });
     }
+
+    const imageUrl = pesticide.imageUrl;
+
+    // Delete the image from Firebase Storage
+    if (imageUrl) {
+      const imageRef = ref(storage, imageUrl);
+
+      await deleteObject(imageRef);
+    }
+
+    await Pesticide.findByIdAndDelete(req.params.id);
+
     res.status(200).json({ message: "Pesticide deleted successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });

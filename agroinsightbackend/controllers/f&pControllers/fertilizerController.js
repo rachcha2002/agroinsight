@@ -5,6 +5,7 @@ const {
   ref,
   getDownloadURL,
   uploadBytesResumable,
+  deleteObject,
 } = require("firebase/storage");
 const multer = require("multer");
 const { firebaseConfig } = require("../../config/firebase-config");
@@ -157,10 +158,25 @@ exports.updateFertilizer = async (req, res) => {
 // Controller to delete a fertilizer by ID
 exports.deleteFertilizer = async (req, res) => {
   try {
-    const fertilizer = await Fertilizer.findByIdAndDelete(req.params.id);
+    // Find the fertilizer by ID
+    const fertilizer = await Fertilizer.findById(req.params.id);
+
     if (!fertilizer) {
       return res.status(404).json({ error: "Fertilizer not found" });
     }
+
+    // Extract the image URL from the fertilizer record
+    const imageUrl = fertilizer.imageUrl; // Adjust this based on your schema
+
+    // Delete the existing photo from Firebase Storage if it exists
+    if (imageUrl) {
+      const photoRef = ref(storage, `fertilizer_images/${imageUrl}`);
+      await deleteObject(photoRef);
+    }
+
+    // Delete the fertilizer from the database
+    await Fertilizer.findByIdAndDelete(req.params.id);
+
     res.status(200).json({ message: "Fertilizer deleted successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });

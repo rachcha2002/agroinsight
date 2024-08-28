@@ -1,13 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { Card, Button, Container, Row, Col, ListGroup } from "react-bootstrap";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import {
+  Card,
+  Button,
+  Container,
+  Row,
+  Col,
+  ListGroup,
+  Modal,
+} from "react-bootstrap";
+import { FaChevronLeft, FaChevronRight, FaEdit, FaTrash } from "react-icons/fa";
 import axios from "axios";
-import { FaEdit, FaTrash } from "react-icons/fa";
 
-const PesticideCard = ({ pesticide }) => {
+const PesticideCard = ({ pesticide, onDelete }) => {
   const [expanded, setExpanded] = useState(false);
   const [cropCategories, setCropCategories] = useState({});
   const [crops, setCrops] = useState({});
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
     // Fetch crop categories, crops, and pests by their IDs
@@ -70,9 +78,18 @@ const PesticideCard = ({ pesticide }) => {
     console.log("Edit clicked");
   };
 
-  const handleDelete = () => {
-    // Implement delete functionality
-    console.log("Delete clicked");
+  const handleDelete = async () => {
+    try {
+      await axios.delete(
+        `http://localhost:5000/api/f&p/delete-pesticides/${pesticide._id}`
+      );
+      onDelete(); // Notify parent to update the list
+      setShowDeleteConfirm(false);
+      alert("Pesticide deleted successfully");
+    } catch (error) {
+      console.error("Error deleting pesticide:", error);
+      alert("Failed to delete pesticide");
+    }
   };
 
   return (
@@ -137,7 +154,7 @@ const PesticideCard = ({ pesticide }) => {
             <Button
               variant="outline-danger"
               className="mx-1"
-              onClick={handleDelete}
+              onClick={() => setShowDeleteConfirm(true)}
             >
               <FaTrash />
             </Button>
@@ -190,6 +207,29 @@ const PesticideCard = ({ pesticide }) => {
           </div>
         </div>
       )}
+
+      {/* Confirmation Modal for Delete */}
+      <Modal
+        show={showDeleteConfirm}
+        onHide={() => setShowDeleteConfirm(false)}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Delete</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Are you sure you want to delete this pesticide?</Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() => setShowDeleteConfirm(false)}
+          >
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={handleDelete}>
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Card>
   );
 };

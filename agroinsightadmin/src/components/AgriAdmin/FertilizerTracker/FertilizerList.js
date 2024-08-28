@@ -13,12 +13,23 @@ const FertilizerList = () => {
     });
   }, []);
 
+  const handleDeleteFertilizer = async () => {
+    // Refetch the updated list of categories from the server
+    const response = await axios.get(
+      "http://localhost:5000/api/f&p/fertilizers"
+    );
+    setFertilizers(response.data);
+  };
+
   return (
     <Container>
       <Col>
         {fertilizers.map((fertilizer) => (
           <Row key={fertilizer.fertilizerId}>
-            <FertilizerCard fertilizer={fertilizer} />
+            <FertilizerCard
+              fertilizer={fertilizer}
+              onDelete={() => handleDeleteFertilizer()}
+            />
           </Row>
         ))}
       </Col>
