@@ -16,13 +16,13 @@ import Fertilizers from "./Fertilizers";
 import Pesticides from "./Pesticides";
 import CropCategory from "./CropCategory";
 
-function FertilizerTracker() {
+function FertilizerDashboard() {
   const [key, setKey] = useState("recomendations");
   return (
     <main id="main" className="main">
       <PageTitle
-        title="Fertilizer & Pesticides Dashboard"
-        url="/agriadmin/fertilizers"
+        title="Fertilizers & Pesticides"
+        url="/agriadmin/fertilizers&pesticides"
       />
       <section style={{ position: "relative" }}>
         <Card>
@@ -53,4 +53,4 @@ function FertilizerTracker() {
   );
 }
 
-export default FertilizerTracker;
+export default FertilizerDashboard;

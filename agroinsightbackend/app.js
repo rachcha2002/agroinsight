@@ -11,15 +11,19 @@ app.use(express.urlencoded({ extended: false }));
 
 //cors
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE,PATCH');
-  res.setHeader('Access-Control-Allow-Headers', 'authorization, Content-Type');
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE,PATCH");
+  res.setHeader("Access-Control-Allow-Headers", "authorization, Content-Type");
 
   next();
 });
 
+/*user management routes*/
 
+/*fertilizer and pesticide management routes*/
+app.use("/api/f&p", require("./routes/f&pRoutes"));
 
+/*deasease management routes*/
 app.use("/api/disease", require("./routes/diseaseRoutes"));
 
 const server = () => {

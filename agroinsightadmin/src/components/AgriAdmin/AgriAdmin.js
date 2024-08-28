@@ -11,7 +11,7 @@ import {
 import AgriMain from "./Main/AgriMain";
 import CropRotator from "./CropRotator/CropRotator";
 import DiseaseTracker from "./DiseaseTracker/DiseaseTracker";
-import FertilizerTracker from "./FertilizerTracker/FertilizerTracker";
+import FertilizeGuidance from "./FertilizerTracker/FertilizeGuidance";
 
 export default function AgriAdmin() {
   return (
@@ -23,7 +23,10 @@ export default function AgriAdmin() {
           <Route path="/" element={<AgriMain />} />
           <Route path="crops" element={<CropRotator />} />
           <Route path="diseases" element={<DiseaseTracker />} />
-          <Route path="fertilizers" element={<FertilizerTracker />} />
+          <Route
+            path="fertilizers&pesticides/*"
+            element={<FertilizeGuidance />}
+          />
         </Routes>
       </>
     </div>

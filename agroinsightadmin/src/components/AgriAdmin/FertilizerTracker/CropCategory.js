@@ -10,8 +10,13 @@ import {
   Tabs,
   Toast,
 } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import CropCategoryList from "./CropCategoryList";
 
 export default function CropCategory() {
+  //to add employee button part
+  const navigate = useNavigate();
+
   return (
     <>
       <Row>
@@ -20,15 +25,14 @@ export default function CropCategory() {
             <Button
               variant="dark"
               size="md"
-              onClick={() => {
-                console.log("Create new Fertilizer");
-              }}
+              onClick={() => navigate("addcropcategory")}
               style={{ margin: "10px" }}
             >
               Add New Category
             </Button>
           </div>
         </Stack>
+        <CropCategoryList />
       </Row>
     </>
   );
