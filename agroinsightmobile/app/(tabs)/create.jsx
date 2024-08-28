@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { router } from "expo-router";
-import * as DocumentPicker from "expo-document-picker";
+import * as ImagePicker from "expo-image-picker";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   View,
@@ -11,27 +11,38 @@ import {
   ScrollView,
 } from "react-native";
 
-import { icons } from "../../constants";
-// import { createDiseaseEntry } from "../../lib/api"; // Commenting out the backend import
-
 import CustomButton from "../../components/CustomButton";
 import FormField from "../../components/FormField";
 import { useGlobalContext } from "../../context/GlobalProvider";
+import { icons } from "../../constants";
+import { uploadDiseaseData } from "../../lib/diseaseAPI"; // Adjust the path as needed
 
 const Create = () => {
   const { user } = useGlobalContext();
   const [uploading, setUploading] = useState(false);
   const [form, setForm] = useState({
-    cropName: "",
-    diseaseName: "",
     symptoms: "",
-    treatment: "",
     diseaseImage: null,
   });
 
+  // Monitor form.diseaseImage to see the update
+  // useEffect(() => {
+  //   console.log("Updated diseaseImage:", form.diseaseImage);
+  // }, [form.diseaseImage]);
+
+  // Function to open the image picker and set the selected image in form state
   const openPicker = async () => {
-    const result = await DocumentPicker.getDocumentAsync({
-      type: ["image/png", "image/jpg"],
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (!permissionResult.granted) {
+      Alert.alert("Permission to access camera roll is required!");
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: false,
+      quality: 1,
     });
 
     if (!result.canceled) {
@@ -41,45 +52,13 @@ const Create = () => {
       });
     } else {
       setTimeout(() => {
-        Alert.alert("Document picking failed", JSON.stringify(result, null, 2));
+        Alert.alert("Image picking failed", JSON.stringify(result, null, 2));
       }, 100);
     }
   };
 
-  const submit = async () => {
-    if (
-      (form.cropName === "") |
-      (form.diseaseName === "") |
-      (form.symptoms === "") |
-      (form.treatment === "") |
-      !form.diseaseImage
-    ) {
-      return Alert.alert("Please provide all fields");
-    }
-
-    setUploading(true);
-    try {
-      // Commenting out backend interaction for now
-      // await createDiseaseEntry({
-      //   ...form,
-      //   userId: user.$id,
-      // });
-
-      Alert.alert("Success", "This is a UI test. No data was uploaded.");
-      router.push("/home");
-    } catch (error) {
-      Alert.alert("Error", "This is a UI test. No backend interaction.");
-    } finally {
-      setForm({
-        cropName: "",
-        diseaseName: "",
-        symptoms: "",
-        treatment: "",
-        diseaseImage: null,
-      });
-
-      setUploading(false);
-    }
+  const submit = () => {
+    uploadDiseaseData(form, setUploading, setForm);
   };
 
   return (
@@ -88,31 +67,11 @@ const Create = () => {
         <Text className="text-2xl text-black font-semibold">Upload Crop Disease Data</Text>
 
         <FormField
-          title="Crop Name"
-          value={form.cropName}
-          placeholder="Enter the name of the crop..."
-          handleChangeText={(e) => setForm({ ...form, cropName: e })}
-          otherStyles="mt-10"
-          textClass="text-black"
-          placeholderTextColor="gray"
-        />
-
-        <FormField
-          title="Disease Name"
-          value={form.diseaseName}
-          placeholder="Enter the name of the disease..."
-          handleChangeText={(e) => setForm({ ...form, diseaseName: e })}
-          otherStyles="mt-7"
-          textClass="text-black"
-          placeholderTextColor="gray"
-        />
-
-        <FormField
           title="Symptoms"
           value={form.symptoms}
           placeholder="Describe the symptoms..."
           handleChangeText={(e) => setForm({ ...form, symptoms: e })}
-          otherStyles="mt-7"
+          otherStyles="mt-10"
           textClass="text-black"
           placeholderTextColor="gray"
         />
