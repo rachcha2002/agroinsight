@@ -24,6 +24,7 @@ const CreateComplaint = () => {
     symptoms: "",
     cropAffected: "",  // Add cropAffected to the form state
     diseaseImage: null,
+    farmerID:""
   });
 
   // Function to open the image picker and set the selected image in form state
@@ -45,6 +46,7 @@ const CreateComplaint = () => {
       setForm({
         ...form,
         diseaseImage: result.assets[0],
+        farmerID:user?.$id
       });
     } else {
       setTimeout(() => {
@@ -54,7 +56,7 @@ const CreateComplaint = () => {
   };
 
   const submit = () => {
-    uploadDiseaseData(form, setUploading, setForm, user);
+    uploadDiseaseData(form, setUploading, setForm);
   };
 
   return (

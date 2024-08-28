@@ -13,13 +13,17 @@ const Complaints = () => {
 
   const fetchComplaints = async () => {
     try {
-      const response = await axios.get('http://192.168.1.2:5000/api/disease/complaints');
-      setComplaints(response.data);
-      setLoading(false);
-    } catch (err) {
-      setError(err.message);
-      setLoading(false);
-    }
+        const response = await axios.get('http://192.168.1.2:5000/api/disease/complaints');
+        
+        // Sort the complaints by dateOfComplaint in descending order
+        const sortedComplaints = response.data.sort((a, b) => new Date(b.dateOfComplaint) - new Date(a.dateOfComplaint));
+    
+        setComplaints(sortedComplaints);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
   };
 
   useEffect(() => {
@@ -80,7 +84,10 @@ const Complaints = () => {
   }
 
   const renderItem = ({ item }) => (
-    <View className="mb-6 p-4 bg-white rounded-lg shadow border border-green-600">
+    <View className="mb-6 p-2 bg-white rounded-lg shadow border border-green-600">
+        <View className="mt-0.1">
+  <Text className="text-lg font-bold text-center mb-2">{item.cropAffected}</Text>
+</View>
       {item.imageURL && (
         <Image
           source={{ uri: item.imageURL }}

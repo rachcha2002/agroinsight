@@ -2,7 +2,7 @@ import { router } from "expo-router";
 import { Alert } from "react-native";
 
 
-export const uploadDiseaseData = async (form, setUploading, setForm,user) => {
+export const uploadDiseaseData = async (form, setUploading, setForm) => {
 
 
   if (form.symptoms === "" || !form.diseaseImage) {
@@ -12,9 +12,9 @@ export const uploadDiseaseData = async (form, setUploading, setForm,user) => {
   setUploading(true);
 
   const formData = new FormData();
-  formData.append("farmerID", user.$username);  // Replace with the actual farmer ID
+  formData.append("farmerID", form.farmerID);  // Replace with the actual farmer ID
   formData.append("area", "Central Province");
-  formData.append("cropAffected", "Tea");
+  formData.append("cropAffected", form.cropAffected);
   formData.append("complaintDescription", form.symptoms);
   formData.append("dateOfComplaint", new Date().toISOString().split("T")[0]);  // Automatically set to the current date
 
@@ -34,7 +34,7 @@ export const uploadDiseaseData = async (form, setUploading, setForm,user) => {
 
     if (response.ok) {
       Alert.alert("Success", "Data uploaded successfully.");
-      router.push("/home");
+      router.push("/disease/complaints");
     } else {
       const errorData = await response.json();
       console.error("Error response:", errorData);
