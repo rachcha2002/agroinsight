@@ -1,11 +1,30 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Card, Button, Container, Row, Col, ListGroup } from "react-bootstrap";
+import {
+  Card,
+  Button,
+  Container,
+  Row,
+  Col,
+  ListGroup,
+  Modal,
+} from "react-bootstrap";
 import { FaChevronLeft, FaChevronRight, FaEdit, FaTrash } from "react-icons/fa"; // Icons for scrolling
 
 const CropCategoryList = () => {
   const [categories, setCategories] = useState([]);
   const [expandedCategoryId, setExpandedCategoryId] = useState(null);
+
+  //for delete operations
+  const [show, setShow] = useState(false);
+  const [categoryIdToDelete, setCategoryIdToDelete] = useState(null);
+
+  const handleClose = () => setShow(false);
+
+  const handleShow = (categoryId) => {
+    setCategoryIdToDelete(categoryId);
+    setShow(true);
+  };
 
   useEffect(() => {
     axios
@@ -29,9 +48,27 @@ const CropCategoryList = () => {
     // Add logic to handle editing the category
   };
 
-  const handleDelete = (categoryId) => {
-    console.log("Delete category:", categoryId);
-    // Add logic to handle deleting the category
+  const handleDelete = async () => {
+    try {
+      console.log("Delete category:", categoryIdToDelete);
+
+      // Make an API call to delete the category
+      await axios.delete(
+        `http://localhost:5000/api/f&p/delete-cropcategories/${categoryIdToDelete}`
+      );
+
+      // Refetch the updated list of categories from the server
+      const response = await axios.get(
+        "http://localhost:5000/api/f&p/cropcategories"
+      );
+      setCategories(response.data);
+
+      handleClose();
+      alert("Category deleted successfully");
+    } catch (error) {
+      console.error("Error deleting category:", error);
+      alert("Failed to delete category");
+    }
   };
 
   return (
@@ -62,7 +99,7 @@ const CropCategoryList = () => {
                   </Button>
                   <Button
                     variant="outline-dark"
-                    onClick={() => handleDelete(category.categoryId)}
+                    onClick={() => handleShow(category._id)}
                   >
                     <FaTrash />
                   </Button>
@@ -119,6 +156,23 @@ const CropCategoryList = () => {
           </Col>
         ))}
       </Row>
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Deletion</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Are you sure you want to delete this category? This action cannot be
+          undone.
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={handleDelete}>
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
   );
 
