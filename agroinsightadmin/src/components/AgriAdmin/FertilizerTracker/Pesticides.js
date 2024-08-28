@@ -11,6 +11,7 @@ import {
   Toast,
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import PesticideList from "./PesticideList";
 
 export default function Pesticides() {
   //to add employee button part
@@ -30,6 +31,7 @@ export default function Pesticides() {
             </Button>
           </div>
         </Stack>
+        <PesticideList />
       </Row>
     </>
   );

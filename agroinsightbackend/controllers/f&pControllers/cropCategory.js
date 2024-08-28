@@ -117,3 +117,25 @@ exports.getCropsByCategoryId = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+exports.getCropById = async (req, res) => {
+  const cropId = req.params.cropId;
+
+  try {
+    // Find all crop categories
+    const cropCategories = await CropCategory.find();
+
+    // Iterate over each crop category to find the crop
+    for (const category of cropCategories) {
+      const crop = category.crops.id(cropId);
+      if (crop) {
+        return res.status(200).json(crop);
+      }
+    }
+
+    // If crop not found
+    return res.status(404).json({ message: "Crop not found" });
+  } catch (error) {
+    return res.status(500).json({ message: "Server error", error });
+  }
+};

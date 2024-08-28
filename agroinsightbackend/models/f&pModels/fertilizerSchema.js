@@ -5,7 +5,11 @@ const Schema = mongoose.Schema;
 const FertilizerSchema = new Schema({
   fertilizerId: { type: String, required: true },
   name: { type: String, required: true },
-  type: { type: String, required: true },
+  type: {
+    type: String,
+    required: true,
+    //enum: ["Organic", "Chemical"], // Restrict to "Organic" or "Chemical"
+  },
   suitableCrops: [
     {
       cropCategoryId: { type: String, required: true },
@@ -17,12 +21,12 @@ const FertilizerSchema = new Schema({
     },
   ],
   instructions: { type: String, required: true },
-  region: [{ type: String, required: true }], // Array of regions
+  region: [{ type: String }], // Array of regions
   imageUrl: { type: String }, // URL for fertilizer image
   brands: [{ type: String }], // Array to store different brands
 });
 
 // Create models from the schemas
-const Fertilizer = mongoose.model("Fertilizers", FertilizerSchema);
+const Fertilizer = mongoose.model("Fertilizer", FertilizerSchema);
 
 module.exports = { Fertilizer };

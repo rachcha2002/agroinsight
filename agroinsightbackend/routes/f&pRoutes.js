@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const cropCategoryController = require("../controllers/f&pControllers/cropCategory");
-//const fertilizerController = require("../controllers/f&pControllers/fertilizer");
+const FertilizerController = require("../controllers/f&pControllers/fertilizerController");
 const pesticideController = require("../controllers/f&pControllers/pesticidesController");
 
 /*-------------------------- CropCategory Routes --------------------------*/
@@ -16,15 +16,38 @@ router.get("/cropcategories", cropCategoryController.getAllCropCategories);
 router.get("/cropcategories/:id", cropCategoryController.getCropCategoryById);
 
 // Route to update a CropCategory by ID
-router.put("/cropcategories/:id", cropCategoryController.updateCropCategory);
+router.put(
+  "/update-cropcategories/:id",
+  cropCategoryController.updateCropCategory
+);
 
 // Route to delete a CropCategory by ID
-router.delete("/cropcategories/:id", cropCategoryController.deleteCropCategory);
+router.delete(
+  "/delete-cropcategories/:id",
+  cropCategoryController.deleteCropCategory
+);
 
 // Route to get crops by category ID
 router.get("/crops/:id", cropCategoryController.getCropsByCategoryId);
 
+// Route to get crop by ID
+router.get("/cropbyid/:cropId", cropCategoryController.getCropById);
+
 /*-------------------------- Fertilizer Routes --------------------------*/
+// Route to create a new fertilizer
+router.post("/add-fertilizer", FertilizerController.createFertilizer);
+
+// Route to get all fertilizers
+router.get("/fertilizers", FertilizerController.getAllFertilizers);
+
+// Route to get a fertilizer by ID
+router.get("/fertilizers/:id", FertilizerController.getFertilizerById);
+
+// Route to update a fertilizer by ID
+router.put("/update-fertilizers/:id", FertilizerController.updateFertilizer);
+
+// Route to delete a fertilizer by ID
+router.delete("/delete-fertilizers/:id", FertilizerController.deleteFertilizer);
 
 /*-------------------------- Pesticide Routes --------------------------*/
 // Create a new pesticide
@@ -37,9 +60,9 @@ router.get("/pesticides", pesticideController.getAllPesticides);
 router.get("/pesticides/:id", pesticideController.getPesticideById);
 
 // Update a pesticide by ID
-router.put("/pesticides/:id", pesticideController.updatePesticide);
+router.put("/update-pesticides/:id", pesticideController.updatePesticide);
 
 // Delete a pesticide by ID
-router.delete("/pesticides/:id", pesticideController.deletePesticide);
+router.delete("/delete-pesticides/:id", pesticideController.deletePesticide);
 
 module.exports = router;

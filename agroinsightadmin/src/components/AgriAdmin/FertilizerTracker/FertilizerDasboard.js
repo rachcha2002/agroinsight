@@ -17,7 +17,7 @@ import Pesticides from "./Pesticides";
 import CropCategory from "./CropCategory";
 
 function FertilizerDashboard() {
-  const [key, setKey] = useState("recomendations");
+  const [key, setKey] = useState("fertilizers");
   return (
     <main id="main" className="main">
       <PageTitle
@@ -33,13 +33,10 @@ function FertilizerDashboard() {
               onSelect={(k) => setKey(k)}
               className="mb-3"
             >
-              <Tab eventKey="recomendations" title="Recomendations">
+              <Tab eventKey="fertilizers" title="Fertilizer Recomendations">
                 <Fertilizers />
               </Tab>
-              <Tab eventKey="fertilizers" title="Fertilizers">
-                <Fertilizers />
-              </Tab>
-              <Tab eventKey="pesticides" title="Pesticides">
+              <Tab eventKey="pesticides" title="Pesticide Recommendations">
                 <Pesticides />
               </Tab>
               <Tab eventKey="cropcategory" title="Crop Categories">

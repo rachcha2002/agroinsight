@@ -24,12 +24,12 @@ const upload = multer({ storage: multer.memoryStorage() }).single(
 const generatePesticideId = async () => {
   const lastPesticide = await Pesticide.findOne().sort({ pesticideId: -1 }); // Find the last inserted pesticide by ID
   if (!lastPesticide) {
-    return "F0001"; // If no pesticides exist, start with F0001
+    return "P0001"; // If no pesticides exist, start with F0001
   }
 
   const lastIdNumber = parseInt(lastPesticide.pesticideId.substring(1)); // Extract the numeric part of the last ID
   const newIdNumber = lastIdNumber + 1;
-  return `F${newIdNumber.toString().padStart(4, "0")}`; // Generate the new ID, e.g., F0002
+  return `P${newIdNumber.toString().padStart(4, "0")}`; // Generate the new ID, e.g., F0002
 };
 
 //generate current date and time
@@ -45,6 +45,7 @@ const giveCurrentDateTime = () => {
 
 // Create a new Pesticide
 exports.createPesticide = async (req, res) => {
+  console.log("Came dta", req.body);
   // Call the multer middleware before proceeding
   upload(req, res, async (err) => {
     try {
@@ -65,7 +66,7 @@ exports.createPesticide = async (req, res) => {
       const dateTime = giveCurrentDateTime();
       const storageRef = ref(
         storage,
-        `fertilizer_images/${req.file.originalname}_${dateTime}`
+        `pesticide_images/${req.file.originalname}_${dateTime}`
       );
 
       const metadata = {

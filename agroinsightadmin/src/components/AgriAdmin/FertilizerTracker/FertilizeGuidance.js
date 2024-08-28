@@ -8,6 +8,7 @@ import {
 import FertilizerDashboard from "./FertilizerDasboard";
 import CropCategoryForm from "./CropCategotyForm";
 import PesticideForm from "./PesticideForm";
+import FertilizerForm from "./FertilizerForm";
 
 function FertilizeGuidance() {
   return (
@@ -16,6 +17,7 @@ function FertilizeGuidance() {
         <Route path="/" element={<FertilizerDashboard />} />
         <Route path="/addcropcategory" element={<CropCategoryForm />} />
         <Route path="/addpesticide" element={<PesticideForm />} />
+        <Route path="/addfertilizer" element={<FertilizerForm />} />
       </Routes>
     </>
   );

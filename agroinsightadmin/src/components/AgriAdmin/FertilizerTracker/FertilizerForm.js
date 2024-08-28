@@ -6,8 +6,8 @@ import PageTitle from "../AgriPageTitle";
 import { useNavigate } from "react-router-dom";
 import { BsArrowLeft } from "react-icons/bs";
 
-const PesticideForm = () => {
-  //to redirect after success
+const FertilizerForm = () => {
+  // To redirect after success
   const navigate = useNavigate();
 
   const [cropCategories, setCropCategories] = useState([]);
@@ -15,12 +15,12 @@ const PesticideForm = () => {
   const [selectedCrops, setSelectedCrops] = useState([
     { cropCategoryId: "", cropId: "", recommendedUsage: "" },
   ]);
-  const [targetPests, setTargetPests] = useState([""]);
   const [regions, setRegions] = useState([""]);
   const [brands, setBrands] = useState([""]);
   const [instructions, setInstructions] = useState("");
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
+  const [type, setType] = useState("");
 
   useEffect(() => {
     // Fetch crop categories from the backend
@@ -56,7 +56,6 @@ const PesticideForm = () => {
       .get(`http://localhost:5000/api/f&p/crops/${categoryId}`)
       .then((response) => {
         setCrops(response.data);
-        console.log("Crops fetched successfully!", response.data);
       })
       .catch((error) => {
         console.error("There was an error fetching the crops!", error);
@@ -67,20 +66,6 @@ const PesticideForm = () => {
     const updatedCrops = [...selectedCrops];
     updatedCrops[index][field] = value;
     setSelectedCrops(updatedCrops);
-  };
-
-  const handleAddTargetPest = () => {
-    setTargetPests([...targetPests, ""]);
-  };
-
-  const handleRemoveTargetPest = () => {
-    setTargetPests(targetPests.slice(0, -1));
-  };
-
-  const handleTargetPestChange = (index, value) => {
-    const updatedPests = [...targetPests];
-    updatedPests[index] = value;
-    setTargetPests(updatedPests);
   };
 
   const handleAddRegion = () => {
@@ -127,29 +112,32 @@ const PesticideForm = () => {
     formData.append("suitableCrops", JSON.stringify(selectedCrops));
     formData.append("instructions", instructions);
 
-    // Append arrays individually
-    targetPests.forEach((pest) => formData.append("targetPests[]", pest));
-    regions.forEach((region) => formData.append("regions[]", region));
-    brands.forEach((brand) => formData.append("brands[]", brand));
+    // Append regions and brands without stringifying
+    regions.forEach((region, index) => {
+      formData.append(`appregions[${index}]`, region);
+    });
 
-    /* if (image) {
+    brands.forEach((brand, index) => {
+      formData.append(`brands[${index}]`, brand);
+    });
+
+    /*if (image) {
       formData.append("fertilizerImage", image);
     }*/
-    // Inspect FormData content
     for (let [key, value] of formData.entries()) {
       console.log(`${key}: ${value}`);
     }
 
     try {
       await axios.post(
-        "http://localhost:5000/api/f&p/add-pesticides",
+        "http://localhost:5000/api/f&p/add-fertilizer",
         formData
       );
-      alert("Pesticide submitted successfully");
+      alert("Fertilizer submitted successfully");
       navigate("/agriadmin/fertilizers&pesticides");
     } catch (error) {
-      console.error("Error submitting pesticide:", error);
-      alert("Failed to submit pesticide");
+      console.error("Error submitting fertilizer:", error);
+      alert("Failed to submit fertilizer");
     }
   };
 
@@ -157,7 +145,7 @@ const PesticideForm = () => {
     <main id="main" className="main">
       <PageTitle
         title="Fertilizers & Pesticides"
-        url="/agriadmin/fertilizers&pesticides/addpesticide"
+        url="/agriadmin/fertilizers&pesticides/addfertilizer"
       />
       <Container>
         <h3>
@@ -168,16 +156,16 @@ const PesticideForm = () => {
           >
             <BsArrowLeft /> Back
           </Button>
-          Add Pesticide
+          Add Fertilizer
         </h3>
         <Form onSubmit={handleSubmit} encType="multipart/form-data">
           <Form.Group controlId="name">
-            <Form.Label>Pesticide Name</Form.Label>
+            <Form.Label>Fertilizer Name</Form.Label>
             <Form.Control type="text" name="name" required />
           </Form.Group>
           <br />
           <Form.Group controlId="fertilizerImage">
-            <Form.Label>Pesticide Image</Form.Label>
+            <Form.Label>Fertilizer Image</Form.Label>
             <Form.Control
               type="file"
               name="fertilizerImage"
@@ -190,6 +178,21 @@ const PesticideForm = () => {
                 style={{ width: "150px", marginTop: "10px" }}
               />
             )}
+          </Form.Group>
+          <br />
+          <Form.Group controlId="type">
+            <Form.Label>Fertilizer Type</Form.Label>
+            <Form.Control
+              as="select"
+              name="type"
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+              required
+            >
+              <option value="">Select Type</option>
+              <option value="Organic">Organic</option>
+              <option value="Chemical">Chemical</option>
+            </Form.Control>
           </Form.Group>
           <br />
           <Card style={{ padding: "18px" }}>
@@ -273,41 +276,6 @@ const PesticideForm = () => {
           <Row>
             <Col>
               <Card style={{ padding: "18px" }}>
-                <Form.Group controlId="targetPests">
-                  <Form.Label>Target Pests</Form.Label>
-                  {targetPests.map((pest, index) => (
-                    <div key={index} className="d-flex align-items-center">
-                      <Form.Control
-                        type="text"
-                        placeholder="Target Pest"
-                        value={pest}
-                        onChange={(e) =>
-                          handleTargetPestChange(index, e.target.value)
-                        }
-                        required
-                        className="mb-2 flex-grow-1"
-                      />
-                      {targetPests.length > 1 && (
-                        <Button
-                          variant="danger"
-                          onClick={handleRemoveTargetPest}
-                          className="ml-2"
-                          style={{ marginLeft: "8px" }}
-                        >
-                          Remove
-                        </Button>
-                      )}
-                    </div>
-                  ))}
-                  <Button variant="success" onClick={handleAddTargetPest}>
-                    Add More Pests
-                  </Button>
-                </Form.Group>
-              </Card>
-            </Col>
-
-            <Col>
-              <Card style={{ padding: "18px" }}>
                 <Form.Group controlId="regions">
                   <Form.Label>Regions</Form.Label>
                   {regions.map((region, index) => (
@@ -340,9 +308,7 @@ const PesticideForm = () => {
                 </Form.Group>
               </Card>
             </Col>
-          </Row>
 
-          <Row>
             <Col>
               <Card style={{ padding: "18px" }}>
                 <Form.Group controlId="brands">
@@ -377,34 +343,30 @@ const PesticideForm = () => {
                 </Form.Group>
               </Card>
             </Col>
-
-            <Col>
-              <Form.Group controlId="instructions">
-                <Form.Label>Instructions</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={3}
-                  value={instructions}
-                  onChange={(e) => setInstructions(e.target.value)}
-                  required
-                />
-              </Form.Group>
-            </Col>
           </Row>
 
-          <div className="d-flex justify-content-end">
-            <Button
-              variant="primary"
-              type="submit"
-              style={{ marginTop: "10px" }}
-            >
-              Submit
-            </Button>
-          </div>
+          <br />
+
+          <Form.Group controlId="instructions">
+            <Form.Label>Instructions</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={3}
+              value={instructions}
+              onChange={(e) => setInstructions(e.target.value)}
+              required
+            />
+          </Form.Group>
+
+          <br />
+
+          <Button variant="primary" type="submit">
+            Submit
+          </Button>
         </Form>
       </Container>
     </main>
   );
 };
 
-export default PesticideForm;
+export default FertilizerForm;
