@@ -151,7 +151,7 @@ const PesticideForm = () => {
         formData
       );
       alert("Pesticide submitted successfully");
-      navigate("/agriadmin/fertilizers&pesticides");
+      navigate("/agriadmin/fertilizers&pesticides?tab=pesticides");
     } catch (error) {
       console.error("Error submitting pesticide:", error);
       alert("Failed to submit pesticide");

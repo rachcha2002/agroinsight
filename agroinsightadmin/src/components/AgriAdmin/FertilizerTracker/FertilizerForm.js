@@ -140,7 +140,7 @@ const FertilizerForm = () => {
         formData
       );
       alert("Fertilizer submitted successfully");
-      navigate("/agriadmin/fertilizers&pesticides");
+      navigate("/agriadmin/fertilizers&pesticides?tab=fertilizers");
     } catch (error) {
       console.error("Error submitting fertilizer:", error);
       alert("Failed to submit fertilizer");

@@ -1,15 +1,12 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import "../Main/Main.css";
-import { BsArrowLeft } from "react-icons/bs";
 import { Form, Button, Container, Row, Col, ListGroup } from "react-bootstrap";
-import PageTitle from "../AgriPageTitle";
-import { BiPlus } from "react-icons/bi"; // Assuming you're using react-icons
+import { BsArrowLeft } from "react-icons/bs";
 
-const CropCategoryForm = () => {
-  //to redirect after success
+const CropCategoryUpdateForm = () => {
   const navigate = useNavigate();
+  const { categoryId } = useParams(); // Get the category ID from the route params
 
   const [category, setCategory] = useState({
     name: "",
@@ -23,6 +20,18 @@ const CropCategoryForm = () => {
       },
     ],
   });
+
+  useEffect(() => {
+    // Fetch the category details by ID
+    axios
+      .get(`http://localhost:5000/api/f&p/cropcategories/${categoryId}`)
+      .then((response) => {
+        setCategory(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching category:", error);
+      });
+  }, [categoryId]);
 
   const handleChange = (e) => {
     const { name, value, dataset } = e.target;
@@ -67,23 +76,21 @@ const CropCategoryForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:5000/api/f&p/add-cropcategory", category)
+      .put(
+        `http://localhost:5000/api/f&p/update-cropcategories/${categoryId}`,
+        category
+      )
       .then((response) => {
-        console.log("Category saved successfully!", response.data);
-        // Redirect or show a success message
+        console.log("Category updated successfully!", response.data);
         navigate("/agriadmin/fertilizers&pesticides?tab=cropcategory");
       })
       .catch((error) => {
-        console.error("Error saving category:", error);
+        console.error("Error updating category:", error);
       });
   };
 
   return (
     <main id="main" className="main">
-      <PageTitle
-        title="Fertilizers & Pesticides"
-        url="/agriadmin/fertilizers&pesticides/addcropcategory"
-      />
       <Container>
         <h3>
           <Button
@@ -95,7 +102,7 @@ const CropCategoryForm = () => {
           >
             <BsArrowLeft /> Back
           </Button>
-          Create Crop Category
+          Update Crop Category
         </h3>
         <Form onSubmit={handleSubmit}>
           <Row className="mb-3">
@@ -108,6 +115,7 @@ const CropCategoryForm = () => {
                   value={category.name}
                   onChange={handleChange}
                   placeholder="Enter Category Name"
+                  disabled // Make name field disabled
                 />
               </Form.Group>
             </Col>
@@ -175,33 +183,24 @@ const CropCategoryForm = () => {
                 <br />
                 <Button
                   variant="dark"
-                  className="text-danger d-flex align-items-center" // Red text
+                  className="text-danger d-flex align-items-center"
                   onClick={() => handleRemoveCrop(cropIndex)}
                 >
                   Remove Crop
-                  <i
-                    className="bi bi-dash-circle-fill ml-2"
-                    style={{ marginLeft: "8px" }}
-                  ></i>{" "}
-                  {/* Minus-circle icon */}
                 </Button>
               </ListGroup.Item>
             </ListGroup>
           ))}
           <Col className="d-flex justify-content-between">
             <Button
-              variant="dark" // Use 'dark' variant for a black background
-              className="text-primary d-flex align-items-center" // Apply blue text and align items
+              variant="dark"
+              className="text-primary d-flex align-items-center"
               onClick={handleAddCrop}
             >
               Add Crop
-              <i
-                className="bi bi-plus-circle-fill ml-2"
-                style={{ marginLeft: "8px" }}
-              ></i>
             </Button>
             <Button variant="success" type="submit" className="ml-3">
-              Add Category
+              Update Category
             </Button>
           </Col>
         </Form>
@@ -210,4 +209,4 @@ const CropCategoryForm = () => {
   );
 };
 
-export default CropCategoryForm;
+export default CropCategoryUpdateForm;

@@ -9,7 +9,7 @@ const navList = [
     _id: 2,
     name: "Fertilizers & Pesticides",
     icon: "bi bi-moisture",
-    href: "/agriadmin/fertilizers&pesticides",
+    href: "/agriadmin/fertilizers&pesticides?tab=fertilizers",
   },
   {
     _id: 3,

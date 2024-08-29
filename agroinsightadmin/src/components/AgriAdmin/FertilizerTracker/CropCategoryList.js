@@ -13,8 +13,11 @@ import { FaChevronLeft, FaChevronRight, FaEdit, FaTrash } from "react-icons/fa";
 import { jsPDF } from "jspdf"; // Import jsPDF
 import "jspdf-autotable"; // Import the autoTable plugin
 import logo from "../../../images/logoNoBack.png";
+import { useNavigate } from "react-router-dom";
 
 const CropCategoryList = () => {
+  //to redirect after success
+  const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
   const [expandedCategoryId, setExpandedCategoryId] = useState(null);
 
@@ -47,8 +50,10 @@ const CropCategoryList = () => {
   };
 
   const handleEdit = (categoryId) => {
-    console.log("Edit category:", categoryId);
-    // Add logic to handle editing the category
+    // Navigate to the update form
+    navigate(
+      `/agriadmin/fertilizers&pesticides/updatecropcategory/${categoryId}`
+    );
   };
 
   const handleDelete = async () => {
@@ -198,7 +203,7 @@ const CropCategoryList = () => {
   return (
     <Container>
       <Button
-        variant="primary"
+        variant="secondary"
         onClick={generatePDF}
         style={{ marginLeft: "20px" }}
       >
@@ -232,13 +237,13 @@ const CropCategoryList = () => {
                   </Button>
                   <Button
                     variant="outline-dark"
-                    onClick={() => handleEdit(category.categoryId)}
+                    onClick={() => handleEdit(category._id)}
                     style={{ marginRight: "8px" }}
                   >
                     <FaEdit />
                   </Button>
                   <Button
-                    variant="outline-dark"
+                    variant="outline-danger"
                     onClick={() => handleShow(category._id)}
                   >
                     <FaTrash />

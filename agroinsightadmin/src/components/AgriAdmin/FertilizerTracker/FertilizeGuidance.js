@@ -9,6 +9,7 @@ import FertilizerDashboard from "./FertilizerDasboard";
 import CropCategoryForm from "./CropCategotyForm";
 import PesticideForm from "./PesticideForm";
 import FertilizerForm from "./FertilizerForm";
+import CropCategoryUpdateForm from "./CropCategoryUpdateForm";
 
 function FertilizeGuidance() {
   return (
@@ -18,6 +19,10 @@ function FertilizeGuidance() {
         <Route path="/addcropcategory" element={<CropCategoryForm />} />
         <Route path="/addpesticide" element={<PesticideForm />} />
         <Route path="/addfertilizer" element={<FertilizerForm />} />
+        <Route
+          path="/updatecropcategory/:categoryId"
+          element={<CropCategoryUpdateForm />}
+        />
       </Routes>
     </>
   );
