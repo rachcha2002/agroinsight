@@ -1,14 +1,17 @@
-import React from "react";
-import PageTitle from "../AgriPageTitle";
+import {React} from "react";
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import "../Main/Main.css";
 
+import CropRotatorTabs from "./CropRotatorTabs";
+
+
 export default function CropRotator() {
+  
   return (
-    <main id="main" className="main">
-      <PageTitle title="Crop Management Dashboard" url="/agriadmin/crops" />
-      <div>
-        <h1>Hello, Crop Dashoard</h1>
-      </div>
-    </main>
+    <>
+    <Routes>
+      <Route path="/" element={<CropRotatorTabs />} />
+    </Routes>
+    </>
   );
 }
