@@ -1,6 +1,7 @@
 import React from "react";
 import "./Nav.css";
-
+//import NavNotice from "./NavNotice";
+//import NavMessage from "./NavMessage";
 import NavAvatar from "./NavAvatar";
 import CurrentDate from "./CurrentDate";
 

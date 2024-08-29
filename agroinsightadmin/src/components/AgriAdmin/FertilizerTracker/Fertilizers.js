@@ -10,8 +10,12 @@ import {
   Tabs,
   Toast,
 } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import FertilizerList from "./FertilizerList";
 
 export default function Fertilizers() {
+  //to add employee button part
+  const navigate = useNavigate();
   return (
     <>
       <Row>
@@ -20,15 +24,14 @@ export default function Fertilizers() {
             <Button
               variant="dark"
               size="md"
-              onClick={() => {
-                console.log("Create new Fertilizer");
-              }}
+              onClick={() => navigate("addfertilizer")}
               style={{ margin: "10px" }}
             >
               Add New Fertilizer
             </Button>
           </div>
         </Stack>
+        <FertilizerList />
       </Row>
     </>
   );
