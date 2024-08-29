@@ -22,6 +22,9 @@ app.use((req, res, next) => {
 
 app.use("/api/disease", require("./routes/diseaseRoutes"));
 
+//crop rotator
+app.use("/api/crop-rotator", require("./routes/cropRotatorRoutes"));
+
 const server = () => {
   db();
 
