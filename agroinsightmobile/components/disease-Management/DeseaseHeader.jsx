@@ -1,6 +1,6 @@
 import { View, Text,Image } from 'react-native'
 import React from 'react'
-import { images } from '../../constants'
+import { images,icons } from '../../constants'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { router } from 'expo-router'
 
@@ -19,12 +19,14 @@ const DeseaseHeader = () => {
                 resizeMode="contain"
               />
             </View>
-            <View className="mt-1.5">
-            <TouchableOpacity onPress={handlePress}>
-          <View className="bg-green-500 rounded-lg p-2 mr-0.5">
-            <Text className="text-white text-center">Add</Text>
-          </View>
-        </TouchableOpacity>
+            <View className="mt-1.5 mr-0.5">
+              <TouchableOpacity onPress={handlePress}>
+                <Image
+                  source={icons.plusgreen}
+                  className="w-9 h-10"
+                  resizeMode="contain"
+                />
+              </TouchableOpacity>
             </View>
           </View>
   )
