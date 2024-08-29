@@ -12,7 +12,7 @@ import eyeHide from "../assets/icons/eye-hide.png";
 import eye from "../assets/icons/eye.png";
 import play from "../assets/icons/play.png";
 import diesease from "../assets/icons/disease.png";
-
+import fertilizer from "../assets/icons/fertilizer.png";
 
 export default {
   play,
@@ -28,5 +28,6 @@ export default {
   logout,
   eyeHide,
   eye,
-  diesease
+  diesease,
+  fertilizer,
 };

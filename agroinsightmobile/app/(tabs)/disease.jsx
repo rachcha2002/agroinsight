@@ -1,11 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Image, ScrollView, ActivityIndicator, TouchableOpacity, RefreshControl } from 'react-native';
-import axios from 'axios';
-import { useRouter, usePathname } from 'expo-router';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useGlobalContext } from '../../context/GlobalProvider';
-import { images } from '../../constants';
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  Image,
+  ScrollView,
+  ActivityIndicator,
+  TouchableOpacity,
+  RefreshControl,
+} from "react-native";
+import axios from "axios";
+import { useRouter, usePathname } from "expo-router";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useGlobalContext } from "../../context/GlobalProvider";
+import { images } from "../../constants";
 
 const DiseaseDashboard = () => {
   const { user, setUser, setIsLogged } = useGlobalContext();
@@ -18,7 +26,9 @@ const DiseaseDashboard = () => {
 
   const fetchAlerts = async () => {
     try {
-      const response = await axios.get('http://192.168.1.2:5000/api/disease/disease-alerts');
+      const response = await axios.get(
+        "http://192.168.1.167:5000/api/disease/disease-alerts"
+      );
       setAlerts(response.data);
       setLoading(false);
     } catch (err) {
@@ -36,7 +46,7 @@ const DiseaseDashboard = () => {
   };
 
   const handleComplaintPress = () => {
-    router.push('/disease/complaints'); // Navigate to the create complaint screen
+    router.push("/disease/complaints"); // Navigate to the create complaint screen
   };
 
   const onRefresh = async () => {
@@ -62,7 +72,7 @@ const DiseaseDashboard = () => {
   }
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 ,backgroundColor:'#FFFFFF'}}>
+    <GestureHandlerRootView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
       <SafeAreaView className="h-full">
         <View className="flex-1">
           <View className="justify-between items-center flex-row ">
@@ -83,15 +93,18 @@ const DiseaseDashboard = () => {
               </TouchableOpacity>
             </View>
           </View>
-          
+
           <ScrollView
             className="p-4"
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
           >
-            {alerts.map(alert => (
-              <TouchableOpacity key={alert._id} onPress={() => handleAlertPress(alert._id)}>
+            {alerts.map((alert) => (
+              <TouchableOpacity
+                key={alert._id}
+                onPress={() => handleAlertPress(alert._id)}
+              >
                 <View className="mb-4 p-4 bg-white rounded-lg shadow">
                   <Image
                     source={{ uri: alert.imageURL }}
@@ -99,8 +112,12 @@ const DiseaseDashboard = () => {
                     resizeMode="cover"
                   />
                   <Text className="text-lg font-bold mt-4">{alert.title}</Text>
-                  <Text className="text-gray-700 mt-2">{alert.description}</Text>
-                  <Text className="text-gray-500 mt-2">Date: {new Date(alert.date).toLocaleDateString()}</Text>
+                  <Text className="text-gray-700 mt-2">
+                    {alert.description}
+                  </Text>
+                  <Text className="text-gray-500 mt-2">
+                    Date: {new Date(alert.date).toLocaleDateString()}
+                  </Text>
                 </View>
               </TouchableOpacity>
             ))}
@@ -109,6 +126,6 @@ const DiseaseDashboard = () => {
       </SafeAreaView>
     </GestureHandlerRootView>
   );
-}
+};
 
 export default DiseaseDashboard;
