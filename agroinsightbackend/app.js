@@ -20,11 +20,17 @@ app.use((req, res, next) => {
 
 /*user management routes*/
 
+
 /*fertilizer and pesticide management routes*/
 app.use("/api/f&p", require("./routes/f&pRoutes"));
 
 /*deasease management routes*/
+app.use("/crop", require("./routes/CropPriceRoutes"));
+
 app.use("/api/disease", require("./routes/diseaseRoutes"));
+
+//crop rotator
+app.use("/api/crop-rotator", require("./routes/cropRotatorRoutes"));
 
 const server = () => {
   db();
