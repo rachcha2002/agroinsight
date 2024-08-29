@@ -11,11 +11,11 @@ import {
 import AgriMain from "./Main/AgriMain";
 import CropRotator from "./CropRotator/CropRotator";
 import DiseaseTracker from "./DiseaseTracker/DiseaseTracker";
-
+import AddNewAlert from "./DiseaseTracker/Pages/AddNewAlert";
 import FertilizeGuidance from "./FertilizerTracker/FertilizeGuidance";
-
 import NewRotatorModel from "./CropRotator/Pages/NewRotatorModel";
 import RotatorModel from "./CropRotator/Pages/RotatorModel";
+
 
 
 export default function AgriAdmin() {
@@ -26,16 +26,21 @@ export default function AgriAdmin() {
         <SideBar />
         <Routes>
           <Route path="/" element={<AgriMain />} />
-          {/** crop rotation routes */}
+         
+            {/** crop rotation routes */}
           <Route path="crops" element={<CropRotator />} />
           <Route path="crops/addmodel" element={<NewRotatorModel />} />
           <Route path="crops/rotator" element={<RotatorModel />} />
-          {/** crop rotation routes */}
+          
+          {/* Disease Routes */}
           <Route path="diseases" element={<DiseaseTracker />} />
+          <Route path="diseases/addalert" element={<AddNewAlert />} />
+            
           <Route
             path="fertilizers&pesticides/*"
             element={<FertilizeGuidance />}
           />
+
         </Routes>
       </>
     </div>

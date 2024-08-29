@@ -17,12 +17,12 @@ const complaintSchema = new Schema({
   },
   complaintDescription: {
     type: String,
-    required: true,
+   
   },
   dateOfComplaint: {
     type: Date,
     default: Date.now,
-    required: true,
+    
   },
   diseaseStatus: {
     type: String,
@@ -40,6 +40,10 @@ const complaintSchema = new Schema({
   },
   officerRemarks: {
     type: String,
+  },
+  imageURL: {
+    type: String,
+    
   },
 });
 
