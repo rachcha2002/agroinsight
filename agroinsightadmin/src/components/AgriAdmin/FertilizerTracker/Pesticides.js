@@ -10,8 +10,12 @@ import {
   Tabs,
   Toast,
 } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import PesticideList from "./PesticideList";
 
 export default function Pesticides() {
+  //to add employee button part
+  const navigate = useNavigate();
   return (
     <>
       <Row>
@@ -20,15 +24,14 @@ export default function Pesticides() {
             <Button
               variant="dark"
               size="md"
-              onClick={() => {
-                console.log("Create new Fertilizer");
-              }}
+              onClick={() => navigate("addpesticide")}
               style={{ margin: "10px" }}
             >
               Add New Pesticide
             </Button>
           </div>
         </Stack>
+        <PesticideList />
       </Row>
     </>
   );
