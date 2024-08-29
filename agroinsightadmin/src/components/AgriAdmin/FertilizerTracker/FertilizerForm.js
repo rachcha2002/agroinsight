@@ -157,7 +157,9 @@ const FertilizerForm = () => {
         <h3>
           <Button
             variant="dark"
-            onClick={() => navigate("/agriadmin/fertilizers&pesticides")}
+            onClick={() =>
+              navigate("/agriadmin/fertilizers&pesticides?tab=fertilizers")
+            }
             style={{ margin: "10px" }}
           >
             <BsArrowLeft /> Back

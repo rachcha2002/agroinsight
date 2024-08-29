@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { Form, Button, Container, Row, Col, ListGroup } from "react-bootstrap";
 import { BsArrowLeft } from "react-icons/bs";
+import PageTitle from "../AgriPageTitle";
 
 const CropCategoryUpdateForm = () => {
   const navigate = useNavigate();
@@ -91,6 +92,10 @@ const CropCategoryUpdateForm = () => {
 
   return (
     <main id="main" className="main">
+      <PageTitle
+        title="Fertilizers & Pesticides"
+        url={`/agriadmin/fertilizers&pesticides/updatecropcategory/${categoryId}`}
+      />
       <Container>
         <h3>
           <Button

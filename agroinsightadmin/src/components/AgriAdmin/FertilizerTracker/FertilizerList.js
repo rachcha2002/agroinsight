@@ -325,7 +325,9 @@ const FertilizerList = () => {
                       variant="outline-secondary"
                       className="mx-1"
                       onClick={() =>
-                        navigate(`/edit-fertilizer/${fertilizer._id}`)
+                        navigate(
+                          `/agriadmin/fertilizers&pesticides/updatefertilizer/${fertilizer._id}`
+                        )
                       }
                     >
                       <FaEdit />
