@@ -47,7 +47,7 @@ const AddNewAlert = () => {
       setDetails('');
 
       alert('New alert added successfully');
-      navigate(-1)
+      navigate("/agriadmin/diseases")
     } catch (error) {
       console.error('There was an error adding the alert!', error);
       alert('Failed to add the alert');
