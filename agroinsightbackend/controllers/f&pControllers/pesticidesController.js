@@ -101,6 +101,20 @@ exports.createPesticide = async (req, res) => {
         }
       }
 
+      // Parse brands if it's a string (comma-separated)
+      if (typeof req.body.brands === "string") {
+        req.body.brands = req.body.brands
+          .split(",")
+          .map((brand) => brand.trim());
+      }
+
+      // Parse region if it's a string (comma-separated)
+      if (typeof req.body.region === "string") {
+        req.body.region = req.body.region
+          .split(",")
+          .map((region) => region.trim());
+      }
+
       const newPesticide = new Pesticide({
         ...req.body,
         pesticideId,
