@@ -73,7 +73,7 @@ const UpdateFertilizerForm = () => {
 
     setSelectedCrops(updatedCrops);
 
-    //console.log(`Updated crop at index ${index}:`, updatedCrops[index]);
+    console.log(`Updated crop at index ${index}:`, updatedCrops[index]);
 
     // Fetch crops for selected category
     axios
