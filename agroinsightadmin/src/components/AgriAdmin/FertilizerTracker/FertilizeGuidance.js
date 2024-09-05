@@ -11,6 +11,7 @@ import PesticideForm from "./PesticideForm";
 import FertilizerForm from "./FertilizerForm";
 import CropCategoryUpdateForm from "./CropCategoryUpdateForm";
 import UpdateFertilizerForm from "./UpdateFertilizerForm";
+import UpdatePesticideForm from "./UpdatePesticidesForm";
 
 function FertilizeGuidance() {
   return (
@@ -28,6 +29,7 @@ function FertilizeGuidance() {
           path="/updatefertilizer/:id"
           element={<UpdateFertilizerForm />}
         />
+        <Route path="/updatepesticide/:id" element={<UpdatePesticideForm />} />
       </Routes>
     </>
   );

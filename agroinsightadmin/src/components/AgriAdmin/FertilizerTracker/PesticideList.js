@@ -13,8 +13,10 @@ import { FaChevronLeft, FaChevronRight, FaEdit, FaTrash } from "react-icons/fa";
 import logo from "../../../images/logoNoBack.png";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import { useNavigate } from "react-router-dom";
 
 const PesticideList = () => {
+  const navigate = useNavigate();
   const [pesticides, setPesticides] = useState([]);
   const [expandedPesticideId, setExpandedPesticideId] = useState(null);
   const [cropCategories, setCropCategories] = useState({});
@@ -318,7 +320,11 @@ const PesticideList = () => {
                     <Button
                       variant="outline-secondary"
                       className="mx-1"
-                      onClick={() => console.log("Edit clicked")}
+                      onClick={() =>
+                        navigate(
+                          `/agriadmin/fertilizers&pesticides/updatepesticide/${pesticide._id}`
+                        )
+                      }
                     >
                       <FaEdit />
                     </Button>
