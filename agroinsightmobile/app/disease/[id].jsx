@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Image, ActivityIndicator } from 'react-native';
-import axios from 'axios';
-import { useLocalSearchParams } from 'expo-router';
+import React, { useEffect, useState } from "react";
+import { View, Text, Image, ActivityIndicator } from "react-native";
+import axios from "axios";
+import { useLocalSearchParams } from "expo-router";
 
 const DiseaseDetails = () => {
   const { id } = useLocalSearchParams();
@@ -12,7 +12,11 @@ const DiseaseDetails = () => {
   useEffect(() => {
     const fetchAlertDetails = async () => {
       try {
-        const response = await axios.get(`http://192.168.1.163:5000/api/disease/disease-alerts/${id}`);
+
+        const response = await axios.get(
+          `http://192.168.1.167:5000/api/disease/disease-alerts/${id}`
+        );
+
         setAlert(response.data);
         setLoading(false);
       } catch (err) {
@@ -51,10 +55,13 @@ const DiseaseDetails = () => {
           />
           <Text className="text-xl font-bold mt-4">{alert.title}</Text>
           <Text className="text-gray-700 mt-2">{alert.description}</Text>
-          <Text className="text-gray-500 mt-2">Date: {new Date(alert.date).toLocaleDateString()}</Text>
+          <Text className="text-gray-500 mt-2">
+            Date: {new Date(alert.date).toLocaleDateString()}
+          </Text>
           {alert.details && (
             <Text className="text-gray-700 mt-4">
-              <Text className="font-bold">Details: </Text>{alert.details}
+              <Text className="font-bold">Details: </Text>
+              {alert.details}
             </Text>
           )}
         </>

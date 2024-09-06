@@ -3,6 +3,7 @@ const router = express.Router();
 const cropCategoryController = require("../controllers/f&pControllers/cropCategory");
 const FertilizerController = require("../controllers/f&pControllers/fertilizerController");
 const pesticideController = require("../controllers/f&pControllers/pesticidesController");
+const agrochemicalNewsController = require("../controllers/f&pControllers/agrochemicalNewsController");
 
 /*-------------------------- CropCategory Routes --------------------------*/
 
@@ -64,5 +65,28 @@ router.put("/update-pesticides/:id", pesticideController.updatePesticide);
 
 // Delete a pesticide by ID
 router.delete("/delete-pesticides/:id", pesticideController.deletePesticide);
+
+/*-------------------------- AgrochemicalNews Routes --------------------------*/
+
+// Route to create a new AgrochemicalNews
+router.post("/add-news", agrochemicalNewsController.createAgrochemicalNews);
+
+// Route to get all AgrochemicalNews
+router.get("/news", agrochemicalNewsController.getAllAgrochemicalNews);
+
+// Route to get a single AgrochemicalNews by ID
+router.get("/news/:id", agrochemicalNewsController.getAgrochemicalNewsById);
+
+// Route to update an AgrochemicalNews by ID
+router.put(
+  "/update-news/:id",
+  agrochemicalNewsController.updateAgrochemicalNews
+);
+
+// Route to delete an AgrochemicalNews by ID
+router.delete(
+  "/delete-news/:id",
+  agrochemicalNewsController.deleteAgrochemicalNews
+);
 
 module.exports = router;

@@ -3,25 +3,31 @@ import React from "react";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 
-const diseaseLayout = () => {
+const agrochemicalsLayout = () => {
   return (
     <>
       <Stack>
         <Stack.Screen
-          name="createcomplaint"
+          name="fertilizers"
           options={{
             headerShown: false,
           }}
         />
 
         <Stack.Screen
-          name="[id]"
+          name="pesticides"
           options={{
             headerShown: false,
           }}
         />
         <Stack.Screen
-          name="complaints"
+          name="agrochemicalnews"
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="myagrochemicals"
           options={{
             headerShown: false,
           }}
@@ -33,4 +39,4 @@ const diseaseLayout = () => {
   );
 };
 
-export default diseaseLayout;
+export default agrochemicalsLayout;
