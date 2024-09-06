@@ -11,7 +11,7 @@ import {
   import NewsLetter from "./Pages/NewsLetter";
 
 export default function CropRotatorTabs() {
-    const [key, setKey] = useState("models");
+    const [key, setKey] = useState("details");
 
     return(
         <main id="main" className="main">
@@ -20,8 +20,7 @@ export default function CropRotatorTabs() {
         url="/agriadmin/crops"
         />
          <section style={{ position: "relative" }}>
-        <Card>
-          <Card.Body style={{ backgroundColor: "white", padding: "25px" }}>
+       
             <Tabs
               id="controlled-tab-example"
               activeKey={key}
@@ -34,15 +33,11 @@ export default function CropRotatorTabs() {
               <Tab eventKey="models" title="Crop Rotation Models">
                 <RotatorModel/>
               </Tab>
-              <Tab eventKey="reports" title="Analysis & Reports">
-                <Reports/>
-              </Tab>
-              <Tab eventKey="news" title="Educational Resources">
+              <Tab eventKey="news" title="Educational Resources & Alerts">
                 <NewsLetter/>
               </Tab>
             </Tabs>
-          </Card.Body>
-        </Card>
+        
       </section>
         </main>
     );
