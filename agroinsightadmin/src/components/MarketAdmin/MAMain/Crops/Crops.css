@@ -1,0 +1,30 @@
+#main {
+    margin-top: 60px;
+    padding: 20px 30px;
+    transition: all 0.3s;
+  }
+  .btn-add{
+    background-color: rgb(47, 139, 53);
+    color: white;
+    padding: 10px; 
+    font-size: 15px;
+    border-radius: 8px;
+    border: 0.2px hidden;
+    
+  }
+  span{
+    margin-left: 8px;
+  }
+  .btn-add:hover{
+    background-color: rgb(34, 100, 38);
+    padding: 10px; 
+    font-size: 15px;
+    border-radius: 8px;
+    border: none;
+  
+  }
+  @media (max-width: 1199px) {
+    #main {
+      padding: 20px;
+    }
+  }
