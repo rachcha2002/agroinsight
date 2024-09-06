@@ -105,9 +105,7 @@ const NewRotatorModel = () => {
               </Tab>
               <Tab eventKey="models" title="Crop Rotation Models">
               </Tab>
-              <Tab eventKey="reports" title="Analysis & Reports">
-              </Tab>
-              <Tab eventKey="news" title="Educational Resources">
+              <Tab eventKey="news" title="Educational Resources & Alerts">
               </Tab>
             </Tabs>
             <h4 style={{fontWeight:"bold"}}>Create New Model</h4>

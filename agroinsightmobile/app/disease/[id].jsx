@@ -12,7 +12,7 @@ const DiseaseDetails = () => {
   useEffect(() => {
     const fetchAlertDetails = async () => {
       try {
-        const response = await axios.get(`http://192.168.1.2:5000/api/disease/disease-alerts/${id}`);
+        const response = await axios.get(`http://192.168.1.163:5000/api/disease/disease-alerts/${id}`);
         setAlert(response.data);
         setLoading(false);
       } catch (err) {
