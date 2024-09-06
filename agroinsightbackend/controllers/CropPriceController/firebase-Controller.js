@@ -54,17 +54,14 @@ const giveCurrentDateTime = () => {
     return dateTime;
 };
 
-const DeleteImage = async (req, res) => {
-  const imageUrl = req.body.Url;
-  console.log(imageUrl)
+const DeleteImage = async (imageUrl) => {
   try {
     const fileRef = ref(storage, imageUrl);
     await deleteObject(fileRef);
     console.log('File successfully deleted from Firebase Storage.');
-    return res.status(200).send('File deleted successfully');
   } catch (error) {
-    console.error('Error deleting file:', error);
-    return res.status(500).send('Error deleting file');
+    console.error('Error deleting file from Firebase:', error);
+    throw new Error('Error deleting file from Firebase Storage');
   }
 };
 

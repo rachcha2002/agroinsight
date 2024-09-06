@@ -1,5 +1,5 @@
 const express = require("express");
-const {addCrop, updatePrice, Croplist, deleteCrop} = require("../controllers/CropPriceController/Crops");
+const {addCrop, updatePrice, Croplist, deleteCrop, getCropByName} = require("../controllers/CropPriceController/Crops");
 const {ImageUpload,DeleteImage} = require("../controllers/CropPriceController/firebase-Controller");
 const { addHistory, history } = require("../controllers/CropPriceController/Pricehistory");
 
@@ -9,6 +9,7 @@ router.post("/addcrop", addCrop);
 router.put("/updateprice/:id", updatePrice);
 router.get("/croplist", Croplist);
 router.delete("/deletecrop/:id", deleteCrop);
+router.get("/getcrop/:name", getCropByName)
 
 router.post("/addhistory", addHistory);
 router.get("/gethistory",history );

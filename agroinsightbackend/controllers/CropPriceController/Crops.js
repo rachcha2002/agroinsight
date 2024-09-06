@@ -69,7 +69,8 @@ exports.deleteCrop = async (req, res) => {
       return res.status(404).send({ status: "Crop not found" });
     }
     const Url = Crop.image;
-    await DeleteImage({ body: { Url: Url } });
+    console.log(Url)
+    await DeleteImage(Url);
 
     await CropSchema.findByIdAndDelete(id);
     return res.status(200).send({ status: "Crop deleted successfully" });
@@ -81,3 +82,15 @@ exports.deleteCrop = async (req, res) => {
   }
 };
 
+exports.getCropByName = async (req, res) => {
+  try {
+    const cropName = req.params.name;
+    const crop = await CropSchema.findOne({ Crop_name: cropName });
+    if (!crop) {
+      return res.status(404).json({ message: 'Crop not found' });
+    }
+    res.status(200).json(crop);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
