@@ -21,13 +21,13 @@ const agrochemicalsLayout = () => {
           }}
         />
         <Stack.Screen
-          name="news"
+          name="agrochemicalnews"
           options={{
             headerShown: false,
           }}
         />
         <Stack.Screen
-          name="myf&ps"
+          name="myagrochemicals"
           options={{
             headerShown: false,
           }}

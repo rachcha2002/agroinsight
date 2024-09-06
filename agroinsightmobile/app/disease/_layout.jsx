@@ -20,7 +20,7 @@ const diseaseLayout = () => {
             headerShown: false,
           }}
         />
-         <Stack.Screen
+        <Stack.Screen
           name="complaints"
           options={{
             headerShown: false,

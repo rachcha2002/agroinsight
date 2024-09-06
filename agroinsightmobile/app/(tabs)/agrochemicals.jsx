@@ -86,11 +86,11 @@ const AgrochemicalsDashboard = () => {
             </View>
           </View>
 
-          <View className="mb-4 p-4 bg-white rounded-lg shadow">
+          <View className="mt-4 mb-2 p-4 bg-white rounded-lg shadow">
             <View className="relative">
               <Image
                 source={images.sprayingpesticides}
-                className="w-full h-60 rounded-lg" // Adjusted height
+                className="w-full h-80 rounded-lg" // Adjusted height
                 resizeMode="cover"
               />
               {/* Overlay to darken the image */}
@@ -101,53 +101,65 @@ const AgrochemicalsDashboard = () => {
                   bottom: 0,
                   left: 0,
                   width: "100%", // Makes the View the same width as the image
-                  backgroundColor: "rgba(0, 0, 0, 0.5)", // Black with 80% opacity
-                  padding: 8,
+                  backgroundColor: "rgba(0, 0, 0, 0.7)", // Black with 80% opacity
+                  padding: 5,
                   borderBottomLeftRadius: 8,
                   borderBottomRightRadius: 8,
                 }}
               >
-                <Text className="text-white text-4xl font-bold">
-                  Agrochemicals
-                </Text>
-                <Text className="text-white text-xl font-bold">
-                  About fertilizers and pesticides
+                <Text className="text-white text-xl">
+                  "Empowering farmers with safe agrochemical practices for a
+                  greener, more productive Sri Lanka"
                 </Text>
               </View>
             </View>
           </View>
 
           <View style={styles.container}>
+            <Text className="text-black text-4xl font-bold ml-2">
+              Agrochemicals
+            </Text>
+            <Text className="text-black text-xl font-bold ml-2">
+              About fertilizers and pesticides
+            </Text>
             <TouchableOpacity
               style={styles.card}
-              //onPress={() => navigation.navigate('WhatsNew')}
+              onPress={() => router.push("/agrochemicals/agrochemicalnews")}
             >
-              <Image source={images.sprayingpesticides} style={styles.icon} />
-              <Text style={styles.cardTitle}>What's New?</Text>
+              <Image source={images.fpnews} style={styles.cardImage} />
+              <View style={styles.textContainer}>
+                <Text style={styles.cardTitle}>What's New?</Text>
+              </View>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.card}
               //onPress={() => navigation.navigate('MyAgrochemicals')}
             >
-              <Image source={images.sprayingpesticides} style={styles.icon} />
-              <Text style={styles.cardTitle}>My Agrochemicals</Text>
+              <Image source={images.mychemicals} style={styles.cardImage} />
+              <View style={styles.textContainer}>
+                <Text style={styles.cardTitle}>My Agrochemicals</Text>
+              </View>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.card}
               //onPress={() => navigation.navigate('FertilizerRecommendations')}
             >
-              <Image source={images.sprayingpesticides} style={styles.icon} />
-              <Text style={styles.cardTitle}>Fertilizer Recommendations</Text>
+              <Image source={images.frecommend} style={styles.cardImage} />
+              <View style={styles.textContainer}>
+                <Text style={styles.cardTitle}>Fertilizer Recommendations</Text>
+              </View>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.card}
               //onPress={() => navigation.navigate('PesticideRecommendations')}
             >
-              <Image source={images.sprayingpesticides} style={styles.icon} />
-              <Text style={styles.cardTitle}>Pesticide Recommendations</Text>
+              <Image source={images.precommend} style={styles.cardImage} />
+              <View style={styles.textContainer}>
+                <Text style={styles.cardTitle}>Pesticide Recommendations</Text>
+              </View>
             </TouchableOpacity>
           </View>
         </View>
@@ -159,31 +171,44 @@ const AgrochemicalsDashboard = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-    backgroundColor: "#FFFFFF",
-    justifyContent: "space-around",
+    padding: 10,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
   },
   card: {
+    width: "48%",
     backgroundColor: "#f0f0f0",
     borderRadius: 10,
-    padding: 16,
-    alignItems: "center",
-    justifyContent: "center",
-    elevation: 3, // Adds shadow on Android
-    shadowColor: "#000", // Adds shadow on iOS
+    marginTop: 35,
+    overflow: "hidden", // Ensures that the child elements respect the parent’s border radius
+    elevation: 3,
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
-  icon: {
-    width: 50,
-    height: 50,
-    marginBottom: 10,
+  cardImage: {
+    width: "100%",
+    height: 120,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+  },
+  textContainer: {
+    position: "absolute", // Makes it overlay the image
+    bottom: 0, // Aligns the text at the bottom of the image
+    left: 0,
+    right: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent black background
+    padding: 8,
+    borderBottomLeftRadius: 10, // Rounded corners matching the card
+    borderBottomRightRadius: 10, // Rounded corners matching the card
   },
   cardTitle: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "bold",
-    color: "#333",
+    color: "#fff",
+    textAlign: "center",
   },
 });
 
