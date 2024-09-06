@@ -13,8 +13,10 @@ import { FaChevronLeft, FaChevronRight, FaEdit, FaTrash } from "react-icons/fa";
 import logo from "../../../images/logoNoBack.png";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import { useNavigate } from "react-router-dom";
 
 const PesticideList = () => {
+  const navigate = useNavigate();
   const [pesticides, setPesticides] = useState([]);
   const [expandedPesticideId, setExpandedPesticideId] = useState(null);
   const [cropCategories, setCropCategories] = useState({});
@@ -111,7 +113,7 @@ const PesticideList = () => {
   const generatePDF = async () => {
     const doc = new jsPDF();
 
-    // Add the image to the PDF
+    // Add the logo to the PDF
     const imgWidth = 50; // Set the desired width
     const imgHeight = 20; // Set the desired height
     const xOffset = 14; // Horizontal offset from the left edge
@@ -129,49 +131,45 @@ const PesticideList = () => {
     doc.setFontSize(16); // Title font size
     doc.text("Pesticide Recommendations", 14, 40);
 
-    // Add list of properties before the table
-    doc.setFontSize(10); // Smaller font size for properties
-    const propertyData = pesticides
-      .map((pesticide) => {
-        return [
-          `Name: ${pesticide.name}`,
-          `Regions: ${pesticide.region.join(", ")}`,
-          `Target Pests: ${pesticide.targetPests.join(", ")}`,
-          `Instructions: ${pesticide.instructions}`,
-          `Brands: ${pesticide.brands.join(", ")}`,
-        ];
-      })
-      .flat();
+    yOffset = 50; // Reset the vertical offset for the content
 
-    // Add each property as a line in the PDF
-    yOffset = 50; // Start below the title
-    propertyData.forEach((item) => {
-      doc.text(item, 14, yOffset);
-      yOffset += 5; // Move down for next line
-    });
+    // Loop through each pesticide and add their details
+    pesticides.forEach((pesticide) => {
+      // Add pesticide details
+      doc.setFontSize(12);
+      doc.text(`Name: ${pesticide.name}`, 14, yOffset);
+      yOffset += 6;
+      doc.text(`Regions: ${pesticide.region.join(", ")}`, 14, yOffset);
+      yOffset += 6;
+      doc.text(
+        `Target Pests: ${pesticide.targetPests.join(", ")}`,
+        14,
+        yOffset
+      );
+      yOffset += 6;
+      doc.text(`Instructions: ${pesticide.instructions}`, 14, yOffset);
+      yOffset += 6;
+      doc.text(`Brands: ${pesticide.brands.join(", ")}`, 14, yOffset);
+      yOffset += 6; // Add some space before crops
 
-    // Prepare table data
-    const tableData = [];
-
-    for (const pesticide of pesticides) {
-      // Extract crop details
-      const cropsInfo = pesticide.suitableCrops.map((crop) => {
+      // Prepare table data for crops
+      const tableData = pesticide.suitableCrops.map((crop) => {
         const category = cropCategories[crop.cropCategoryId] || "Unknown";
         const cropName = crops[crop.cropId] || "Unknown";
         return [category, cropName, crop.recommendedUsage];
       });
 
-      tableData.push(...cropsInfo);
-    }
+      // Add crops table for the current pesticide
+      doc.autoTable({
+        head: [["Category", "Crop", "Usage"]],
+        body: tableData,
+        startY: yOffset,
+        theme: "grid",
+        headStyles: { fillColor: [0, 128, 0] }, // Green header color
+      });
 
-    // Add table
-    doc.setFontSize(8); // Reset font size for table
-    doc.autoTable({
-      head: [["Category", "Crop", "Usage"]],
-      body: tableData,
-      startY: yOffset,
-      theme: "grid",
-      headStyles: { fillColor: [0, 128, 0] }, // Green header color
+      // Adjust yOffset for the next section
+      yOffset = doc.lastAutoTable.finalY + 20; // Leave space before the next pesticide
     });
 
     // Get the current date and time
@@ -318,7 +316,11 @@ const PesticideList = () => {
                     <Button
                       variant="outline-secondary"
                       className="mx-1"
-                      onClick={() => console.log("Edit clicked")}
+                      onClick={() =>
+                        navigate(
+                          `/agriadmin/fertilizers&pesticides/updatepesticide/${pesticide._id}`
+                        )
+                      }
                     >
                       <FaEdit />
                     </Button>

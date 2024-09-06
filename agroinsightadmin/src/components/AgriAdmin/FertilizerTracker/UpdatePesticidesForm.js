@@ -4,49 +4,49 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { BsArrowLeft } from "react-icons/bs";
 
-const UpdateFertilizerForm = () => {
+const UpdatePesticideForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [fertilizerName, setFertilizerName] = useState(""); // Fertilizer name state
+  const [pesticideName, setPesticideName] = useState("");
   const [cropCategories, setCropCategories] = useState([]);
   const [cropsByCategory, setCropsByCategory] = useState({});
   const [selectedCrops, setSelectedCrops] = useState([
     { cropCategoryId: "", cropId: "", recommendedUsage: "" },
   ]);
+  const [targetPests, setTargetPests] = useState([""]);
   const [regions, setRegions] = useState([""]);
-  const [brands, setBrands] = useState([""]); // Brands array state
+  const [brands, setBrands] = useState([""]);
   const [instructions, setInstructions] = useState("");
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
-  const [type, setType] = useState("");
 
   useEffect(() => {
-    // Fetch fertilizer details by ID
+    // Fetch pesticide details by ID
     axios
-      .get(`http://localhost:5000/api/f&p/fertilizers/${id}`)
+      .get(`http://localhost:5000/api/f&p/pesticides/${id}`)
       .then((response) => {
-        const fertilizer = response.data;
-        setFertilizerName(fertilizer.name);
+        const pesticide = response.data;
+        setPesticideName(pesticide.name);
         setSelectedCrops(
-          fertilizer.suitableCrops.length
-            ? fertilizer.suitableCrops
+          pesticide.suitableCrops.length
+            ? pesticide.suitableCrops
             : [{ cropCategoryId: "", cropId: "", recommendedUsage: "" }]
         );
-        setRegions(fertilizer.region.length ? fertilizer.region : [""]);
-        setBrands(fertilizer.brands.length ? fertilizer.brands : [""]);
-        setInstructions(fertilizer.instructions);
-        setImagePreview(fertilizer.imageUrl);
-        setType(fertilizer.type);
+        setTargetPests(
+          pesticide.targetPests.length ? pesticide.targetPests : [""]
+        );
+        setRegions(pesticide.region.length ? pesticide.region : [""]);
+        setBrands(pesticide.brands.length ? pesticide.brands : [""]);
+        setInstructions(pesticide.instructions);
+        setImagePreview(pesticide.imageUrl);
 
         // Fetch crops for each category of the selected crops
-        fertilizer.suitableCrops.forEach((crop) => {
+        pesticide.suitableCrops.forEach((crop) => {
           fetchCrops(crop.cropCategoryId);
         });
       })
-      .catch((error) =>
-        console.error("Error fetching fertilizer data:", error)
-      );
+      .catch((error) => console.error("Error fetching pesticide data:", error));
 
     // Fetch crop categories
     axios
@@ -92,6 +92,12 @@ const UpdateFertilizerForm = () => {
     setSelectedCrops(updatedCrops);
   };
 
+  const handleTargetPestChange = (index, value) => {
+    const updatedPests = [...targetPests];
+    updatedPests[index] = value;
+    setTargetPests(updatedPests);
+  };
+
   const handleRegionChange = (index, value) => {
     const updatedRegions = [...regions];
     updatedRegions[index] = value;
@@ -121,11 +127,13 @@ const UpdateFertilizerForm = () => {
     }
 
     const formData = new FormData();
-    formData.append("name", fertilizerName);
-    formData.append("type", type);
+    formData.append("name", pesticideName);
     formData.append("instructions", instructions);
     formData.append("fertilizerImage", image);
     formData.append("suitableCrops", JSON.stringify(selectedCrops));
+    targetPests.forEach((pest, index) => {
+      formData.append(`targetPests[${index}]`, pest);
+    });
     regions.forEach((region, index) => {
       formData.append(`region[${index}]`, region);
     });
@@ -133,14 +141,14 @@ const UpdateFertilizerForm = () => {
 
     try {
       await axios.put(
-        `http://localhost:5000/api/f&p/update-fertilizers/${id}`,
+        `http://localhost:5000/api/f&p/update-pesticides/${id}`,
         formData
       );
-      alert("Fertilizer updated successfully");
-      navigate("/agriadmin/fertilizers&pesticides?tab=fertilizers");
+      alert("Pesticide updated successfully");
+      navigate("/agriadmin/fertilizers&pesticides?tab=pesticides");
     } catch (error) {
-      console.error("Error updating fertilizer:", error);
-      alert("Failed to update fertilizer");
+      console.error("Error updating pesticide:", error);
+      alert("Failed to update pesticide");
     }
   };
 
@@ -156,13 +164,17 @@ const UpdateFertilizerForm = () => {
     setBrands(brands.filter((_, i) => i !== index));
   };
 
+  const handleRemovePest = (index) => {
+    setTargetPests(targetPests.filter((_, i) => i !== index));
+  };
+
   return (
     <main id="main" className="main">
       <Container>
         <Button variant="dark" onClick={() => navigate(-1)}>
           <BsArrowLeft /> Back
         </Button>
-        <h2 className="text-center my-4">Update Fertilizer</h2>
+        <h2 className="text-center my-4">Update Pesticide</h2>
         <Form onSubmit={handleSubmit}>
           <Row>
             <Col md={6}>
@@ -170,26 +182,13 @@ const UpdateFertilizerForm = () => {
                 <Form.Label>Name</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Fertilizer Name"
-                  value={fertilizerName}
-                  onChange={(e) => setFertilizerName(e.target.value)}
+                  placeholder="Pesticide Name"
+                  value={pesticideName}
+                  onChange={(e) => setPesticideName(e.target.value)}
                   required
                 />
               </Form.Group>
-              <Form.Group controlId="formFertilizerType">
-                <Form.Label>Type</Form.Label>
-                <Form.Control
-                  as="select"
-                  value={type}
-                  onChange={(e) => setType(e.target.value)}
-                  required
-                >
-                  <option value="">Select Type</option>
-                  <option value="Chemical">Chemical</option>
-                  <option value="Organic">Organic</option>
-                </Form.Control>
-              </Form.Group>
-              <Form.Group controlId="formFertilizerInstructions">
+              <Form.Group controlId="formPesticideInstructions">
                 <Form.Label>Instructions</Form.Label>
                 <Form.Control
                   as="textarea"
@@ -201,13 +200,13 @@ const UpdateFertilizerForm = () => {
               </Form.Group>
             </Col>
             <Col md={6}>
-              <Form.Group controlId="formFertilizerImage">
+              <Form.Group controlId="formPesticideImage">
                 <Form.Label>Image</Form.Label>
                 <Form.Control type="file" onChange={handleImageChange} />
                 {imagePreview && (
                   <img
                     src={imagePreview}
-                    alt="Fertilizer"
+                    alt="Pesticide"
                     style={{ width: "60%", marginTop: "1rem" }}
                   />
                 )}
@@ -215,8 +214,46 @@ const UpdateFertilizerForm = () => {
             </Col>
           </Row>
 
+          {/* Target Pests */}
+          <Form.Group controlId="formPesticideTargetPests">
+            <Form.Label>Target Pests</Form.Label>
+            {targetPests.map((pest, index) => (
+              <Row key={index} className="mb-2">
+                <Col>
+                  <Form.Control
+                    type="text"
+                    placeholder="Target Pest"
+                    value={pest}
+                    onChange={(e) =>
+                      handleTargetPestChange(index, e.target.value)
+                    }
+                    required
+                  />
+                </Col>
+                <Col xs="auto">
+                  {targetPests.length > 1 && (
+                    <Button
+                      variant="danger"
+                      onClick={() => handleRemovePest(index)}
+                      style={{ marginTop: "0.5rem" }}
+                    >
+                      Remove
+                    </Button>
+                  )}
+                </Col>
+              </Row>
+            ))}
+            <Button
+              variant="success"
+              onClick={() => setTargetPests([...targetPests, ""])}
+              style={{ marginTop: "0.5rem" }}
+            >
+              Add Target Pest
+            </Button>
+          </Form.Group>
+
           {/* Regions */}
-          <Form.Group controlId="formFertilizerRegions">
+          <Form.Group controlId="formPesticideRegions">
             <Form.Label>Regions</Form.Label>
             {regions.map((region, index) => (
               <Row key={index} className="mb-2">
@@ -251,7 +288,7 @@ const UpdateFertilizerForm = () => {
           </Form.Group>
 
           {/* Brands */}
-          <Form.Group controlId="formFertilizerBrands">
+          <Form.Group controlId="formPesticideBrands">
             <Form.Label>Brands</Form.Label>
             {brands.map((brand, index) => (
               <Row key={index} className="mb-2">
@@ -286,7 +323,7 @@ const UpdateFertilizerForm = () => {
           </Form.Group>
 
           {/* Crops */}
-          <Form.Group controlId="formFertilizerCrops">
+          <Form.Group controlId="formPesticideCrops">
             <Form.Label>Crops</Form.Label>
             {selectedCrops.map((crop, index) => (
               <Row key={index} className="mb-3">
@@ -369,7 +406,7 @@ const UpdateFertilizerForm = () => {
           </Form.Group>
 
           <Button variant="primary" type="submit" className="mt-3">
-            Update Fertilizer
+            Update Pesticide
           </Button>
         </Form>
       </Container>
@@ -377,4 +414,4 @@ const UpdateFertilizerForm = () => {
   );
 };
 
-export default UpdateFertilizerForm;
+export default UpdatePesticideForm;
