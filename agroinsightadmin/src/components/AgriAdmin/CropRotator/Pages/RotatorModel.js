@@ -2,13 +2,16 @@ import {React, useEffect, useState} from "react";
 import axios from "axios";
 import { Card, Row, Col, Button, Modal, Form } from "react-bootstrap";
 import { useNavigate } from 'react-router-dom';
-
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+import logo from "../../../../images/logoNoBack.png";
 
 export default function RotatorModel() {
     const [models, setModels] = useState([]);
     const [showUpdateModal, setShowUpdateModal] = useState(false);
     const [currentModel, setCurrentModel] = useState(null);
     const navigate = useNavigate();
+
 
     useEffect(() => {
         // Fetch data from the backend
@@ -74,11 +77,105 @@ export default function RotatorModel() {
       setCurrentModel({ ...currentModel, [name]: value });
     };
 
+    const generatePDF = async () => {
+      const doc = new jsPDF();
+  
+      // Add the image to the PDF
+      const imgWidth = 50; // Set the desired width
+      const imgHeight = 20; // Set the desired height
+      const xOffset = 14; // Horizontal offset from the left edge
+      let yOffset = 10; // Vertical offset from the top edge
+      doc.addImage(logo, "PNG", xOffset, yOffset, imgWidth, imgHeight);
+  
+      // Add the name, email, and phone number
+      doc.setFontSize(10);
+      doc.text("AgroInsight(By OctagonIT)", 150, 12); // Adjust the position as needed
+      doc.text("Email: teamoctagonit@gmail.com", 150, 18);
+      doc.text("Phone: +94711521161", 150, 24);
+      doc.text("By Agriculture Admin", 150, 30);
+  
+      // Title for the PDF
+      doc.setFontSize(16); // Title font size
+      doc.text("Crop Rotator Recommendations", 14, 40);
+
+       // Set the initial vertical offset for model details
+       yOffset = 50; // Start below the title
+  
+      // Add list of properties before the table
+      models.forEach((model) => {
+      // Add the model's details as text
+      doc.setFontSize(10); // Smaller font size for properties
+      const propertyData = [
+        `ModelID: ${model.modelId}`,
+        `Zone: ${model.zone}`,
+        `Year: ${model.year}`,
+        `Crop: ${model.crop}`,
+      ];
+  
+      propertyData.forEach((item) => {
+        doc.text(item, 14, yOffset);
+        yOffset += 5; // Move down for each line of model details
+      });
+  
+      // Prepare table data for this specific model
+      const tableData = [
+        [
+          model.climateDescription || '',
+          model.soilDescription || '',
+          model.climateSuitability || '',
+          model.soilSuitability || '',
+        ],
+      ];
+  
+      // Add the table under each model's details
+      doc.setFontSize(8); // Reset font size for table
+      doc.autoTable({
+        head: [["Climate Description", "Soil Description", "Climate Suitability", "Soil Suitability"]],
+        body: tableData,
+        startY: yOffset,
+        theme: "grid",
+        headStyles: { fillColor: [0, 128, 0] }, // Green header color
+        columnStyles: {
+          0: { cellWidth: 45 }, //setting same width for all columns
+          1: { cellWidth: 45 },
+          2: { cellWidth: 45 },
+          3: { cellWidth: 45 },
+        },
+      });
+  
+      // Update yOffset to move below the table for the next model
+      yOffset = doc.lastAutoTable.finalY + 10; // Add some space below the table
+    });
+  
+    
+      // Get the current date and time
+      const currentDate = new Date();
+      const dateString = currentDate.toLocaleDateString();
+      const timeString = currentDate.toLocaleTimeString();
+  
+      // Add the date and time at the bottom of the PDF
+      doc.setFontSize(10);
+
+      doc.text(
+        `Report generated on: ${dateString} at ${timeString}`,
+        14,
+        doc.internal.pageSize.height - 10
+      );
+  
+      // Save the PDF
+      doc.save("rotatormodel_report.pdf");
+      };
+  
     return (
       <div>
+        <Card>
+          <Card.Body style={{padding:"20px"}}>
         <h4>Crop Rotation Models</h4>
         <Button variant="primary" onClick={handleAddModel} style={{ paddingBottom: "10px" }}>
           Add New Model
+        </Button>
+        <Button variant="success" onClick={generatePDF} style={{ marginLeft: "10px" }}>
+          Generate PDF
         </Button>
         {modelChunks.length > 0 ? (
           modelChunks.map((chunck, rowIndex) => (
@@ -121,8 +218,7 @@ export default function RotatorModel() {
           ))
         ) : (
           <p>Loading...</p>
-        )}
-    
+        )}    
  {/* Update Model Modal */}
  <Modal show={showUpdateModal} onHide={() => setShowUpdateModal(false)}>
  <Modal.Header closeButton>
@@ -224,6 +320,8 @@ export default function RotatorModel() {
    )}
    </Modal.Body>
    </Modal>
+   </Card.Body>
+        </Card>
    </div>
     );
-};
+  };
