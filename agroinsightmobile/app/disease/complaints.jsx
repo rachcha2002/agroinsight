@@ -22,6 +22,7 @@ const Complaints = () => {
 
   const fetchComplaints = async () => {
     try {
+
       const response = await axios.get(
         "http://192.168.1.167:5000/api/disease/complaints"
       );
@@ -37,6 +38,7 @@ const Complaints = () => {
       setError(err.message);
       setLoading(false);
     }
+
   };
 
   useEffect(() => {
@@ -63,9 +65,11 @@ const Complaints = () => {
           style: "destructive",
           onPress: async () => {
             try {
+
               const response = await axios.delete(
                 `http://192.168.1.167:5000/api/disease/complaints/${id}`
               );
+
               if (response.status === 200) {
                 setComplaints(
                   complaints.filter((complaint) => complaint._id !== id)

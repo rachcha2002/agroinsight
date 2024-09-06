@@ -12,7 +12,12 @@ import eyeHide from "../assets/icons/eye-hide.png";
 import eye from "../assets/icons/eye.png";
 import play from "../assets/icons/play.png";
 import diesease from "../assets/icons/disease.png";
+
 import fertilizer from "../assets/icons/fertilizer.png";
+
+import plusgreen from "../assets/icons/plus-green.png"
+
+
 
 export default {
   play,
@@ -29,5 +34,9 @@ export default {
   eyeHide,
   eye,
   diesease,
+
   fertilizer,
+
+  plusgreen
+
 };
