@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { Form, Button, Container, Image } from 'react-bootstrap';
+import { Form, Button, Container, Image, Card, Col, Row} from 'react-bootstrap';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const AddNewAlert = () => {
+import PageTitle from '../../AgriPageTitle';
+
+const NewRotatorAlert = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [zone, setZone] = useState('');
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null); // State for image preview
   const [details, setDetails] = useState('');
@@ -29,11 +32,12 @@ const AddNewAlert = () => {
     const formData = new FormData();
     formData.append('title', title);
     formData.append('description', description);
-    formData.append('diseaseImage', image); // Append the image file to the form data
+    formData.append('zone', zone);
+    formData.append('rotatorImage', image); // Append the image file to the form data
     formData.append('details', details);
 
     try {
-      await axios.post('http://localhost:5000/api/disease/disease-alerts', formData, {
+      await axios.post('http://localhost:5000/api/crop-rotator/rotator-alerts', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -42,12 +46,13 @@ const AddNewAlert = () => {
       // Reset the form after successful submission
       setTitle('');
       setDescription('');
+      setZone('');
       setImage(null);
       setImagePreview(null);
       setDetails('');
 
       alert('New alert added successfully');
-      navigate("/agriadmin/diseases")
+      navigate(-1)
     } catch (error) {
       console.error('There was an error adding the alert!', error);
       alert('Failed to add the alert');
@@ -56,9 +61,16 @@ const AddNewAlert = () => {
 
   return (
     <main id="main" className="main">
+         <PageTitle 
+        title="Add New Crop Rotation Alert" 
+        url="/agriadmin/crops/rotator-alert"
+        />
       <Container>
-        <h1>Add New Disease Alert</h1>
+      <Card>
+      <Card.Body style={{ backgroundColor: "white", padding: "25px" }}>
         <Form onSubmit={handleSubmit}>
+        <Row>
+            <Col>
           <Form.Group controlId="formTitle" className="mb-3">
             <Form.Label>Title</Form.Label>
             <Form.Control
@@ -69,7 +81,20 @@ const AddNewAlert = () => {
               required
             />
           </Form.Group>
-
+          </Col>
+          <Col>
+          <Form.Group controlId="formTitle2" className="mb-3">
+            <Form.Label>Zone</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter zone"
+              value={zone}
+              onChange={(e) => setZone(e.target.value)}
+            />
+          </Form.Group>
+          </Col>
+          </Row>
+          
           <Form.Group controlId="formDescription" className="mb-3">
             <Form.Label>Description</Form.Label>
             <Form.Control
@@ -112,9 +137,11 @@ const AddNewAlert = () => {
             Add Alert
           </Button>
         </Form>
+        </Card.Body>
+        </Card>
       </Container>
     </main>
   );
 };
 
-export default AddNewAlert;
+export default NewRotatorAlert;

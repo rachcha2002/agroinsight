@@ -15,6 +15,7 @@ import AddNewAlert from "./DiseaseTracker/Pages/AddNewAlert";
 import FertilizeGuidance from "./FertilizerTracker/FertilizeGuidance";
 import NewRotatorModel from "./CropRotator/Pages/NewRotatorModel";
 import RotatorModel from "./CropRotator/Pages/RotatorModel";
+import NewRotatorAlert from "./CropRotator/Pages/NewRotatorAlert";
 
 
 
@@ -31,6 +32,7 @@ export default function AgriAdmin() {
           <Route path="crops" element={<CropRotator />} />
           <Route path="crops/addmodel" element={<NewRotatorModel />} />
           <Route path="crops/rotator" element={<RotatorModel />} />
+          <Route path="crops/rotator-alert" element={<NewRotatorAlert />} />
           
           {/* Disease Routes */}
           <Route path="diseases" element={<DiseaseTracker />} />

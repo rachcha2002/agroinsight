@@ -1,9 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Image, FlatList, ActivityIndicator, RefreshControl, Alert, TouchableOpacity } from 'react-native';
-import axios from 'axios';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import DiseaseHeader from '../../components/disease-Management/DeseaseHeader';
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  Image,
+  FlatList,
+  ActivityIndicator,
+  RefreshControl,
+  Alert,
+  TouchableOpacity,
+} from "react-native";
+import axios from "axios";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { SafeAreaView } from "react-native-safe-area-context";
+import DiseaseHeader from "../../components/disease-Management/DeseaseHeader";
 
 const Complaints = () => {
   const [complaints, setComplaints] = useState([]);
@@ -13,17 +22,23 @@ const Complaints = () => {
 
   const fetchComplaints = async () => {
     try {
-        const response = await axios.get('http://192.168.1.2:5000/api/disease/complaints');
-        
-        // Sort the complaints by dateOfComplaint in descending order
-        const sortedComplaints = response.data.sort((a, b) => new Date(b.dateOfComplaint) - new Date(a.dateOfComplaint));
-    
-        setComplaints(sortedComplaints);
-        setLoading(false);
-      } catch (err) {
-        setError(err.message);
-        setLoading(false);
-      }
+
+      const response = await axios.get(
+        "http://192.168.1.167:5000/api/disease/complaints"
+      );
+
+      // Sort the complaints by dateOfComplaint in descending order
+      const sortedComplaints = response.data.sort(
+        (a, b) => new Date(b.dateOfComplaint) - new Date(a.dateOfComplaint)
+      );
+
+      setComplaints(sortedComplaints);
+      setLoading(false);
+    } catch (err) {
+      setError(err.message);
+      setLoading(false);
+    }
+
   };
 
   useEffect(() => {
@@ -43,16 +58,22 @@ const Complaints = () => {
       [
         {
           text: "Cancel",
-          style: "cancel"
+          style: "cancel",
         },
         {
           text: "Delete",
           style: "destructive",
           onPress: async () => {
             try {
-              const response = await axios.delete(`http://192.168.1.2:5000/api/disease/complaints/${id}`);
+
+              const response = await axios.delete(
+                `http://192.168.1.167:5000/api/disease/complaints/${id}`
+              );
+
               if (response.status === 200) {
-                setComplaints(complaints.filter(complaint => complaint._id !== id));
+                setComplaints(
+                  complaints.filter((complaint) => complaint._id !== id)
+                );
                 Alert.alert("Success", "Complaint deleted successfully.");
               } else {
                 Alert.alert("Error", "Failed to delete the complaint.");
@@ -61,8 +82,8 @@ const Complaints = () => {
               console.error("Delete error:", error);
               Alert.alert("Error", "Failed to delete the complaint.");
             }
-          }
-        }
+          },
+        },
       ]
     );
   };
@@ -85,9 +106,11 @@ const Complaints = () => {
 
   const renderItem = ({ item }) => (
     <View className="mb-6 p-2 bg-white rounded-lg shadow border border-green-600">
-        <View className="mt-0.1">
-  <Text className="text-lg font-bold text-center mb-2">{item.cropAffected}</Text>
-</View>
+      <View className="mt-0.1">
+        <Text className="text-lg font-bold text-center mb-2">
+          {item.cropAffected}
+        </Text>
+      </View>
       {item.imageURL && (
         <Image
           source={{ uri: item.imageURL }}
@@ -95,60 +118,70 @@ const Complaints = () => {
           resizeMode="cover"
         />
       )}
-      
+
       <View className="mt-2">
         <Text className="text-gray-700">
-          <Text className="font-bold">Farmer ID: </Text>{item.farmerID}
+          <Text className="font-bold">Farmer ID: </Text>
+          {item.farmerID}
         </Text>
       </View>
       <View className="mt-2">
         <Text className="text-gray-700">
-          <Text className="font-bold">Area: </Text>{item.area}
+          <Text className="font-bold">Area: </Text>
+          {item.area}
         </Text>
       </View>
       <View className="mt-2">
         <Text className="text-gray-700">
-          <Text className="font-bold">Complaint: </Text>{item.complaintDescription}
+          <Text className="font-bold">Complaint: </Text>
+          {item.complaintDescription}
         </Text>
       </View>
       <View className="mt-2">
         <Text className="text-gray-700">
-          <Text className="font-bold">Disease Status: </Text>{item.diseaseStatus}
+          <Text className="font-bold">Disease Status: </Text>
+          {item.diseaseStatus}
         </Text>
       </View>
       <View className="mt-2">
         <Text className="text-gray-700">
-          <Text className="font-bold">Control Method: </Text>{item.controlMethod}
+          <Text className="font-bold">Control Method: </Text>
+          {item.controlMethod}
         </Text>
       </View>
       <View className="mt-2">
         <Text className="text-gray-700">
-          <Text className="font-bold">Solution: </Text>{item.solution}
+          <Text className="font-bold">Solution: </Text>
+          {item.solution}
         </Text>
       </View>
       <View className="mt-2">
         <Text className="text-gray-700">
-          <Text className="font-bold">Officer Remarks: </Text>{item.officerRemarks}
+          <Text className="font-bold">Officer Remarks: </Text>
+          {item.officerRemarks}
         </Text>
       </View>
       <View className="mt-2">
         <Text className="text-gray-700">
-          <Text className="font-bold">Date: </Text>{new Date(item.dateOfComplaint).toLocaleDateString()}
+          <Text className="font-bold">Date: </Text>
+          {new Date(item.dateOfComplaint).toLocaleDateString()}
         </Text>
       </View>
 
       {/* Delete Button */}
-      <TouchableOpacity 
-        className="mt-4 bg-red-500 p-2 rounded-lg" 
+      <TouchableOpacity
+        className="mt-4 bg-red-500 p-2 rounded-lg"
         onPress={() => handleDelete(item._id)}
       >
-        <Text className="text-white text-center font-bold">Delete Complaint</Text>
+        <Text className="text-white text-center font-bold">
+          Delete Complaint
+        </Text>
       </TouchableOpacity>
     </View>
   );
 
   return (
-    <GestureHandlerRootView style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
+    <GestureHandlerRootView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
       <SafeAreaView className="h-full">
         <DiseaseHeader />
         <FlatList
