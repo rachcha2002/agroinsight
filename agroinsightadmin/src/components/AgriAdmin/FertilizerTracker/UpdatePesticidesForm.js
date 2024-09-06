@@ -129,7 +129,7 @@ const UpdatePesticideForm = () => {
     const formData = new FormData();
     formData.append("name", pesticideName);
     formData.append("instructions", instructions);
-    formData.append("pesticideImage", image);
+    formData.append("fertilizerImage", image);
     formData.append("suitableCrops", JSON.stringify(selectedCrops));
     targetPests.forEach((pest, index) => {
       formData.append(`targetPests[${index}]`, pest);
@@ -162,6 +162,10 @@ const UpdatePesticideForm = () => {
 
   const handleRemoveBrand = (index) => {
     setBrands(brands.filter((_, i) => i !== index));
+  };
+
+  const handleRemovePest = (index) => {
+    setTargetPests(targetPests.filter((_, i) => i !== index));
   };
 
   return (
@@ -209,6 +213,44 @@ const UpdatePesticideForm = () => {
               </Form.Group>
             </Col>
           </Row>
+
+          {/* Target Pests */}
+          <Form.Group controlId="formPesticideTargetPests">
+            <Form.Label>Target Pests</Form.Label>
+            {targetPests.map((pest, index) => (
+              <Row key={index} className="mb-2">
+                <Col>
+                  <Form.Control
+                    type="text"
+                    placeholder="Target Pest"
+                    value={pest}
+                    onChange={(e) =>
+                      handleTargetPestChange(index, e.target.value)
+                    }
+                    required
+                  />
+                </Col>
+                <Col xs="auto">
+                  {targetPests.length > 1 && (
+                    <Button
+                      variant="danger"
+                      onClick={() => handleRemovePest(index)}
+                      style={{ marginTop: "0.5rem" }}
+                    >
+                      Remove
+                    </Button>
+                  )}
+                </Col>
+              </Row>
+            ))}
+            <Button
+              variant="success"
+              onClick={() => setTargetPests([...targetPests, ""])}
+              style={{ marginTop: "0.5rem" }}
+            >
+              Add Target Pest
+            </Button>
+          </Form.Group>
 
           {/* Regions */}
           <Form.Group controlId="formPesticideRegions">
