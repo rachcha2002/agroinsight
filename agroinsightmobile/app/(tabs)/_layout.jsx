@@ -96,7 +96,7 @@ const TabsLayout = () => {
             <TabIcon
               icon={icons.fertilizer}
               color={color}
-              name="Agrochemicals"
+              name="Agrochemical"
               focused={focused}
             />
           ),

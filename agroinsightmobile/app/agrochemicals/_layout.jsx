@@ -8,14 +8,14 @@ const agrochemicalsLayout = () => {
     <>
       <Stack>
         <Stack.Screen
-          name="fertilizers"
+          name="fertilizer"
           options={{
             headerShown: false,
           }}
         />
 
         <Stack.Screen
-          name="pesticides"
+          name="pesticide"
           options={{
             headerShown: false,
           }}
