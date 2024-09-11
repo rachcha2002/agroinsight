@@ -1,14 +1,14 @@
+
 import React, { useState, useEffect } from 'react';
-import { Button, View, Text, Linking,Image, TouchableOpacity,ActivityIndicator } from 'react-native';
+import { View, Text, Image, TouchableOpacity, ActivityIndicator,Linking } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
 import { supabase } from '../lib/supabase'; // Your Supabase client setup
 import { router } from 'expo-router'; // Import the router from expo-router
 import { useGlobalContext } from '../context/GlobalProvider'; // Import your Global Context
-import {images,icons} from '../constants'
+import { images } from '../constants';
 
 export default function App() {
   const { setUser: setGlobalUser, setIsLoggedIn } = useGlobalContext(); // Access the context's setUser function
-  const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true); // To manage loading state while fetching the session
 
   // Function to load and validate session from AsyncStorage
@@ -17,7 +17,7 @@ export default function App() {
       const session = await AsyncStorage.getItem('userSession');
       if (session) {
         const parsedSession = JSON.parse(session);
-        
+
         // Validate session by setting it with supabase.auth.setSession
         const { data, error } = await supabase.auth.setSession({
           access_token: parsedSession.access_token,
@@ -25,8 +25,8 @@ export default function App() {
         });
 
         if (error) {
-          console.error('Error setting session:', error.message);
-          setError('Failed to restore session.');
+          console.error('Session validation failed:', error.message);
+          // If token validation fails, simply stop loading and show sign-in button
           setIsLoading(false);
         } else if (data?.session?.user) {
           // Session is valid, update global state
@@ -45,7 +45,6 @@ export default function App() {
       }
     } catch (err) {
       console.error('Failed to load session from storage:', err);
-      setError('Failed to load session.');
       setIsLoading(false);
     }
   };
@@ -59,7 +58,7 @@ export default function App() {
   useEffect(() => {
     const handleDeepLink = async (event) => {
       const { url } = event;
-      console.log('Handling deep link: ', url);
+      
 
       const params = new URLSearchParams(url.split('#')[1]); // Extracting the fragment part of the URL (after #)
       const accessToken = params.get('access_token');
@@ -74,11 +73,9 @@ export default function App() {
 
         if (error) {
           console.error('Error setting session:', error.message);
-          setError('Failed to authenticate.');
+          setIsLoading(false); // Stop loading on failure
         } else {
           const user = data.session.user;
-         // console.log('Session data:', user);
-
           // Save session to AsyncStorage
           await AsyncStorage.setItem(
             'userSession',
@@ -101,7 +98,7 @@ export default function App() {
           router.push('/home'); // Redirect to the home page
         }
       } else {
-        setError('No access token found in the URL');
+        setIsLoading(false); // No access token found, allow login
       }
     };
 
@@ -116,16 +113,18 @@ export default function App() {
 
   // Handle Google OAuth login
   const signInWithGoogle = async () => {
+    setIsLoading(true); // Start loading
+
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: 'exp://192.168.1.2:8081', // Your development redirect URI
+        redirectTo: process.env.EXPO_PUBLIC_MOBILE_URL, // Your development redirect URI
       },
     });
 
     if (error) {
       console.error('Error signing in with Google:', error.message);
-      setError('Failed to start the OAuth process.');
+      setIsLoading(false); // Stop loading on failure
     } else if (data) {
       // Open the Google OAuth URL with Linking
       Linking.openURL(data.url);
@@ -140,20 +139,17 @@ export default function App() {
           source={images.agroinsightlogo} // Replace with your actual logo path
           className="w-80 h-28 object-contain" // Adjusted the size for a larger logo
         />
-       <Text className="text-center mt-20 text-lg italic text-gray-800 font-bold">
-  Unlock Better Agriculture with
-</Text>
-<Text className="text-center text-xl italic text-green-900 font-bold">
-  AgroInsight
-</Text>
-
+        <Text className="text-center mt-20 text-lg italic text-gray-800 font-bold">
+          Unlock Better Agriculture with
+        </Text>
+        <Text className="text-center text-xl italic text-green-900 font-bold">
+          AgroInsight
+        </Text>
       </View>
   
       {/* Google Sign-in Button */}
       {isLoading ? (
-       <ActivityIndicator size="large" color="#4CAF50" /> 
-      ) : error ? (
-        <Text className="text-red-500">{error}</Text>
+        <ActivityIndicator size="large" color="#4CAF50" /> // Show loading indicator
       ) : (
         <TouchableOpacity 
           onPress={signInWithGoogle} 
@@ -170,5 +166,4 @@ export default function App() {
       )}
     </View>
   );
-  
 }
