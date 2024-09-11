@@ -30,7 +30,7 @@ const AgrochemicalNews = () => {
   const fetchNews = async () => {
     try {
       const response = await axios.get(
-        "http://192.168.1.167:5000/api/f&p/news"
+        `${process.env.EXPO_PUBLIC_BACKEND_URL}/api/f&p/news`
       );
       setNews(response.data);
       setLoading(false);
@@ -47,7 +47,7 @@ const AgrochemicalNews = () => {
   const handleShowDetails = async (id) => {
     try {
       const response = await axios.get(
-        `http://192.168.1.167:5000/api/f&p/news/${id}`
+        `${process.env.EXPO_PUBLIC_BACKEND_URL}/api/f&p/news/${id}`
       );
       setSelectedNews(response.data);
       setShowModal(true);
