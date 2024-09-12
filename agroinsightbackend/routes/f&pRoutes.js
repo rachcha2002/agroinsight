@@ -4,6 +4,7 @@ const cropCategoryController = require("../controllers/f&pControllers/cropCatego
 const FertilizerController = require("../controllers/f&pControllers/fertilizerController");
 const pesticideController = require("../controllers/f&pControllers/pesticidesController");
 const agrochemicalNewsController = require("../controllers/f&pControllers/agrochemicalNewsController");
+const farmerFertilizerController = require("../controllers/f&pControllers/farmerFertilizerController");
 
 /*-------------------------- CropCategory Routes --------------------------*/
 
@@ -88,5 +89,18 @@ router.delete(
   "/delete-news/:id",
   agrochemicalNewsController.deleteAgrochemicalNews
 );
+
+/*-------------------------- FarmerFertilizer Routes --------------------------*/
+// Define routes
+router.post("/addff", farmerFertilizerController.createFarmerFertilizer);
+router.put("/updateff/:id", farmerFertilizerController.updateFarmerFertilizer);
+router.put("/update-commentff/:id", farmerFertilizerController.updateComment);
+router.delete(
+  "/deleteff/:id",
+  farmerFertilizerController.deleteFarmerFertilizer
+);
+router.get("/getbyemailff/:email", farmerFertilizerController.getAllByEmail);
+router.get("/getallff", farmerFertilizerController.getAllRecords);
+router.get("/getbyidff/:id", farmerFertilizerController.getRecordById);
 
 module.exports = router;

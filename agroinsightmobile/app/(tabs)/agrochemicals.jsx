@@ -131,7 +131,7 @@ const AgrochemicalsDashboard = () => {
 
               <TouchableOpacity
                 style={styles.card}
-                //onPress={() => navigation.navigate('')}
+                onPress={() => router.push("/agrochemicals/myagrochemicals")}
               >
                 <Image source={images.mychemicals} style={styles.cardImage} />
                 <View style={styles.textContainer}>
