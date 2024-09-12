@@ -20,7 +20,6 @@ app.use((req, res, next) => {
 
 /*user management routes*/
 
-
 /*fertilizer and pesticide management routes*/
 app.use("/api/f&p", require("./routes/f&pRoutes"));
 
@@ -31,6 +30,9 @@ app.use("/api/disease", require("./routes/diseaseRoutes"));
 
 //crop rotator
 app.use("/api/crop-rotator", require("./routes/cropRotatorRoutes"));
+
+//admin user profile routes
+app.use("/api/admin-profile", require("./routes/commonRoutes"));
 
 const server = () => {
   db();
