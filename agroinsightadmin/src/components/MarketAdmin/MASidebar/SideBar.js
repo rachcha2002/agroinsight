@@ -1,7 +1,7 @@
 import React from "react";
 import "./SideBar.css";
-import navList from "../../../data/AgriAdmin/navItem";
-import NavItem from "./AgriNavItem";
+import navList from "../../../data/MarketAdmin/navItem";
+import NavItem from "./NavItem";
 import { BsArrowLeft } from "react-icons/bs";
 import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";

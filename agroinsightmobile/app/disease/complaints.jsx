@@ -39,6 +39,7 @@ const Complaints = () => {
       setLoading(false);
     }
 
+
   };
 
   useEffect(() => {
@@ -66,9 +67,11 @@ const Complaints = () => {
           onPress: async () => {
             try {
 
+
               const response = await axios.delete(
                 `http://192.168.1.167:5000/api/disease/complaints/${id}`
               );
+
 
               if (response.status === 200) {
                 setComplaints(
