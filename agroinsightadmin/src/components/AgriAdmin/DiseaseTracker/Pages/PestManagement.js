@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Table, Modal, Button, Form, Image, Row, Col } from "react-bootstrap";
 import axios from "axios";
 import moment from "moment"; // For formatting dates
+import { jsPDF } from "jspdf"; // Import jsPDF
+import "jspdf-autotable"; // Import the autoTable plugin
+import logo from "../../../../images/logoNoBack.png"; // Adjust the path to your logo
 
 const PestManagement = () => {
   const [complaintData, setComplaintData] = useState([]);
@@ -49,7 +52,6 @@ const PestManagement = () => {
         formData
       );
       if (response.status === 200) {
-        // Update the complaint data in the table
         setComplaintData((prevData) =>
           prevData.map((complaint) =>
             complaint._id === selectedComplaint._id
@@ -74,7 +76,6 @@ const PestManagement = () => {
         `${process.env.REACT_APP_BACKEND_URL}/api/disease/complaints/${selectedComplaint._id}`
       );
       if (response.status === 200) {
-        // Remove the complaint from the table
         setComplaintData(
           complaintData.filter(
             (complaint) => complaint._id !== selectedComplaint._id
@@ -91,9 +92,92 @@ const PestManagement = () => {
     }
   };
 
+  // PDF generation function
+  const generatePDF = () => {
+    convertToBase64(logo, (imgData) => {
+      const doc = new jsPDF();
+
+      // Add the logo
+      doc.addImage(imgData, "PNG", 14, 10, 70, 30); // x, y, width, height
+
+      // Add the name, email, and phone number
+      doc.setFontSize(12);
+      doc.text("AgroInsight(By OctagonIT)", 100, 20); // Adjust the position as needed
+      doc.text("Email: teamoctagonit@gmail.com", 100, 26);
+      doc.text("Phone: +94711521161", 100, 32);
+
+      // Add the document title below the header
+      doc.setFontSize(16);
+      doc.text("Pest and Disease Complaints", 14, 50);
+
+      // Generate table for complaints
+      const complaints = complaintData.map((complaint) => [
+        complaint.farmerID,
+        complaint.area,
+        complaint.cropAffected,
+        moment(complaint.dateOfComplaint).format("YYYY-MM-DD"),
+        complaint.diseaseStatus,
+        complaint.controlMethod,
+        complaint.solution,
+        complaint.officerRemarks,
+      ]);
+
+      doc.autoTable({
+        head: [
+          [
+            "Farmer ID",
+            "Area",
+            "Crop Affected",
+            "Date of Complaint",
+            "Disease Status",
+            "Control Method",
+            "Solution",
+            "Officer Remarks",
+          ],
+        ],
+        body: complaints,
+        startY: 60,
+        theme: "striped",
+        headStyles: { fillColor: [22, 160, 133] },
+        margin: { left: 14, right: 14 },
+      });
+
+      const currentDate = new Date();
+      const dateString = currentDate.toLocaleDateString();
+      const timeString = currentDate.toLocaleTimeString();
+
+      // Add the date and time at the bottom of the PDF
+      doc.setFontSize(10);
+      doc.text(
+        `Report generated on: ${dateString} at ${timeString}`,
+        14,
+        doc.internal.pageSize.height - 10
+      );
+
+      doc.save("pest-management-report.pdf");
+    });
+  };
+
+  const convertToBase64 = (url, callback) => {
+    const xhr = new XMLHttpRequest();
+    xhr.onload = function () {
+      const reader = new FileReader();
+      reader.onloadend = function () {
+        callback(reader.result);
+      };
+      reader.readAsDataURL(xhr.response);
+    };
+    xhr.open("GET", url);
+    xhr.responseType = "blob";
+    xhr.send();
+  };
+
   return (
     <div className="mt-6">
       <h2 className="mb-3">Pest and Disease Complaints</h2>
+      <Button onClick={generatePDF} variant="secondary" className="mb-3">
+        Generate PDF Report
+      </Button>
       <Table striped bordered hover>
         <thead>
           <tr>
@@ -200,17 +284,6 @@ const PestManagement = () => {
 
             <Row>
               <Col md={6}>
-                <Form.Group controlId="complaintDescription" className="mt-3">
-                  <Form.Label>Complaint Description</Form.Label>
-                  <Form.Control
-                    as="textarea"
-                    rows={3}
-                    value={selectedComplaint.complaintDescription}
-                    readOnly
-                  />
-                </Form.Group>
-              </Col>
-              <Col md={6}>
                 <Form.Group controlId="diseaseStatus" className="mt-3">
                   <Form.Label>Disease Status</Form.Label>
                   <Form.Control
@@ -225,9 +298,6 @@ const PestManagement = () => {
                   />
                 </Form.Group>
               </Col>
-            </Row>
-
-            <Row>
               <Col md={6}>
                 <Form.Group controlId="controlMethod" className="mt-3">
                   <Form.Label>Control Method</Form.Label>
@@ -243,6 +313,9 @@ const PestManagement = () => {
                   />
                 </Form.Group>
               </Col>
+            </Row>
+
+            <Row>
               <Col md={6}>
                 <Form.Group controlId="solution" className="mt-3">
                   <Form.Label>Solution</Form.Label>
@@ -255,18 +328,19 @@ const PestManagement = () => {
                   />
                 </Form.Group>
               </Col>
+              <Col md={6}>
+                <Form.Group controlId="officerRemarks" className="mt-3">
+                  <Form.Label>Officer Remarks</Form.Label>
+                  <Form.Control
+                    type="text"
+                    value={formData.officerRemarks}
+                    onChange={(e) =>
+                      setFormData({ ...formData, officerRemarks: e.target.value })
+                    }
+                  />
+                </Form.Group>
+              </Col>
             </Row>
-
-            <Form.Group controlId="officerRemarks" className="mt-3">
-              <Form.Label>Officer Remarks</Form.Label>
-              <Form.Control
-                type="text"
-                value={formData.officerRemarks}
-                onChange={(e) =>
-                  setFormData({ ...formData, officerRemarks: e.target.value })
-                }
-              />
-            </Form.Group>
           </Modal.Body>
           <Modal.Footer>
             <Button variant="danger" onClick={handleDelete}>
