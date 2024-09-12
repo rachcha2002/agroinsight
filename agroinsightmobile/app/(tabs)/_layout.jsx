@@ -13,9 +13,7 @@ const TabIcon = ({ icon, color, name, focused }) => {
         className="w-6 h-6"
       />
       <Text
-        className={`${
-          focused ? "font-semibold" : "font-regular"
-        } text-xs`}
+        className={`${focused ? "font-semibold" : "font-regular"} text-xs`}
         style={{ color: color }}
       >
         {name}
@@ -90,6 +88,22 @@ const TabsLayout = () => {
       />
 
       <Tabs.Screen
+        name="agrochemicals"
+        options={{
+          title: "agrochemicals",
+          headerShown: false,
+          tabBarIcon: ({ color, focused }) => (
+            <TabIcon
+              icon={icons.fertilizer}
+              color={color}
+              name="Agrochemicals"
+              focused={focused}
+            />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
         name="profile"
         options={{
           title: "Profile",
@@ -109,4 +123,3 @@ const TabsLayout = () => {
 };
 
 export default TabsLayout;
-  

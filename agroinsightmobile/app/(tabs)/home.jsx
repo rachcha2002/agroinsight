@@ -14,12 +14,12 @@ import { useGlobalContext } from "../../context/GlobalProvider";
 
 const Home = () => {
   const { user, setUser, setIsLogged } = useGlobalContext();
-  const { data: posts,refetch} = useAppWrite(getAllPosts)
-  const { data: lastestPosts} = useAppWrite(getLastestPosts)
-  
+  const { data: posts, refetch } = useAppWrite(getAllPosts);
+  const { data: lastestPosts } = useAppWrite(getLastestPosts);
+
   const [refreshing, setRefreshing] = useState(false);
 
-  const onRefresh = async() => {
+  const onRefresh = async () => {
     setRefreshing(true);
     await refetch();
 
@@ -28,29 +28,46 @@ const Home = () => {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaView className="bg-primary h-full">
+      <SafeAreaView className="bg-white h-full">
         <FlatList
           data={posts}
           //data={[]}
           keyExtractor={(item) => item.$id}
-          renderItem={({ item }) => (
-            <VideoCard video={item ?? []}/>
-          )}
+          renderItem={({ item }) => <VideoCard video={item ?? []} />}
           ListHeaderComponent={() => (
             <View className="my-6 px-4 space-y-6">
-              <View className="justify-between items-start flex-row mb-6">
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: 24,
+                }}
+              >
                 <View>
-                  <Text className="font-pmedium text-sm text-gray-100">
+                  <Text
+                    style={{
+                      fontFamily: "Poppins-Medium",
+                      fontSize: 14,
+                      color: "#000",
+                    }}
+                  >
                     Welcome Back,
                   </Text>
-                  <Text className="text-2xl font-psemibold text-gray-100">
+                  <Text
+                    style={{
+                      fontFamily: "Poppins-SemiBold",
+                      fontSize: 24,
+                      color: "#000",
+                    }}
+                  >
                     {user?.username}
                   </Text>
                 </View>
-                <View className="mt-1.5">
+                <View style={{ marginTop: 6, marginLeft: 4 }}>
                   <Image
-                    source={images.logoSmall}
-                    className="w-9 h-10"
+                    source={images.agroinsightlogo}
+                    style={{ width: 200, height: 140 }} // Set width and height correctly
                     resizeMode="contain"
                   />
                 </View>

@@ -115,77 +115,107 @@ const FertilizerList = () => {
   const generatePDF = async () => {
     const doc = new jsPDF();
 
-    // Add the image to the PDF
+    // Add the logo
     const imgWidth = 50; // Set the desired width
     const imgHeight = 20; // Set the desired height
     const xOffset = 14; // Horizontal offset from the left edge
-    let yOffset = 10; // Vertical offset from the top edge
-    doc.addImage(logo, "PNG", xOffset, yOffset, imgWidth, imgHeight);
+    let yOffset = 10; // Initial vertical offset from the top edge
 
-    // Add the name, email, and phone number
+    doc.addImage(logo, "PNG", xOffset, yOffset, imgWidth, imgHeight); // Place the logo
+
+    // Add the contact details on the right
     doc.setFontSize(10);
-    doc.text("AgroInsight(By OctagonIT)", 150, 12); // Adjust the position as needed
-    doc.text("Email: teamoctagonit@gmail.com", 150, 18);
-    doc.text("Phone: +94711521161", 150, 24);
-    doc.text("By Agriculture Admin", 150, 30);
+    doc.text("AgroInsight(By OctagonIT)", 150, 15); // Adjusted position for details
+    doc.text("Email: teamoctagonit@gmail.com", 150, 21);
+    doc.text("Phone: +94711521161", 150, 27);
+    doc.text("By Agriculture Admin", 150, 33);
+
+    // Move yOffset down to start the next section after the header and logo
+    yOffset = 50; // Adjust this as needed to ensure space between header and content
 
     // Title for the PDF
     doc.setFontSize(16); // Title font size
-    doc.text("Fertilizer Recommendations", 14, 40);
+    doc.text("Fertilizer Recommendations", 14, yOffset);
 
-    // Add list of properties before the table
-    doc.setFontSize(10); // Smaller font size for properties
-    const propertyData = fertilizers
-      .map((fertilizer) => {
-        return [
-          `Name: ${fertilizer.name}`,
-          `Type: ${fertilizer.type}`,
-          `Instructions: ${fertilizer.instructions}`,
-          `Regions: ${fertilizer.region.join(", ")}`,
-          `Brands: ${fertilizer.brands.join(", ")}`,
-        ];
-      })
-      .flat();
+    // Move yOffset further down to start adding fertilizer details
+    yOffset += 10;
 
-    // Add each property as a line in the PDF
-    yOffset = 50; // Start below the title
-    propertyData.forEach((item) => {
-      doc.text(item, 14, yOffset);
-      yOffset += 5; // Move down for next line
-    });
+    // Fetch crop details for categories and crops
+    const fetchCropDetails = async () => {
+      const categoryIds = [
+        ...new Set(
+          fertilizers.flatMap((fertilizer) =>
+            fertilizer.suitableCrops.map((crop) => crop.cropCategoryId)
+          )
+        ),
+      ];
+      const categoryPromises = categoryIds.map((id) =>
+        axios.get(`http://localhost:5000/api/f&p/cropcategories/${id}`)
+      );
+      const cropPromises = fertilizers.flatMap((fertilizer) =>
+        fertilizer.suitableCrops.map((crop) =>
+          axios.get(`http://localhost:5000/api/f&p/cropbyid/${crop.cropId}`)
+        )
+      );
 
-    // Prepare table data
-    const tableData = [];
+      const categoryResults = await Promise.all(categoryPromises);
+      const cropResults = await Promise.all(cropPromises);
 
-    for (const fertilizer of fertilizers) {
-      // Fetch the crop details
-      await fetchCropDetails(fertilizer);
+      const categories = {};
+      categoryResults.forEach((result) => {
+        categories[result.data._id] = result.data.name;
+      });
 
-      const cropsInfo = fertilizer.suitableCrops.map((crop) => {
-        const category = cropCategories[crop.cropCategoryId] || "Unknown";
+      const crops = {};
+      cropResults.forEach((result) => {
+        crops[result.data._id] = result.data.name;
+      });
+
+      return { categories, crops };
+    };
+
+    const { categories, crops } = await fetchCropDetails();
+
+    // For each fertilizer, add details and a corresponding table
+    fertilizers.forEach((fertilizer) => {
+      // Add fertilizer details
+      doc.setFontSize(10);
+      let details = [
+        `Name: ${fertilizer.name}`,
+        `Type: ${fertilizer.type}`,
+        `Instructions: ${fertilizer.instructions}`,
+        `Regions: ${fertilizer.region.join(", ")}`,
+        `Brands: ${fertilizer.brands.join(", ")}`,
+      ];
+
+      details.forEach((line) => {
+        doc.text(line, 14, yOffset);
+        yOffset += 5; // Move down for the next line
+      });
+
+      // Prepare table data
+      const tableData = fertilizer.suitableCrops.map((crop) => {
+        const category = categories[crop.cropCategoryId] || "Unknown";
         const cropName = crops[crop.cropId] || "Unknown";
         return [category, cropName, crop.recommendedUsage];
       });
 
-      tableData.push(...cropsInfo);
-    }
+      // Add a table for crops under the current fertilizer
+      doc.autoTable({
+        head: [["Category", "Crop", "Usage"]],
+        body: tableData,
+        startY: yOffset + 5, // Ensure the table starts below the text
+        theme: "grid",
+        headStyles: { fillColor: [0, 128, 0] }, // Green header color
+      });
 
-    // Add table
-    doc.setFontSize(8); // Reset font size for table
-    doc.autoTable({
-      head: [["Category", "Crop", "Usage"]],
-      body: tableData,
-      startY: yOffset,
-      theme: "grid",
-      headStyles: { fillColor: [0, 128, 0] }, // Green header color
+      yOffset = doc.previousAutoTable.finalY + 10; // Update yOffset after the table
     });
 
-    // Get the current date and time
+    // Add the date and time at the bottom of the PDF
     const currentDate = new Date();
     const dateString = currentDate.toLocaleDateString();
     const timeString = currentDate.toLocaleTimeString();
-
-    // Add the date and time at the bottom of the PDF
     doc.setFontSize(10);
     doc.text(
       `Report generated on: ${dateString} at ${timeString}`,

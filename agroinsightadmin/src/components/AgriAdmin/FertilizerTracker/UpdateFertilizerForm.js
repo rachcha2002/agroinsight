@@ -8,37 +8,47 @@ const UpdateFertilizerForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [fertilizerName, setFertilizerName] = useState(""); // Renamed from 'name'
+  const [fertilizerName, setFertilizerName] = useState(""); // Fertilizer name state
   const [cropCategories, setCropCategories] = useState([]);
-  const [crops, setCrops] = useState([]);
-  const [selectedCrops, setSelectedCrops] = useState([]);
-  const [regions, setRegions] = useState([]);
-  const [brands, setBrands] = useState([]);
+  const [cropsByCategory, setCropsByCategory] = useState({});
+  const [selectedCrops, setSelectedCrops] = useState([
+    { cropCategoryId: "", cropId: "", recommendedUsage: "" },
+  ]);
+  const [regions, setRegions] = useState([""]);
+  const [brands, setBrands] = useState([""]); // Brands array state
   const [instructions, setInstructions] = useState("");
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
   const [type, setType] = useState("");
-  const [cropsByCategory, setCropsByCategory] = useState({});
 
   useEffect(() => {
-    // Fetch the fertilizer details for the given ID
+    // Fetch fertilizer details by ID
     axios
       .get(`http://localhost:5000/api/f&p/fertilizers/${id}`)
       .then((response) => {
         const fertilizer = response.data;
-        setFertilizerName(fertilizer.name); // Updated to use 'fertilizerName'
-        setSelectedCrops(fertilizer.suitableCrops);
-        setRegions(fertilizer.region);
-        setBrands(fertilizer.brands);
+        setFertilizerName(fertilizer.name);
+        setSelectedCrops(
+          fertilizer.suitableCrops.length
+            ? fertilizer.suitableCrops
+            : [{ cropCategoryId: "", cropId: "", recommendedUsage: "" }]
+        );
+        setRegions(fertilizer.region.length ? fertilizer.region : [""]);
+        setBrands(fertilizer.brands.length ? fertilizer.brands : [""]);
         setInstructions(fertilizer.instructions);
         setImagePreview(fertilizer.imageUrl);
         setType(fertilizer.type);
+
+        // Fetch crops for each category of the selected crops
+        fertilizer.suitableCrops.forEach((crop) => {
+          fetchCrops(crop.cropCategoryId);
+        });
       })
       .catch((error) =>
         console.error("Error fetching fertilizer data:", error)
       );
 
-    // Fetch crop categories from the backend
+    // Fetch crop categories
     axios
       .get("http://localhost:5000/api/f&p/cropcategories")
       .then((response) => setCropCategories(response.data))
@@ -50,15 +60,21 @@ const UpdateFertilizerForm = () => {
   const handleCropCategoryChange = (index, cropCategoryId) => {
     const updatedCrops = [...selectedCrops];
     updatedCrops[index].cropCategoryId = cropCategoryId;
+    updatedCrops[index].cropId = ""; // Reset the cropId when category changes
+
     setSelectedCrops(updatedCrops);
 
-    // Fetch crops based on selected category
+    // Fetch crops for the new category
+    fetchCrops(cropCategoryId);
+  };
+
+  const fetchCrops = (categoryId) => {
     axios
-      .get(`http://localhost:5000/api/f&p/cropcategories/${cropCategoryId}`)
+      .get(`http://localhost:5000/api/f&p/crops/${categoryId}`)
       .then((response) => {
-        setCropsByCategory((prev) => ({
-          ...prev,
-          [cropCategoryId]: response.data.crops,
+        setCropsByCategory((prevCrops) => ({
+          ...prevCrops,
+          [categoryId]: response.data, // Store crops by category
         }));
       })
       .catch((error) => console.error("Error fetching crops:", error));
@@ -97,27 +113,47 @@ const UpdateFertilizerForm = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    // Ensure all crops have a valid cropId
+    const invalidCrop = selectedCrops.find((crop) => !crop.cropId);
+    if (invalidCrop) {
+      alert("Please select a valid crop for each category.");
+      return;
+    }
+
     const formData = new FormData();
-    formData.append("name", fertilizerName); // Updated to use 'fertilizerName'
+    formData.append("name", fertilizerName);
     formData.append("type", type);
     formData.append("instructions", instructions);
-    formData.append("image", image);
-
+    formData.append("fertilizerImage", image);
     formData.append("suitableCrops", JSON.stringify(selectedCrops));
-    formData.append("regions", JSON.stringify(regions));
+    regions.forEach((region, index) => {
+      formData.append(`region[${index}]`, region);
+    });
     formData.append("brands", JSON.stringify(brands));
 
     try {
       await axios.put(
-        `http://localhost:5000/api/f&p/update-fertilizer/${id}`,
+        `http://localhost:5000/api/f&p/update-fertilizers/${id}`,
         formData
       );
       alert("Fertilizer updated successfully");
-      navigate("/fertilizers");
+      navigate("/agriadmin/fertilizers&pesticides?tab=fertilizers");
     } catch (error) {
       console.error("Error updating fertilizer:", error);
       alert("Failed to update fertilizer");
     }
+  };
+
+  const handleRemoveCrop = (index) => {
+    setSelectedCrops(selectedCrops.filter((_, i) => i !== index));
+  };
+
+  const handleRemoveRegion = (index) => {
+    setRegions(regions.filter((_, i) => i !== index));
+  };
+
+  const handleRemoveBrand = (index) => {
+    setBrands(brands.filter((_, i) => i !== index));
   };
 
   return (
@@ -136,7 +172,8 @@ const UpdateFertilizerForm = () => {
                   type="text"
                   placeholder="Fertilizer Name"
                   value={fertilizerName}
-                  disabled
+                  onChange={(e) => setFertilizerName(e.target.value)}
+                  required
                 />
               </Form.Group>
               <Form.Group controlId="formFertilizerType">
@@ -177,46 +214,77 @@ const UpdateFertilizerForm = () => {
               </Form.Group>
             </Col>
           </Row>
+
           {/* Regions */}
           <Form.Group controlId="formFertilizerRegions">
             <Form.Label>Regions</Form.Label>
             {regions.map((region, index) => (
-              <Form.Control
-                type="text"
-                value={region}
-                onChange={(e) => handleRegionChange(index, e.target.value)}
-                required
-                key={index}
-                style={{ marginBottom: "10px" }}
-              />
+              <Row key={index} className="mb-2">
+                <Col>
+                  <Form.Control
+                    type="text"
+                    value={region}
+                    onChange={(e) => handleRegionChange(index, e.target.value)}
+                    required
+                  />
+                </Col>
+                <Col xs="auto">
+                  {regions.length > 1 && (
+                    <Button
+                      variant="danger"
+                      onClick={() => handleRemoveRegion(index)}
+                      style={{ marginTop: "0.5rem" }}
+                    >
+                      Remove
+                    </Button>
+                  )}
+                </Col>
+              </Row>
             ))}
             <Button
-              variant="outline-secondary"
+              variant="success"
               onClick={() => setRegions([...regions, ""])}
+              style={{ marginTop: "0.5rem" }}
             >
               Add Region
             </Button>
           </Form.Group>
+
           {/* Brands */}
           <Form.Group controlId="formFertilizerBrands">
             <Form.Label>Brands</Form.Label>
             {brands.map((brand, index) => (
-              <Form.Control
-                type="text"
-                value={brand}
-                onChange={(e) => handleBrandChange(index, e.target.value)}
-                required
-                key={index}
-                style={{ marginBottom: "10px" }}
-              />
+              <Row key={index} className="mb-2">
+                <Col>
+                  <Form.Control
+                    type="text"
+                    value={brand}
+                    onChange={(e) => handleBrandChange(index, e.target.value)}
+                    required
+                  />
+                </Col>
+                <Col xs="auto">
+                  {brands.length > 1 && (
+                    <Button
+                      variant="danger"
+                      onClick={() => handleRemoveBrand(index)}
+                      style={{ marginTop: "0.5rem" }}
+                    >
+                      Remove
+                    </Button>
+                  )}
+                </Col>
+              </Row>
             ))}
             <Button
-              variant="outline-secondary"
+              variant="success"
               onClick={() => setBrands([...brands, ""])}
+              style={{ marginTop: "0.5rem" }}
             >
               Add Brand
             </Button>
           </Form.Group>
+
           {/* Crops */}
           <Form.Group controlId="formFertilizerCrops">
             <Form.Label>Crops</Form.Label>
@@ -225,7 +293,7 @@ const UpdateFertilizerForm = () => {
                 <Col md={4}>
                   <Form.Control
                     as="select"
-                    value={crop.cropCategoryId}
+                    value={crop.cropCategoryId || ""}
                     onChange={(e) =>
                       handleCropCategoryChange(index, e.target.value)
                     }
@@ -242,22 +310,31 @@ const UpdateFertilizerForm = () => {
                 <Col md={4}>
                   <Form.Control
                     as="select"
-                    value={crop.cropId}
+                    value={crop.cropId || ""}
                     onChange={(e) => handleCropChange(index, e.target.value)}
                     required
+                    disabled={
+                      !crop.cropCategoryId ||
+                      !cropsByCategory[crop.cropCategoryId]
+                    }
                   >
                     <option value="">Select Crop</option>
-                    {cropsByCategory[crop.cropCategoryId]?.map((crop) => (
-                      <option key={crop._id} value={crop._id}>
-                        {crop.name}
-                      </option>
-                    ))}
+                    {cropsByCategory[crop.cropCategoryId]?.map(
+                      (availableCrop) => (
+                        <option
+                          key={availableCrop._id}
+                          value={availableCrop._id}
+                        >
+                          {availableCrop.name}
+                        </option>
+                      )
+                    )}
                   </Form.Control>
                 </Col>
-                <Col md={4}>
+                <Col md={3}>
                   <Form.Control
                     type="text"
-                    value={crop.recommendedUsage}
+                    value={crop.recommendedUsage || ""}
                     onChange={(e) =>
                       handleRecommendedUsageChange(index, e.target.value)
                     }
@@ -265,10 +342,21 @@ const UpdateFertilizerForm = () => {
                     required
                   />
                 </Col>
+                <Col xs="auto">
+                  {selectedCrops.length > 1 && (
+                    <Button
+                      variant="danger"
+                      onClick={() => handleRemoveCrop(index)}
+                      style={{ marginTop: "0.5rem" }}
+                    >
+                      Remove
+                    </Button>
+                  )}
+                </Col>
               </Row>
             ))}
             <Button
-              variant="outline-secondary"
+              variant="success"
               onClick={() =>
                 setSelectedCrops([
                   ...selectedCrops,
@@ -279,6 +367,7 @@ const UpdateFertilizerForm = () => {
               Add Crop
             </Button>
           </Form.Group>
+
           <Button variant="primary" type="submit" className="mt-3">
             Update Fertilizer
           </Button>

@@ -16,6 +16,7 @@ import Fertilizers from "./Fertilizers";
 import Pesticides from "./Pesticides";
 import CropCategory from "./CropCategory";
 import { useLocation } from "react-router-dom"; // Import useLocation
+import AgrochemicalNews from "./AgrochemicalNews";
 
 function FertilizerDashboard() {
   const location = useLocation();
@@ -50,6 +51,9 @@ function FertilizerDashboard() {
           </Tab>
           <Tab eventKey="cropcategory" title="Crop Categories">
             <CropCategory />
+          </Tab>
+          <Tab eventKey="agrochemicalnews" title="Agrochemical News">
+            <AgrochemicalNews />
           </Tab>
         </Tabs>
       </section>
