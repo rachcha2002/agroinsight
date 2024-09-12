@@ -13,7 +13,7 @@ const Complaints = () => {
 
   const fetchComplaints = async () => {
     try {
-        const response = await axios.get('http://192.168.1.163:5000/api/disease/complaints');
+        const response = await axios.get('http://192.168.1.4:5000/api/disease/complaints');
         
         // Sort the complaints by dateOfComplaint in descending order
         const sortedComplaints = response.data.sort((a, b) => new Date(b.dateOfComplaint) - new Date(a.dateOfComplaint));
@@ -50,7 +50,7 @@ const Complaints = () => {
           style: "destructive",
           onPress: async () => {
             try {
-              const response = await axios.delete(`http://192.168.1.163:5000/api/disease/complaints/${id}`);
+              const response = await axios.delete(`http://192.168.1.4:5000/api/disease/complaints/${id}`);
               if (response.status === 200) {
                 setComplaints(complaints.filter(complaint => complaint._id !== id));
                 Alert.alert("Success", "Complaint deleted successfully.");

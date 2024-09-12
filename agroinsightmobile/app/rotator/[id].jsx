@@ -3,7 +3,7 @@ import { View, Text, Image, ActivityIndicator } from 'react-native';
 import axios from 'axios';
 import { useLocalSearchParams } from 'expo-router';
 
-const DiseaseDetails = () => {
+const RotatorDetails = () => {
   const { id } = useLocalSearchParams();
   const [alert, setAlert] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -12,7 +12,7 @@ const DiseaseDetails = () => {
   useEffect(() => {
     const fetchAlertDetails = async () => {
       try {
-        const response = await axios.get(`http://192.168.1.4:5000/api/disease/disease-alerts/${id}`);
+        const response = await axios.get(`http://192.168.1.4:5000/api/crop-rotator/rotator-alerts/${id}`);
         setAlert(response.data);
         setLoading(false);
       } catch (err) {
@@ -50,6 +50,7 @@ const DiseaseDetails = () => {
             resizeMode="cover"
           />
           <Text className="text-xl font-bold mt-4">{alert.title}</Text>
+          <Text className="text-gray-700 mt-2">{alert.zone}</Text>
           <Text className="text-gray-700 mt-2">{alert.description}</Text>
           <Text className="text-gray-500 mt-2">Date: {new Date(alert.date).toLocaleDateString()}</Text>
           {alert.details && (
@@ -63,4 +64,4 @@ const DiseaseDetails = () => {
   );
 };
 
-export default DiseaseDetails;
+export default RotatorDetails;

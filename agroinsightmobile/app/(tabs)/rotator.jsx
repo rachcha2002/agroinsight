@@ -7,7 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useGlobalContext } from '../../context/GlobalProvider';
 import { images } from '../../constants';
 
-const DiseaseDashboard = () => {
+const RotatorDashboard = () => {
   const { user, setUser, setIsLogged } = useGlobalContext();
   const [alerts, setAlerts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -18,7 +18,7 @@ const DiseaseDashboard = () => {
 
   const fetchAlerts = async () => {
     try {
-      const response = await axios.get('http://192.168.1.4:5000/api/disease/disease-alerts');
+      const response = await axios.get('http://192.168.1.4:5000/api/crop-rotator/rotator-alerts');
       setAlerts(response.data);
       setLoading(false);
     } catch (err) {
@@ -32,11 +32,11 @@ const DiseaseDashboard = () => {
   }, []);
 
   const handleAlertPress = (id) => {
-    router.push(`/disease/${id}`);
+    router.push(`/rotator/${id}`);
   };
 
   const handleComplaintPress = () => {
-    router.push('/disease/complaints'); // Navigate to the create complaint screen
+    router.push('/rotator/farmerdetails'); // Navigate to the create complaint screen
   };
 
   const onRefresh = async () => {
@@ -99,6 +99,7 @@ const DiseaseDashboard = () => {
                     resizeMode="cover"
                   />
                   <Text className="text-lg font-bold mt-4">{alert.title}</Text>
+                  <Text className="text-gray-700 mt-2">{alert.zone}</Text>
                   <Text className="text-gray-700 mt-2">{alert.description}</Text>
                   <Text className="text-gray-500 mt-2">Date: {new Date(alert.date).toLocaleDateString()}</Text>
                 </View>
@@ -111,4 +112,4 @@ const DiseaseDashboard = () => {
   );
 }
 
-export default DiseaseDashboard;
+export default RotatorDashboard;
