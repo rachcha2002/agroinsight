@@ -1,32 +1,57 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { getCurrentUser } from "../lib/appwrite";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
+// Create the GlobalContext
 const GlobalContext = createContext();
 
+// Create a custom hook to use the GlobalContext
 export const useGlobalContext = () => useContext(GlobalContext);
 
+// GlobalProvider component to wrap your app with global state
 const GlobalProvider = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Boolean flag for login state
+  const [user, setUser] = useState({
+    name: null,
+    email: null,
+    imageUrl: null,
+  }); // Store name, email, imageUrl in the user state
+  const [isLoading, setIsLoading] = useState(true); // Loading state for app initialization or session checking
 
+  // Load user data from AsyncStorage and parse the token
   useEffect(() => {
-    getCurrentUser()
-      .then((res) => {
-        if (res) {
-          setIsLoggedIn(true);
-          setUser(res);
+    const loadUserData = async () => {
+      try {
+        const storedSession = await AsyncStorage.getItem("userSession");
+
+        if (storedSession) {
+          const sessionData = JSON.parse(storedSession);
+
+          // Check if the session contains valid user data
+          if (sessionData && sessionData.user && sessionData.user.user_metadata) {
+            const { user_metadata } = sessionData.user; // Extract user_metadata from the token
+
+            // Extract and assign the necessary fields
+            const name = user_metadata.full_name || "Unknown Name";
+            const email = user_metadata.email || "Unknown Email";
+            const imageUrl = user_metadata.avatar_url || "default_avatar_url";
+
+            // Set user data in Context
+            setUser({ name, email, imageUrl });
+            setIsLoggedIn(true);
+          } else {
+           // console.warn("No user metadata found in the session.");
+          }
         } else {
-          setIsLoggedIn(false);
-          setUser(null);
+          console.log("No session data found in AsyncStorage.");
         }
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+      } catch (error) {
+        console.error("Error loading user data from storage:", error);
+      } finally {
+        setIsLoading(false); // Stop loading when done
+      }
+    };
+
+    loadUserData();
   }, []);
 
   return (
@@ -37,6 +62,7 @@ const GlobalProvider = ({ children }) => {
         user,
         setUser,
         isLoading,
+        setIsLoading,
       }}
     >
       {children}
