@@ -12,7 +12,7 @@ const RotatorDetails = () => {
   useEffect(() => {
     const fetchAlertDetails = async () => {
       try {
-        const response = await axios.get(`http://192.168.1.4:5000/api/crop-rotator/rotator-alerts/${id}`);
+        const response = await axios.get(`${process.env.EXPO_PUBLIC_BACKEND_URL}/api/crop-rotator/rotator-alerts/${id}`);
         setAlert(response.data);
         setLoading(false);
       } catch (err) {

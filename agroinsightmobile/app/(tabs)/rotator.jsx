@@ -18,7 +18,7 @@ const RotatorDashboard = () => {
 
   const fetchAlerts = async () => {
     try {
-      const response = await axios.get('http://192.168.1.4:5000/api/crop-rotator/rotator-alerts');
+      const response = await axios.get(`${process.env.EXPO_PUBLIC_BACKEND_URL}/api/crop-rotator/rotator-alerts`);
       setAlerts(response.data);
       setLoading(false);
     } catch (err) {
