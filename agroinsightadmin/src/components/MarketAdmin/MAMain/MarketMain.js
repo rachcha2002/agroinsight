@@ -8,7 +8,7 @@ function MarketMain() {
     <>
       <main id="main" className="main">
         <PageTitle title="Market Manager Dashboard" url="market"/>
-        {/* <MMDashboard/> */}
+     <MMDashboard/>
         <br/>
       </main>
     </>
