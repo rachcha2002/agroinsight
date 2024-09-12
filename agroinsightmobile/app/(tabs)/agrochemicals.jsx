@@ -42,14 +42,6 @@ const AgrochemicalsDashboard = () => {
     fetchAlerts();
   }, []);
 
-  const handleAlertPress = (id) => {
-    router.push(`/disease/${id}`);
-  };
-
-  const handleComplaintPress = () => {
-    router.push("/disease/complaints"); // Navigate to the create complaint screen
-  };
-
   const onRefresh = async () => {
     setRefreshing(true);
     await fetchAlerts();
@@ -80,88 +72,98 @@ const AgrochemicalsDashboard = () => {
             <View className="flex-1 items-center pl-7">
               <Image
                 source={images.agroinsightlogo}
-                className="w-15 h-10"
+                className="w-15 h-12"
                 resizeMode="contain"
               />
             </View>
           </View>
-
-          <View className="mt-4 mb-2 p-4 bg-white rounded-lg shadow">
-            <View className="relative">
-              <Image
-                source={images.sprayingpesticides}
-                className="w-full h-80 rounded-lg" // Adjusted height
-                resizeMode="cover"
-              />
-              {/* Overlay to darken the image */}
-              <View className="absolute inset-0 bg-black opacity-40 rounded-lg" />
-              <View
-                style={{
-                  position: "absolute",
-                  bottom: 0,
-                  left: 0,
-                  width: "100%", // Makes the View the same width as the image
-                  backgroundColor: "rgba(0, 0, 0, 0.7)", // Black with 80% opacity
-                  padding: 5,
-                  borderBottomLeftRadius: 8,
-                  borderBottomRightRadius: 8,
-                }}
-              >
-                <Text className="text-white text-xl">
-                  "Empowering farmers with safe agrochemical practices for a
-                  greener, more productive Sri Lanka"
-                </Text>
+          <ScrollView
+            className="p-4"
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+          >
+            <View className="mt-1 mb-1 p-4 bg-white rounded-lg shadow">
+              <View className="relative">
+                <Image
+                  source={images.sprayingpesticides}
+                  className="w-full h-40 rounded-lg" // Adjusted height
+                  resizeMode="cover"
+                />
+                {/* Overlay to darken the image */}
+                <View className="absolute inset-0 bg-black opacity-40 rounded-lg" />
+                <View
+                  style={{
+                    position: "absolute",
+                    bottom: 0,
+                    left: 0,
+                    width: "100%", // Makes the View the same width as the image
+                    backgroundColor: "rgba(0, 0, 0, 0.7)", // Black with 80% opacity
+                    padding: 5,
+                    borderBottomLeftRadius: 8,
+                    borderBottomRightRadius: 8,
+                  }}
+                >
+                  <Text className="text-white text-m">
+                    "Empowering farmers with safe agrochemical practices for a
+                    greener, more productive Sri Lanka"
+                  </Text>
+                </View>
               </View>
             </View>
-          </View>
 
-          <View style={styles.container}>
-            <Text className="text-black text-4xl font-bold ml-2">
-              Agrochemicals
-            </Text>
-            <Text className="text-black text-xl font-bold ml-2">
-              About fertilizers and pesticides
-            </Text>
-            <TouchableOpacity
-              style={styles.card}
-              onPress={() => router.push("/agrochemicals/agrochemicalnews")}
-            >
-              <Image source={images.fpnews} style={styles.cardImage} />
-              <View style={styles.textContainer}>
-                <Text style={styles.cardTitle}>What's New?</Text>
-              </View>
-            </TouchableOpacity>
+            <View style={styles.container}>
+              <Text className="text-black text-2xl font-bold ml-2">
+                Agrochemicals
+              </Text>
+              <Text className="text-black text-l font-bold ml-2">
+                About fertilizers and pesticides
+              </Text>
+              <TouchableOpacity
+                style={styles.card}
+                onPress={() => router.push("/agrochemicals/agrochemicalnews")}
+              >
+                <Image source={images.fpnews} style={styles.cardImage} />
+                <View style={styles.textContainer}>
+                  <Text style={styles.cardTitle}>What's New?</Text>
+                </View>
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.card}
-              //onPress={() => navigation.navigate('MyAgrochemicals')}
-            >
-              <Image source={images.mychemicals} style={styles.cardImage} />
-              <View style={styles.textContainer}>
-                <Text style={styles.cardTitle}>My Agrochemicals</Text>
-              </View>
-            </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.card}
+                onPress={() => router.push("/agrochemicals/myagrochemicals")}
+              >
+                <Image source={images.mychemicals} style={styles.cardImage} />
+                <View style={styles.textContainer}>
+                  <Text style={styles.cardTitle}>My Agrochemicals</Text>
+                </View>
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.card}
-              //onPress={() => navigation.navigate('FertilizerRecommendations')}
-            >
-              <Image source={images.frecommend} style={styles.cardImage} />
-              <View style={styles.textContainer}>
-                <Text style={styles.cardTitle}>Fertilizer Recommendations</Text>
-              </View>
-            </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.card}
+                onPress={() => router.push("/agrochemicals/fertilizer")}
+              >
+                <Image source={images.frecommend} style={styles.cardImage} />
+                <View style={styles.textContainer}>
+                  <Text style={styles.cardTitle}>
+                    Fertilizer Recommendations
+                  </Text>
+                </View>
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.card}
-              //onPress={() => navigation.navigate('PesticideRecommendations')}
-            >
-              <Image source={images.precommend} style={styles.cardImage} />
-              <View style={styles.textContainer}>
-                <Text style={styles.cardTitle}>Pesticide Recommendations</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
+              <TouchableOpacity
+                style={styles.card}
+                onPress={() => router.push("/agrochemicals/pesticide")}
+              >
+                <Image source={images.precommend} style={styles.cardImage} />
+                <View style={styles.textContainer}>
+                  <Text style={styles.cardTitle}>
+                    Pesticide Recommendations
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
         </View>
       </SafeAreaView>
     </GestureHandlerRootView>
