@@ -24,7 +24,7 @@ const Complaints = () => {
     try {
 
       const response = await axios.get(
-        "http://192.168.1.167:5000/api/disease/complaints"
+        `${process.env.EXPO_PUBLIC_BACKEND_URL}/api/disease/complaints`
       );
 
       // Sort the complaints by dateOfComplaint in descending order
@@ -69,7 +69,7 @@ const Complaints = () => {
 
 
               const response = await axios.delete(
-                `http://192.168.1.167:5000/api/disease/complaints/${id}`
+                `${process.env.EXPO_PUBLIC_BACKEND_URL}/api/disease/complaints/${id}`
               );
 
 
