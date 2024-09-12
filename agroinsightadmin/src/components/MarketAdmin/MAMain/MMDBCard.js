@@ -11,16 +11,16 @@ const MMDBCard = ({ title, value1,value2, iconClass, duration }) => {
             <i className={`bi ${iconClass} fa-9x float-end`}></i>
           </Card.Title>
           <Card.Text>
-            <h2 className="mb-2 text-body-secondary">
+            <h2 className="mb-2 text-body-dark">
               {title === "Total Salaries"
                 ? "Rs." + value1.toLocaleString("en-US")
                 : value1.toLocaleString("en-US")}
             </h2>
-            <h2 className="mb-2 text-body-secondary">
+            <h3 className="mb-2 text-body-secondary">
               {title === "Total Salaries"
                 ? "Rs." + value2.toLocaleString("en-US")
                 : value2.toLocaleString("en-US")}
-            </h2>
+            </h3>
           </Card.Text>
         </Card.Body>
       </Card>
