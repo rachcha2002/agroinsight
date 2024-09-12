@@ -1,6 +1,10 @@
 import React, {useState,useEffect} from "react";
 import axios from "axios"
 import Button from "react-bootstrap/Button";
+import InputGroup from 'react-bootstrap/InputGroup';
+import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 import "./PriceCard.css";
 import "./Form.css";
 import jsPDF from "jspdf";
@@ -11,6 +15,7 @@ import { Link } from "react-router-dom";
 
 function DambullaPriceCard() {
   const [Crops, setCrops] = useState([]);
+  const [searchCrop, setSearchCrop] = useState(""); 
 
   useEffect(() => {
     function getCrops() {
@@ -106,10 +111,51 @@ function DambullaPriceCard() {
     doc.save("Today_price_list.pdf");
   };
 
+  const addToHistory = () => {
+    Crops.forEach((crop) => {
+      axios
+        .post(`${process.env.REACT_APP_BACKEND_URL}/crop/addhistory`, {
+          Crop_name: crop.Crop_name,
+          Price: crop.Price,
+          Market: crop.Market || "Dambulla",
+        })
+        .then((response) => {
+          console.log(response.data);
+        })
+        .catch((error) => {
+          console.error("Error adding crop to history:", error);
+        });
+    });
+  };
+
+  const filteredCrops = Crops.filter((Crop) =>
+    Crop.Crop_name.includes(searchCrop) 
+  );
 
   return (
     <main className="mainproduct">
-      <Link to="addcrop">
+       <Row>
+        <Col sm={3}>
+    <InputGroup className="mb-2">
+        <Form.Control
+          placeholder="Search Crop"
+          value={searchCrop}onChange={(e) =>
+            setSearchCrop(
+              e.target.value.charAt(0).toUpperCase() + e.target.value.slice(1)
+            )
+          }
+        />
+         <Button
+              variant="secondary"
+              id="button-addon2"
+              onClick={() => setSearchCrop("")}
+            >
+              Clear
+            </Button>
+      </InputGroup>
+      </Col>
+        <Col>
+        <Link to="addcrop">
           <button type="button" className="btn-add">
             Add Crop
             <span class="bi bi-plus-circle"></span>
@@ -123,9 +169,19 @@ function DambullaPriceCard() {
         Generate PDF
         <span class="bi bi-file-earmark-pdf"></span>
       </Button>
+      <Button
+            onClick={addToHistory}
+            variant="primary"
+            style={{ marginLeft: "20px" }}
+          >
+            Add to History
+            <span class="bi bi-clock-history"></span>
+          </Button>
+      </Col>
+      </Row>
 
       <div className="container-Product">
-        {Crops.map((Crop) => (
+      {filteredCrops.map((Crop) => (
           <div key={Crop._id} className="product-card-container">
             <div className="product-card">
               <center>

@@ -94,8 +94,9 @@ const AgrochemicalNews = () => {
           <View style={styles.logoContainer}>
             <Image
               source={images.agroinsightlogo} // Use the correct path for the image
-              style={styles.logo}
+              //style={styles.logo}
               resizeMode="contain"
+              className="w-15 h-12"
             />
           </View>
         </View>

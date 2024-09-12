@@ -31,6 +31,7 @@ const DiseaseDashboard = () => {
         `${process.env.EXPO_PUBLIC_BACKEND_URL}/api/disease/disease-alerts`
       );
 
+
       setAlerts(response.data);
       setLoading(false);
     } catch (err) {

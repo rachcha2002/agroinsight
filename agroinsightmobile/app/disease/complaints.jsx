@@ -39,6 +39,7 @@ const Complaints = () => {
       setLoading(false);
     }
 
+
   };
 
   useEffect(() => {
@@ -66,9 +67,11 @@ const Complaints = () => {
           onPress: async () => {
             try {
 
+
               const response = await axios.delete(
                 `${process.env.EXPO_PUBLIC_BACKEND_URL}/api/disease/complaints/${id}`
               );
+
 
               if (response.status === 200) {
                 setComplaints(
