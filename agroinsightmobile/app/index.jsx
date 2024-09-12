@@ -14,6 +14,7 @@ export default function App() {
   // Function to load and validate session from AsyncStorage
   const loadSession = async () => {
     try {
+      console.log(process.env.EXPO_PUBLIC_MOBILE_URL)
       const session = await AsyncStorage.getItem('userSession');
       if (session) {
         const parsedSession = JSON.parse(session);
