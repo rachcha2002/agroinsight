@@ -65,7 +65,7 @@ const FertilizerList = () => {
   const fetchFertilizers = async () => {
     try {
       const response = await axios.get(
-        "http://192.168.1.167:5000/api/f&p/fertilizers"
+        `${process.env.EXPO_PUBLIC_BACKEND_URL}/api/f&p/fertilizers`
       );
       setFertilizers(response.data);
       setFilteredFertilizers(response.data);
@@ -89,11 +89,11 @@ const FertilizerList = () => {
       ];
       const cropPromises = fertilizers.flatMap((fertilizer) =>
         fertilizer.suitableCrops.map((crop) =>
-          axios.get(`http://192.168.1.167:5000/api/f&p/cropbyid/${crop.cropId}`)
+          axios.get(`${process.env.EXPO_PUBLIC_BACKEND_URL}/api/f&p/cropbyid/${crop.cropId}`)
         )
       );
       const categoryPromises = categoryIds.map((id) =>
-        axios.get(`http://192.168.1.167:5000/api/f&p/cropcategories/${id}`)
+        axios.get(`${process.env.EXPO_PUBLIC_BACKEND_URL}/api/f&p/cropcategories/${id}`)
       );
 
       // Resolve all promises
