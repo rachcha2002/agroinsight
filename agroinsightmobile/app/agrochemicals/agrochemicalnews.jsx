@@ -82,14 +82,21 @@ const AgrochemicalNews = () => {
     <GestureHandlerRootView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
       <SafeAreaView>
         <View style={styles.headerContainer}>
-          {/* Back button with Ionicons */}
-          <TouchableOpacity
-            onPress={() => router.push("/agrochemicals")} // Ensure this route exists
-            style={styles.backButton} // Use style instead of className
-          >
-            <Ionicons name="arrow-back" size={24} color="#000" />
-          </TouchableOpacity>
-
+          <View>
+            {/* Back button with Ionicons */}
+            <TouchableOpacity
+              onPress={() => {
+                if (router.canGoBack()) {
+                  router.back(); // Try to go back
+                } else {
+                  router.push("/agrochemicals"); // If can't go back, push to a specific route
+                }
+              }} // Ensure this route exists
+              style={styles.backButton} // Use style instead of className
+            >
+              <Ionicons name="arrow-back" size={24} color="#000" />
+            </TouchableOpacity>
+          </View>
           {/* Logo in the center */}
           <View style={styles.logoContainer}>
             <Image
@@ -101,6 +108,7 @@ const AgrochemicalNews = () => {
           </View>
         </View>
         <Text className="text-black text-2xl font-bold ml-2 mt-4 ml-4">
+          
           What new about Agrochemicals?
         </Text>
         <ScrollView
@@ -231,7 +239,7 @@ const styles = {
     backgroundColor: "#fff",
   },
   backButton: {
-    paddingLeft: 15, // Adjust padding as needed
+    paddingLeft: 20, // Adjust padding as needed
     justifyContent: "center",
     alignItems: "center",
   },

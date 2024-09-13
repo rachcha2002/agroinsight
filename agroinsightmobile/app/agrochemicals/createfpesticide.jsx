@@ -11,39 +11,40 @@ import {
   Image,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter, usePathname } from "expo-router";
+import { useRouter } from "expo-router";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { images } from "../../constants";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useGlobalContext } from "../../context/GlobalProvider";
-import { Picker } from "@react-native-picker/picker"; // Import Picker for dropdown
+import { Picker } from "@react-native-picker/picker";
 import axios from "axios";
 
-const CreateFarmerFertilizer = () => {
+const CreateFarmerPesticide = () => {
   const { user } = useGlobalContext();
   const router = useRouter();
   const [form, setForm] = useState({
     crop: "",
-    fertilizer: "",
+    pesticide: "",
     amount: "",
+    targetPest: "",
   });
   const [loading, setLoading] = useState(false);
-  const [fertilizers, setFertilizers] = useState([]);
+  const [pesticides, setPesticides] = useState([]);
 
-  // Fetch fertilizers from API
+  // Fetch pesticides from API
   useEffect(() => {
-    const fetchFertilizers = async () => {
+    const fetchPesticides = async () => {
       try {
         const response = await axios.get(
-          `${process.env.EXPO_PUBLIC_BACKEND_URL}/api/f&p/fertilizers`
+          `${process.env.EXPO_PUBLIC_BACKEND_URL}/api/f&p/pesticides`
         );
-        setFertilizers(response.data); // Set fetched fertilizers
+        setPesticides(response.data); // Set fetched pesticides
       } catch (error) {
-        console.error("Error fetching fertilizers:", error);
+        console.error("Error fetching pesticides:", error);
       }
     };
 
-    fetchFertilizers();
+    fetchPesticides();
   }, []);
 
   const handleInputChange = (field, value) => {
@@ -51,7 +52,7 @@ const CreateFarmerFertilizer = () => {
   };
 
   const submitForm = async () => {
-    if (!form.crop || !form.fertilizer || !form.amount) {
+    if (!form.crop || !form.pesticide || !form.amount || !form.targetPest) {
       Alert.alert("Error", "Please fill in all the fields.");
       return;
     }
@@ -64,9 +65,9 @@ const CreateFarmerFertilizer = () => {
     setLoading(true);
 
     try {
-      // Assuming this is the API endpoint for creating a farmer fertilizer record
+      // Assuming this is the API endpoint for creating a farmer pesticide record
       const response = await fetch(
-        `${process.env.EXPO_PUBLIC_BACKEND_URL}/api/f&p/addff`,
+        `${process.env.EXPO_PUBLIC_BACKEND_URL}/api/f&p/addfp`,
         {
           method: "POST",
           headers: {
@@ -74,28 +75,26 @@ const CreateFarmerFertilizer = () => {
           },
           body: JSON.stringify({
             crop: form.crop,
-            fertilizer: form.fertilizer,
+            pesticide: form.pesticide,
             amount: parseFloat(form.amount), // Ensure amount is sent as a number
+            targetPest: form.targetPest,
             email: user?.email || "abc@gmail.com",
           }),
         }
       );
 
-      // Log the response for debugging
-      console.log("Response status:", response.status);
       const data = await response.json();
-      console.log("API Response data:", data);
 
       if (!response.ok) {
         throw new Error(data.message || "Something went wrong!");
       }
 
-      Alert.alert("Success", "Farmer fertilizer record created successfully!");
+      Alert.alert("Success", "Farmer pesticide record created successfully!");
 
       // Navigate to MyAgrochemicalsScreen and activate the "Pesticides" tab
       router.push({
         pathname: "/agrochemicals/myagrochemicals",
-        params: { activeTab: "Fertilizers" },
+        params: { activeTab: "Pesticides" },
       });
     } catch (error) {
       Alert.alert("Error", error.message || "Failed to create record.");
@@ -110,7 +109,13 @@ const CreateFarmerFertilizer = () => {
         <View style={styles.headerContainer}>
           {/* Back button with Ionicons */}
           <TouchableOpacity
-            onPress={() => router.back()}
+            onPress={() => {
+              if (router.canGoBack()) {
+                router.back(); // Try to go back
+              } else {
+                router.push("/agrochemicals/myagrochemicals"); // If can't go back, push to a specific route
+              }
+            }} // Ensure this route exists // Ensure this route exists
             style={styles.backButton} // Use style instead of className
           >
             <Ionicons name="arrow-back" size={24} color="#000" />
@@ -127,7 +132,7 @@ const CreateFarmerFertilizer = () => {
           </View>
         </View>
         <ScrollView contentContainerStyle={styles.formContainer}>
-          <Text style={styles.title}>Create Farmer Fertilizer Record</Text>
+          <Text style={styles.title}>Create Farmer Pesticide Record</Text>
 
           {/* Crop Input */}
           <View style={styles.inputContainer}>
@@ -140,20 +145,20 @@ const CreateFarmerFertilizer = () => {
             />
           </View>
 
-          {/* Fertilizer Dropdown */}
+          {/* Pesticide Dropdown */}
           <View style={styles.pickerContainer}>
-            <Text style={styles.label}>Fertilizer</Text>
+            <Text style={styles.label}>Pesticide</Text>
             <Picker
-              selectedValue={form.fertilizer}
-              onValueChange={(value) => handleInputChange("fertilizer", value)}
+              selectedValue={form.pesticide}
+              onValueChange={(value) => handleInputChange("pesticide", value)}
               style={styles.picker}
             >
-              <Picker.Item label="Select Fertilizer" value="" />
-              {fertilizers.map((fertilizer) => (
+              <Picker.Item label="Select Pesticide" value="" />
+              {pesticides.map((pesticide) => (
                 <Picker.Item
-                  key={fertilizer._id}
-                  label={fertilizer.name}
-                  value={fertilizer.name}
+                  key={pesticide._id}
+                  label={pesticide.name}
+                  value={pesticide.name}
                 />
               ))}
             </Picker>
@@ -164,10 +169,21 @@ const CreateFarmerFertilizer = () => {
             <Text style={styles.label}>Amount</Text>
             <TextInput
               style={styles.input}
-              placeholder="Enter fertilizer amount"
+              placeholder="Enter pesticide amount"
               value={form.amount}
               onChangeText={(text) => handleInputChange("amount", text)}
               keyboardType="numeric"
+            />
+          </View>
+
+          {/* Target Pest Input */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Target Pest</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter target pest"
+              value={form.targetPest}
+              onChangeText={(text) => handleInputChange("targetPest", text)}
             />
           </View>
 
@@ -265,4 +281,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CreateFarmerFertilizer;
+export default CreateFarmerPesticide;

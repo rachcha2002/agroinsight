@@ -5,7 +5,7 @@ const FertilizerController = require("../controllers/f&pControllers/fertilizerCo
 const pesticideController = require("../controllers/f&pControllers/pesticidesController");
 const agrochemicalNewsController = require("../controllers/f&pControllers/agrochemicalNewsController");
 const farmerFertilizerController = require("../controllers/f&pControllers/farmerFertilizerController");
-
+const farmerPesticideController = require("../controllers/f&pControllers/farmerPesticideController");
 /*-------------------------- CropCategory Routes --------------------------*/
 
 // Route to create a new CropCategory
@@ -94,7 +94,7 @@ router.delete(
 // Define routes
 router.post("/addff", farmerFertilizerController.createFarmerFertilizer);
 router.put("/updateff/:id", farmerFertilizerController.updateFarmerFertilizer);
-router.put("/update-commentff/:id", farmerFertilizerController.updateComment);
+router.patch("/updatecommentff/:id", farmerFertilizerController.updateComment);
 router.delete(
   "/deleteff/:id",
   farmerFertilizerController.deleteFarmerFertilizer
@@ -102,5 +102,17 @@ router.delete(
 router.get("/getbyemailff/:email", farmerFertilizerController.getAllByEmail);
 router.get("/getallff", farmerFertilizerController.getAllRecords);
 router.get("/getbyidff/:id", farmerFertilizerController.getRecordById);
+
+
+/*-------------------------- FarmerPesticide Routes --------------------------*/
+
+// Define routes
+router.post("/addfp", farmerPesticideController.createFarmerPesticide);
+router.put("/updatefp/:id", farmerPesticideController.updateFarmerPesticide);
+router.patch('/updatecommentfp/:id', farmerPesticideController.updateComment);
+router.delete("/deletefp/:id", farmerPesticideController.deleteFarmerPesticide);
+router.get("/getbyemailfp/:email", farmerPesticideController.getAllByEmail);
+router.get("/getallfp", farmerPesticideController.getAllRecords);
+router.get("/getbyidfp/:id", farmerPesticideController.getRecordById);
 
 module.exports = router;
