@@ -23,12 +23,15 @@ const FertilizerUsage = () => {
   const [cropSearch, setCropSearch] = useState("");
   const [fertilizerSearch, setFertilizerSearch] = useState("");
 
+  // Define chart dimensions
+  const chartWidth = 60; // Width of each chart
+  const chartHeight = 60; // Height of each chart
+  const chartSpacing = 10; // Spacing between charts
+
   // Fetch all farmer fertilizers records
   const fetchRecords = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:5000/api/f&p/getallff`
-      );
+      const response = await axios.get(`http://localhost:5000/api/f&p/getallff`);
       setRecords(response.data.data); // Assuming the response has a data field with records
       setFilteredRecords(response.data.data); // Initially set filtered records to all records
       setLoading(false);
@@ -51,9 +54,7 @@ const FertilizerUsage = () => {
         (!cropSearch ||
           record.crop.toLowerCase().includes(cropSearch.toLowerCase())) &&
         (!fertilizerSearch ||
-          record.fertilizer
-            .toLowerCase()
-            .includes(fertilizerSearch.toLowerCase()))
+          record.fertilizer.toLowerCase().includes(fertilizerSearch.toLowerCase()))
       );
     });
     setFilteredRecords(filtered);
@@ -129,6 +130,7 @@ const FertilizerUsage = () => {
       },
     };
   };
+
   // Handle opening the modal and setting the selected record
   const handleEditComment = (record) => {
     setSelectedRecord(record);
@@ -184,29 +186,35 @@ const FertilizerUsage = () => {
     // Adjust yOffset for pie chart row
     yOffset += 10;
 
-    // Add Pie Charts in a Row
-    const chartElements = document.querySelectorAll(".chart-container canvas");
-    const chartsImages = await Promise.all(
-      Array.from(chartElements).map((chart) =>
-        html2canvas(chart).then((canvas) => canvas.toDataURL("image/png"))
-      )
-    );
+    try {
+      // Add a timeout to allow charts to fully render before capturing them
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait 1 second
 
-    // Place the pie charts in a row (xOffset changes for each chart)
-    const chartWidth = 60; // Width of each chart
-    const chartHeight = 60; // Height of each chart
-    const chartSpacing = 10; // Spacing between charts
+      const chartElements = document.querySelectorAll(".chart-container canvas");
+      const chartsImages = await Promise.all(
+        Array.from(chartElements).map((chart) =>
+          html2canvas(chart).then((canvas) => canvas.toDataURL("image/png")).catch((error) => {
+            console.error("Error capturing chart image", error);
+            return null;
+          })
+        )
+      );
 
-    chartsImages.forEach((chartImage, idx) => {
-      const xPos = 10 + (idx % 3) * (chartWidth + chartSpacing); // X-position for each chart
-      const yPos = yOffset + Math.floor(idx / 3) * (chartHeight + chartSpacing); // Y-position for each row
-      doc.addImage(chartImage, "PNG", xPos, yPos, chartWidth, chartHeight);
-    });
+      chartsImages.forEach((chartImage, idx) => {
+        if (chartImage) {
+          const xPos = 10 + (idx % 3) * (chartWidth + chartSpacing); // X-position for each chart
+          const yPos = yOffset + Math.floor(idx / 3) * (chartHeight + chartSpacing); // Y-position for each row
+          doc.addImage(chartImage, "PNG", xPos, yPos, chartWidth, chartHeight);
+        }
+      });
+    } catch (error) {
+      console.error("Error capturing pie charts:", error);
+    }
 
     // Adjust yOffset for table after the pie charts
     yOffset += chartHeight + chartSpacing + 20;
 
-    // Add table
+    // Add table (corrected columns)
     doc.autoTable({
       head: [["Email", "Region", "Crop", "Fertilizer", "Amount", "Comment"]],
       body: filteredRecords.map((record) => [
