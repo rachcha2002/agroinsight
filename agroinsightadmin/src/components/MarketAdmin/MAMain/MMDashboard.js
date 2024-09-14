@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import MMDBCard from "./MMDBCard";
 import axios from "axios";
 import moment from "moment";
+import Card from "react-bootstrap/Card";
 import {
   BarChart,
   Bar,
@@ -121,7 +122,7 @@ function MMDashboard() {
         >
           <p>
             <strong>Crop:</strong> {Crop_name}
-            <br/>
+            <br />
             <strong>Price:</strong> Rs.{Price}.00 per 1kg
           </p>
         </div>
@@ -154,25 +155,27 @@ function MMDashboard() {
           )}
         </div>
         <div className="row">
-          {/* Bar Chart for this week's highest price crops */}
-          <h2>Daily Trends For This Week</h2>
-          <ResponsiveContainer width="100%" height={400}>
-            <BarChart data={dailyHighest}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="date" />
-              <YAxis />
-              <Tooltip content={<CustomTooltip />} />
-              <Legend />
-              <Bar dataKey="Price" >
-                {dailyHighest.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={colors[index % colors.length]}
-                  />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
+          <Card style={{ width: "50rem" }}>
+            {/* Bar Chart for this week's highest price crops */}
+            <h2>Daily Trends For This Week</h2>
+            <ResponsiveContainer width="100%" height={400}>
+              <BarChart data={dailyHighest}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis />
+                <Tooltip content={<CustomTooltip />} />
+                <Legend />
+                <Bar dataKey="Price">
+                  {dailyHighest.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={colors[index % colors.length]}
+                    />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </Card>
         </div>
       </div>
     </section>
