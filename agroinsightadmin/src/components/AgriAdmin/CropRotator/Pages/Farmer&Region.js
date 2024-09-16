@@ -1,7 +1,7 @@
 import React from "react";
 import Table from 'react-bootstrap/Table';
 
-function FarmerRegion({ columns, data }) {
+function FarmerRegion({ data = [] }) {
   return (
       <Table striped bordered hover size="sm">
         <thead>
@@ -16,54 +16,27 @@ function FarmerRegion({ columns, data }) {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>F01</td>
-            <td>Nimal</td>
-            <td>Wet zone</td>
-            <td>Yala Season</td>
-            <td>Pending</td>
-            <td>Root vegetables</td>
-            <td>Oil crops</td>
+        {data.length > 0 ? (
+          data.map((farmer, index) => (
+          <tr key={index}>
+            <td>{`F0${index + 1}`}</td>
+            <td>{"Unknown"}</td>
+            <td>{"Unknown"}</td>
+            <td>{farmer.season}</td>
+            <td>{farmer.status}</td>
+            <td>{farmer.currentCrop}</td>
+            <td>{farmer.recommendedCrop}</td>
           </tr>
-          <tr>
-          <td>F02</td>
-            <td>Saman</td>
-            <td>Intermediate zone</td>
-            <td>Yala Season</td>
-            <td>Started</td>
-            <td>Sorghum</td>
-            <td>Millet</td>
-          </tr>
-          <tr>
-          <td>F03</td>
-            <td>Piyal</td>
-            <td>Dry zone</td>
-            <td>Yala Season</td>
-            <td>Started</td>
-            <td>Paddy</td>
-            <td>Millet</td>
-          </tr>
-          <tr>
-          <td>F04</td>
-            <td>Kamal</td>
-            <td>Dry zone</td>
-            <td>Yala Season</td>
-            <td>Started</td>
-            <td>Paddy</td>
-            <td>Millet</td>
-          </tr>
-          <tr>
-          <td>F05</td>
-            <td>Perera</td>
-            <td>Dry zone</td>
-            <td>Yala Season</td>
-            <td>Started</td>
-            <td>Paddy</td>
-            <td>Millet</td>
-          </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="7" style={{ textAlign: "center" }}>
+                No data available
+              </td>
+            </tr>
+          )}
         </tbody>
       </Table>
-  
   );
 }
 

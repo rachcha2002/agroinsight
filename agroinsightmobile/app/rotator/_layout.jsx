@@ -8,13 +8,6 @@ const rotatorLayout = () => {
     <>
       <Stack>
         <Stack.Screen
-          name="createcomplaint"
-          options={{
-            headerShown: false,
-          }}
-        />
-
-        <Stack.Screen
           name="[id]"
           options={{
             headerShown: false,
@@ -22,6 +15,24 @@ const rotatorLayout = () => {
         />
          <Stack.Screen
           name="farmerdetails"
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="rotationmodels"
+          options={{
+            headerShown: false,
+          }}
+        />
+         <Stack.Screen
+          name="model"
+          options={{
+            headerShown: false,
+          }}
+        />
+         <Stack.Screen
+          name="details"
           options={{
             headerShown: false,
           }}

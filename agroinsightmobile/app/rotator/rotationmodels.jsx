@@ -6,11 +6,11 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useGlobalContext } from '../../context/GlobalProvider';
 import { images } from '../../constants';
-import CustomButton from '../../components/CustomButton';
 
-const RotatorDashboard = () => {
+
+const RotationModels = () => {
   const { user, setUser, setIsLogged } = useGlobalContext();
-  const [alerts, setAlerts] = useState([]);
+  const [models, setModels] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
@@ -18,10 +18,10 @@ const RotatorDashboard = () => {
   const [uploading, setUploading] = useState(false);
   const pathname = usePathname();
 
-  const fetchAlerts = async () => {
+  const fetchModels = async () => {
     try {
-      const response = await axios.get(`${process.env.EXPO_PUBLIC_BACKEND_URL}/api/crop-rotator/rotator-alerts`);
-      setAlerts(response.data);
+      const response = await axios.get(`${process.env.EXPO_PUBLIC_BACKEND_URL}/api/crop-rotator/model`);
+      setModels(response.data);
       setLoading(false);
     } catch (err) {
       setError(err.message);
@@ -30,20 +30,16 @@ const RotatorDashboard = () => {
   };
 
   useEffect(() => {
-    fetchAlerts();
+    fetchModels();
   }, []);
 
-  const handleAlertPress = (id) => {
-    router.push(`/rotator/${id}`);
-  };
-
-  const handleRotatorModelPress = () => {
-    router.push('/rotator/farmerdetails'); // Navigate to the create complaint screen
+  const handleModelPress = (id) => {
+    router.push(`/rotator/model/${id}`);
   };
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await fetchAlerts();
+    await fetchModels();
     setRefreshing(false);
   };
 
@@ -75,16 +71,6 @@ const RotatorDashboard = () => {
                 resizeMode="contain"
               />
             </View>
-            <View className="mt-1.5">
-              <TouchableOpacity onPress={handleRotatorModelPress}>
-                <Image
-                  source={images.complaint}
-                  className="w-10 h-11"
-                  resizeMode="contain"
-                />
-                <Text className="text-xs text-black font-semibold">Details</Text>
-              </TouchableOpacity>
-            </View>
           </View>
           
           <ScrollView
@@ -93,19 +79,24 @@ const RotatorDashboard = () => {
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
           >
-        <Text className="text-2xl text-black font-semibold" style={{textAlign:'center'}}>Crop Rotation Newsfeed</Text>
-            {alerts.map(alert => (
-              <TouchableOpacity key={alert._id} onPress={() => handleAlertPress(alert._id)}>
+        <Text className="text-2xl text-black font-semibold" style={{textAlign:'center'}}>General Crop Rotation Models</Text>
+            {models.map(model => (
+              <TouchableOpacity key={model._id} onPress={() => handleModelPress(model._id)}>
                 <View className="mb-4 p-4 bg-white rounded-lg shadow">
                   <Image
-                    source={{ uri: alert.imageURL }}
+                    source={images.rotationimage}
                     className="w-full h-48 rounded-lg"
                     resizeMode="cover"
                   />
-                  <Text className="text-lg font-bold mt-4">{alert.title}</Text>
-                  <Text className="text-gray-700 mt-2">{alert.zone}</Text>
-                  <Text className="text-gray-700 mt-2">{alert.description}</Text>
-                  <Text className="text-gray-500 mt-2">Date: {new Date(alert.date).toLocaleDateString()}</Text>
+                  <Text className="text-lg font-bold mt-4">Crop Rotation Model : {model.modelId}</Text>
+                  <Text className="text-gray-700 mt-2">Zone : {model.zone}</Text>
+                  <Text className="text-gray-700 mt-2">Season : {model.season}</Text>
+                  <Text className="text-gray-700 mt-2">Year : {model.year}</Text>
+                  <Text className="text-gray-700 mt-2">Suitable Crop : {model.crop}</Text>
+                  <Text className="text-gray-700 mt-2">Climate Description of the zone : {model.climateDescription}</Text>
+                  <Text className="text-gray-700 mt-2">Soil Description of the zone : {model.soilDescription}</Text>
+                  <Text className="text-gray-700 mt-2">Climate Suitability for the crop : {model.climateSuitability}</Text>
+                  <Text className="text-gray-700 mt-2">Soil Suitability for the crop : {model.soilSuitability}</Text>
                 </View>
               </TouchableOpacity>
             ))}
@@ -116,4 +107,4 @@ const RotatorDashboard = () => {
   );
 }
 
-export default RotatorDashboard;
+export default RotationModels;

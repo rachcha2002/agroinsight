@@ -3,6 +3,7 @@ import { View, Text, Image, ActivityIndicator } from 'react-native';
 import axios from 'axios';
 import { useLocalSearchParams } from 'expo-router';
 
+
 const RotatorDetails = () => {
   const { id } = useLocalSearchParams();
   const [alert, setAlert] = useState(null);
@@ -52,12 +53,13 @@ const RotatorDetails = () => {
           <Text className="text-xl font-bold mt-4">{alert.title}</Text>
           <Text className="text-gray-700 mt-2">{alert.zone}</Text>
           <Text className="text-gray-700 mt-2">{alert.description}</Text>
-          <Text className="text-gray-500 mt-2">Date: {new Date(alert.date).toLocaleDateString()}</Text>
           {alert.details && (
             <Text className="text-gray-700 mt-4">
-              <Text className="font-bold">Details: </Text>{alert.details}
+              <Text className="font-bold">Details : </Text>
+              {alert.details}
             </Text>
           )}
+          <Text className="text-gray-500 mt-2">Date: {new Date(alert.date).toLocaleDateString()}</Text>
         </>
       )}
     </View>
