@@ -19,7 +19,7 @@ const rotatorDetailsSchema = new Schema({
     },
     recommendedCrop: {
       type: String,
-      required: true,
+      default: 'Recommendation Pending...',
     },
   });
   

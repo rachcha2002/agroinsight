@@ -20,7 +20,6 @@ export const uploadRotatorDetails = async (form, setUploading, setForm) => {
             season: form.season,
             currentCrop: form.currentCrop,
             status: form.status,
-            recommendedCrop: form.recommendedCrop,
           }),
       }
     );
@@ -41,7 +40,6 @@ export const uploadRotatorDetails = async (form, setUploading, setForm) => {
         season: "",
         currentCrop: "",
         status: "",
-        recommendedCrop: "",
     });
 
     setUploading(false);

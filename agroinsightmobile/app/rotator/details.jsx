@@ -29,7 +29,6 @@ function RotationDetails() {
     season: "",
     currentCrop: "",  
     status: "",
-    recommendedCrop: ""
   });
 
   const fetchAlerts = async () => {
@@ -112,16 +111,6 @@ function RotationDetails() {
           placeholderTextColor="gray"
         />
       
-         <FormField
-          title="Recommended Crop"
-          value={form.recommendedCrop}
-          placeholder="Most suitable crop for next season"
-          handleChangeText={(e) => setForm({ ...form, recommendedCrop: e })}
-          otherStyles="mt-5"
-          textClass="text-black"
-          placeholderTextColor="gray"
-        />
-
         <CustomButton
           title="Add Details"
           handlePress={submit}

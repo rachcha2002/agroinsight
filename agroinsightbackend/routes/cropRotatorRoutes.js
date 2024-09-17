@@ -19,6 +19,7 @@ const{
   createRotationDetail,
   getAllRotationDetails,
   getRotationDetailById,
+  updateRecommendedCrop,
   deleteRotationDetailById
 } = require('../controllers/cropRotatorControllers/rotationDetails');
 
@@ -53,6 +54,8 @@ router.post('/rotator-detail', createRotationDetail);
 router.get('/rotator-detail', getAllRotationDetails);
 // Route to get a specific crop rotation details by ID
 router.get('/rotator-detail/:id', getRotationDetailById);
+// Route to update a specific crop rotation details by ID
+router.put('/rotator-detail/:id', updateRecommendedCrop);
 // Route to delete a specific crop rotation details by ID
 router.delete('/rotator-detail/:id', deleteRotationDetailById);
 

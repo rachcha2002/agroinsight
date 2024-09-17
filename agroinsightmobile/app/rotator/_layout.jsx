@@ -26,13 +26,13 @@ const rotatorLayout = () => {
           }}
         />
          <Stack.Screen
-          name="model"
+          name="details"
           options={{
             headerShown: false,
           }}
         />
-         <Stack.Screen
-          name="details"
+        <Stack.Screen
+          name="rotatordetails"
           options={{
             headerShown: false,
           }}

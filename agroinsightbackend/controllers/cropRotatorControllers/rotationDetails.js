@@ -3,14 +3,14 @@ const RotationDetails = require("../../models/cropRotatorModels/rotationDetailsS
 
 // Create a new Rotation details
 exports.createRotationDetail = async (req, res) => {
-    try {
-      const model = new RotationDetails(req.body);
-      await model.save();
-      res.status(201).json(model);
-    } catch (error) {
-      res.status(400).json({ message: error.message });
-    }
-  };
+  try {
+    const model = new RotationDetails(req.body);
+    await model.save();
+    res.status(201).json(model);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
 
   // Get all Rotation details
 exports.getAllRotationDetails = async (req, res) => {
@@ -22,7 +22,7 @@ exports.getAllRotationDetails = async (req, res) => {
   }
 };
 
-// Get a single RotatorAlert by ID
+// Get a single Rotattion Detail by ID
 exports.getRotationDetailById = async (req, res) => {
     try {
       const detail = await RotationDetails.findById(req.params.id);
@@ -34,6 +34,28 @@ exports.getRotationDetailById = async (req, res) => {
       res.status(200).json(detail);
     } catch (err) {
       res.status(500).json({ error: err.message });
+    }
+  };
+
+  // Update a Rotation Detail by ID
+  exports.updateRecommendedCrop = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { recommendedCrop } = req.body;
+  
+      const updatedDetail = await RotationDetails.findByIdAndUpdate(
+        id,
+        { recommendedCrop },
+        { new: true, runValidators: true }
+      );
+  
+      if (!updatedDetail) {
+        return res.status(404).json({ error: "Rotation Detail not found" });
+      }
+  
+      res.status(200).json(updatedDetail);
+    } catch (error) {
+      res.status(400).json({ message: error.message });
     }
   };
   

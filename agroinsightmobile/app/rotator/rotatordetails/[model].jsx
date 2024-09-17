@@ -2,19 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Image, ActivityIndicator } from 'react-native';
 import axios from 'axios';
 import { useLocalSearchParams } from 'expo-router';
-import { images } from '../../constants';
+import { images } from '../../../constants';
 
 
 const ModelDetails = () => {
-  const { modelid } = useLocalSearchParams();
-  const [model, setModel] = useState(null);
+  const { model } = useLocalSearchParams();
+  const [models, setModel] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchModelDetails = async () => {
       try {
-        const response = await axios.get(`${process.env.EXPO_PUBLIC_BACKEND_URL}/api/crop-rotator/model/${id}`);
+        const response = await axios.get(`${process.env.EXPO_PUBLIC_BACKEND_URL}/api/crop-rotator/model/${model}`);
         setModel(response.data);
         setLoading(false);
       } catch (err) {
@@ -24,7 +24,7 @@ const ModelDetails = () => {
     };
 
     fetchModelDetails();
-  }, [id]);
+  }, [model]);
 
   if (loading) {
     return (
@@ -44,22 +44,22 @@ const ModelDetails = () => {
 
   return (
     <View className="flex-1 p-4 items-center justify-center">
-       {model.map(model => (
+       {models.map(models => (
         <>
           <Image
             source={images.rotationimage}
             className="w-full h-48 rounded-lg"
             resizeMode="cover"
           />
-          <Text className="text-lg font-bold mt-4">Crop Rotation Model : {model.modelId}</Text>
-          <Text className="text-gray-700 mt-2">Zone : {model.zone}</Text>
-          <Text className="text-gray-700 mt-2">Season : {model.season}</Text>
-          <Text className="text-gray-700 mt-2">Year : {model.year}</Text>
-          <Text className="text-gray-700 mt-2">Suitable Crop : {model.crop}</Text>
-          <Text className="text-gray-700 mt-2">Climate Description of the zone : {model.climateDescription}</Text>
-          <Text className="text-gray-700 mt-2">Soil Description of the zone : {model.soilDescription}</Text>
-          <Text className="text-gray-700 mt-2">Climate Suitability for the crop : {model.climateSuitability}</Text>
-          <Text className="text-gray-700 mt-2">Soil Suitability for the crop : {model.soilSuitability}</Text>
+          <Text className="text-lg font-bold mt-4">Crop Rotation Model : {models.modelId}</Text>
+          <Text className="text-gray-700 mt-2">Zone : {models.zone}</Text>
+          <Text className="text-gray-700 mt-2">Season : {models.season}</Text>
+          <Text className="text-gray-700 mt-2">Year : {models.year}</Text>
+          <Text className="text-gray-700 mt-2">Suitable Crop : {models.crop}</Text>
+          <Text className="text-gray-700 mt-2">Climate Description of the zone : {models.climateDescription}</Text>
+          <Text className="text-gray-700 mt-2">Soil Description of the zone : {models.soilDescription}</Text>
+          <Text className="text-gray-700 mt-2">Climate Suitability for the crop : {models.climateSuitability}</Text>
+          <Text className="text-gray-700 mt-2">Soil Suitability for the crop : {models.soilSuitability}</Text>
         </>
          ))}
     </View>

@@ -84,12 +84,12 @@ function FarmerDetails() {
     setRefreshing(false);
   };
 
-  const handleRotationModelPress = () => {
-    router.push('/rotator/rotationmodels'); // Navigate to the create complaint screen
+  const handleRotationModelPress = (model) => {
+    router.push(`/rotator/rotatordetails/${model}`); 
   };
 
   const handleRotationDetailsPress = () => {
-    router.push('/rotator/details'); // Navigate to the create complaint screen
+    router.push('/rotator/details'); 
   };
 
   if (loading) {
@@ -179,7 +179,7 @@ const renderItem = ({ item }) => (
           </TouchableOpacity>
         </View>
         <View className="mt-2.5 items-center">
-          <TouchableOpacity onPress={handleRotationModelPress}>
+          <TouchableOpacity key={details._id} onPress={() => handleRotationModelPress(details._id)}>
             <Image
               source={images.rotationicon}
               className="w-50 h-15"
@@ -187,6 +187,7 @@ const renderItem = ({ item }) => (
             />
             <Text className="text-l text-black font-semibold text-center">See Recommended Crop Rotation Models</Text>
           </TouchableOpacity>
+        
         </View>
         <FlatList
           data={details}
