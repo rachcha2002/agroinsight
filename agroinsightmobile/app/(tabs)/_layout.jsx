@@ -56,15 +56,15 @@ const TabsLayout = () => {
       />
 
       <Tabs.Screen
-        name="bookmark"
+        name="rotator"
         options={{
-          title: "Bookmark",
+          title: "rotator",
           headerShown: false,
           tabBarIcon: ({ color, focused }) => (
             <TabIcon
               icon={icons.bookmark}
               color={color}
-              name="Bookmark"
+              name="Crop Rotator"
               focused={focused}
             />
           ),
@@ -96,7 +96,23 @@ const TabsLayout = () => {
             <TabIcon
               icon={icons.fertilizer}
               color={color}
-              name="Agrochemicals"
+              name="Agrochemical"
+              focused={focused}
+            />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="market"
+        options={{
+          title: "Market",
+          headerShown: false,
+          tabBarIcon: ({ color, focused }) => (
+            <TabIcon
+              icon={icons.market}
+              color={color}
+              name="Market"
               focused={focused}
             />
           ),

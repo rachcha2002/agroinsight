@@ -30,7 +30,7 @@ const AgrochemicalNews = () => {
   const fetchNews = async () => {
     try {
       const response = await axios.get(
-        "http://192.168.1.167:5000/api/f&p/news"
+        "http://192.168.193.59:5000/api/f&p/news"
       );
       setNews(response.data);
       setLoading(false);

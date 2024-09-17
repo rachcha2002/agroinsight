@@ -12,6 +12,8 @@ import fpnews from "../assets/images/agrochemicals/fpnews.jpg";
 import frecommend from "../assets/images/agrochemicals/fertilizertile.jpg";
 import precommend from "../assets/images/agrochemicals/pesticdetile.jpg";
 import mychemicals from "../assets/images/agrochemicals/mychemicalstile.jpg";
+import dailyprice from "../assets/images/market/daily price.jpg"
+import pricehistory from "../assets/images/market/price history.jpeg"
 
 export default {
   profile,
@@ -28,4 +30,6 @@ export default {
   frecommend,
   precommend,
   mychemicals,
+  dailyprice,
+  pricehistory
 };
