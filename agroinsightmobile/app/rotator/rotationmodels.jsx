@@ -5,11 +5,10 @@ import { useRouter, usePathname } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useGlobalContext } from '../../context/GlobalProvider';
+import { icons } from '../../constants';
 import { images } from '../../constants';
 
-
 const RotationModels = () => {
-  const { user, setUser, setIsLogged } = useGlobalContext();
   const [models, setModels] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -17,6 +16,7 @@ const RotationModels = () => {
   const router = useRouter();
   const [uploading, setUploading] = useState(false);
   const pathname = usePathname();
+  const { user, setUser, setIsLogged } = useGlobalContext();
 
   const fetchModels = async () => {
     try {
@@ -33,9 +33,6 @@ const RotationModels = () => {
     fetchModels();
   }, []);
 
-  const handleModelPress = (id) => {
-    router.push(`/rotator/model/${id}`);
-  };
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -79,10 +76,17 @@ const RotationModels = () => {
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
           >
-        <Text className="text-2xl text-black font-semibold" style={{textAlign:'center'}}>General Crop Rotation Models</Text>
-            {models.map(model => (
-              <TouchableOpacity key={model._id} onPress={() => handleModelPress(model._id)}>
-                <View className="mb-4 p-4 bg-white rounded-lg shadow">
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <TouchableOpacity  onPress={() => router.back()}> 
+            <Image
+              source={icons.leftArrow}
+              className="w-50 h-15"
+              resizeMode="contain"
+            />
+        </TouchableOpacity>
+        <Text className="text-xl text-black font-semibold ml-4" style={{textAlign:'center'}}>General Crop Rotation Models</Text></View>
+            {models.map((model) => (
+                <View className="mt-2.5 mb-4 p-4 bg-white rounded-lg shadow" key={model.modelId}>
                   <Image
                     source={images.rotationimage}
                     className="w-full h-48 rounded-lg"
@@ -98,7 +102,6 @@ const RotationModels = () => {
                   <Text className="text-gray-700 mt-2">Climate Suitability for the crop : {model.climateSuitability}</Text>
                   <Text className="text-gray-700 mt-2">Soil Suitability for the crop : {model.soilSuitability}</Text>
                 </View>
-              </TouchableOpacity>
             ))}
           </ScrollView>
         </View>

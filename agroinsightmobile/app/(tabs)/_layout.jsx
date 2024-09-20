@@ -64,7 +64,6 @@ const TabsLayout = () => {
             <TabIcon
               icon={icons.rotator}
               color={color}
-              name="Crop Rotator"
               focused={focused}
             />
           ),

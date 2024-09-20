@@ -84,8 +84,8 @@ function FarmerDetails() {
     setRefreshing(false);
   };
 
-  const handleRotationModelPress = (model) => {
-    router.push(`/rotator/rotatordetails/${model}`); 
+  const handleRotationModelPress = () => {
+    router.push(`/rotator/rotationmodels`); 
   };
 
   const handleRotationDetailsPress = () => {
@@ -167,7 +167,15 @@ const renderItem = ({ item }) => (
           />
         </View>
       </View>
-        <Text className="text-2xl text-black font-semibold ml-2.5">Crop Rotation Details</Text>
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <TouchableOpacity  onPress={() => router.back()}> 
+            <Image
+              source={icons.leftArrow}
+              className="w-50 h-15 ml-4"
+              resizeMode="contain"
+            />
+        </TouchableOpacity>
+        <Text className="text-2xl text-black font-semibold ml-3.5">Crop Rotation Details</Text></View>
         <View className="mt-2.5 items-center">
           <TouchableOpacity onPress={handleRotationDetailsPress}>
             <Image

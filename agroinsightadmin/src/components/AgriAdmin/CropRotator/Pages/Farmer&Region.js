@@ -99,7 +99,7 @@ fetch(`http://localhost:5000/api/crop-rotator/rotator-detail/${selectedFarmer._i
        {/* Modal for recommending a new crop */}
        <Modal show={showModal} onHide={() => setShowModal(false)}>
        <Modal.Header closeButton>
-         <Modal.Title>Recommend Crop for {selectedFarmer?.currentCrop}</Modal.Title>
+         <Modal.Title>Recommend Crop for next Season</Modal.Title>
        </Modal.Header>
        <Modal.Body>
          <Form>

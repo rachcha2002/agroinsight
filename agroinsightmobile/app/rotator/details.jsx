@@ -79,8 +79,16 @@ function RotationDetails() {
         </View>
       </View>
       <ScrollView className="px-4 my-6">
-        <Text className="text-2xl text-black font-semibold">Crop Rotation Details</Text>
-       
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+      <TouchableOpacity  onPress={() => router.back()}> 
+            <Image
+              source={icons.leftArrow}
+              className="w-50 h-15"
+              resizeMode="contain"
+            />
+        </TouchableOpacity>
+        <Text className="text-2xl text-black font-semibold ml-4">Crop Rotation Details</Text>
+       </View>
          <FormField
           title="Farming Season"
           value={form.season}

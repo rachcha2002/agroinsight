@@ -71,11 +71,11 @@ const RotatorDashboard = () => {
             <View className="flex-1 items-center pl-7">
               <Image
                 source={images.agroinsightlogo}
-                className="w-15 h-10"
+                className="w-15 h-10 ml-8"
                 resizeMode="contain"
               />
             </View>
-            <View className="mt-1.5">
+            <View className="mr-1.5">
               <TouchableOpacity onPress={handleRotatorModelPress}>
                 <Image
                   source={images.complaint}
@@ -88,7 +88,7 @@ const RotatorDashboard = () => {
           </View>
           
           <ScrollView
-            className="p-4"
+            className="p-3"
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
@@ -96,7 +96,7 @@ const RotatorDashboard = () => {
         <Text className="text-2xl text-black font-semibold" style={{textAlign:'center'}}>Crop Rotation Newsfeed</Text>
             {alerts.map(alert => (
               <TouchableOpacity key={alert._id} onPress={() => handleAlertPress(alert._id)}>
-                <View className="mb-4 p-4 bg-white rounded-lg shadow">
+                <View className="mt-4 mb-4 p-4 bg-white rounded-lg shadow">
                   <Image
                     source={{ uri: alert.imageURL }}
                     className="w-full h-48 rounded-lg"
