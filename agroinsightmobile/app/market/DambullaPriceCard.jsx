@@ -10,17 +10,17 @@ import {
 } from "react-native";
 import axios from "axios";
 import { generatePDF } from "./generatepricepdf";
+const marketName = "Dambulla";
 
-function ColomboPriceCard() {
+function DambullaPriceCard() {
   const [Crops, setCrops] = useState([]);
   const [searchCrop, setSearchCrop] = useState("");
-  const marketName = "Colombo";
   useEffect(() => {
     async function getCrops() {
       try {
         const res = await axios.get(`http://192.168.8.183:5000/crop/croplist`);
         const filteredCrops = res.data.filter(
-          (crop) => crop.Market === "Colombo"
+          (crop) => crop.Market === "Dambulla"
         );
         setCrops(filteredCrops);
       } catch (err) {
@@ -87,7 +87,7 @@ function ColomboPriceCard() {
   );
 }
 
-export default ColomboPriceCard;
+export default DambullaPriceCard;
 
 const styles = StyleSheet.create({
   card: {

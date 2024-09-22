@@ -11,16 +11,17 @@ import {
 import axios from "axios";
 import { generatePDF } from "./generatepricepdf";
 
-function ColomboPriceCard() {
+function JaffnaPriceCard() {
   const [Crops, setCrops] = useState([]);
   const [searchCrop, setSearchCrop] = useState("");
-  const marketName = "Colombo";
+  const marketName = "Jaffna";
+
   useEffect(() => {
     async function getCrops() {
       try {
         const res = await axios.get(`http://192.168.8.183:5000/crop/croplist`);
         const filteredCrops = res.data.filter(
-          (crop) => crop.Market === "Colombo"
+          (crop) => crop.Market === "Jaffna"
         );
         setCrops(filteredCrops);
       } catch (err) {
@@ -87,7 +88,7 @@ function ColomboPriceCard() {
   );
 }
 
-export default ColomboPriceCard;
+export default JaffnaPriceCard;
 
 const styles = StyleSheet.create({
   card: {

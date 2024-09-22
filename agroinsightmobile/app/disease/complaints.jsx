@@ -24,7 +24,7 @@ const Complaints = () => {
     try {
 
       const response = await axios.get(
-        "http://192.168.1.167:5000/api/disease/complaints"
+        "http://192.168.86.59:5000/api/disease/complaints"
       );
 
       // Sort the complaints by dateOfComplaint in descending order
@@ -67,7 +67,7 @@ const Complaints = () => {
             try {
 
               const response = await axios.delete(
-                `http://192.168.1.167:5000/api/disease/complaints/${id}`
+                `http://192.168.86.59:5000/api/disease/complaints/${id}`
               );
 
               if (response.status === 200) {

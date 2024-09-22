@@ -23,7 +23,7 @@ const Market = () => {
   useEffect(() => {
     function getCrops() {
       axios
-        .get(`http://192.168.193.59:5000/crop/croplist`)
+        .get(`http://192.168.8.183:5000/crop/croplist`)
         .then((res) => {
           const crops = res.data;
           if (crops.length > 0) {
@@ -43,7 +43,7 @@ const Market = () => {
   useEffect(() => {
     function getCrophistory() {
       axios
-        .get(`http://192.168.193.59:5000/crop/gethistory`)
+        .get(`http://192.168.8.183:5000/crop/gethistory`)
         .then((res) => {
           const filteredCrops = res.data;
           const today = moment();
@@ -116,7 +116,8 @@ const Market = () => {
             </ImageBackground>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.pcard}>
+          <TouchableOpacity style={styles.pcard}
+           onPress={() => router.push("/market/pricehistory")}>
             <ImageBackground
               source={images.pricehistory}
               style={styles.pcardImage}

@@ -28,7 +28,7 @@ const DiseaseDashboard = () => {
     try {
 
       const response = await axios.get(
-        "http://192.168.193.59:5000/api/disease/disease-alerts"
+        "http://192.168.86.59:5000/api/disease/disease-alerts"
       );
 
       setAlerts(response.data);
