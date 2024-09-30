@@ -36,7 +36,7 @@ const pricehistory = () => {
     async function getCrops() {
       try {
         const res = await axios.get(
-          `http://192.168.8.183:5000/crop/gethistory`
+          `${process.env.EXPO_PUBLIC_BACKEND_URL}/crop/gethistory`
         );
         const filteredCrops = res.data;
         setCrops(filteredCrops);

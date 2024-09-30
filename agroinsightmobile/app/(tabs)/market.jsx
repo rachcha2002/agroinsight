@@ -23,7 +23,7 @@ const Market = () => {
   useEffect(() => {
     function getCrops() {
       axios
-        .get(`http://192.168.8.183:5000/crop/croplist`)
+        .get(`${process.env.EXPO_PUBLIC_BACKEND_URL}/crop/croplist`)
         .then((res) => {
           const crops = res.data;
           if (crops.length > 0) {
@@ -43,7 +43,7 @@ const Market = () => {
   useEffect(() => {
     function getCrophistory() {
       axios
-        .get(`http://192.168.8.183:5000/crop/gethistory`)
+        .get(`${process.env.EXPO_PUBLIC_BACKEND_URL}/crop/gethistory`)
         .then((res) => {
           const filteredCrops = res.data;
           const today = moment();

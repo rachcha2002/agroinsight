@@ -19,7 +19,7 @@ function JaffnaPriceCard() {
   useEffect(() => {
     async function getCrops() {
       try {
-        const res = await axios.get(`http://192.168.8.183:5000/crop/croplist`);
+        const res = await axios.get(`${process.env.EXPO_PUBLIC_BACKEND_URL}/crop/croplist`);
         const filteredCrops = res.data.filter(
           (crop) => crop.Market === "Jaffna"
         );
@@ -61,16 +61,20 @@ function JaffnaPriceCard() {
         </View>
         <View
               style={{
-                backgroundColor: "#dc3545",
-                paddingVertical: 8,
-                marginTop:10,
-                marginRight:280,
-                paddingHorizontal: 16,
-                borderRadius: 10,
+                flexDirection: "row",
+                justifyContent: "flex-start", // Align the button to the left
+                marginTop: 10,
               }}
             >
         <TouchableOpacity onPress={() => generatePDF(Crops, marketName)}>
+          <View  style={{
+        backgroundColor: "#dc3545",
+        paddingVertical: 8,
+        paddingHorizontal: 16,
+        borderRadius: 10,
+      }}>
           <Text className="text-white ">Generate PDF</Text>
+          </View>
         </TouchableOpacity>
         </View>
       </View>
