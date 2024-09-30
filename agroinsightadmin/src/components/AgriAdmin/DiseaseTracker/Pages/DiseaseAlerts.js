@@ -20,7 +20,7 @@ const DiseaseAlerts = () => {
   useEffect(() => {
     const fetchAlerts = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/disease/disease-alerts');
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/disease/disease-alerts`);
         setAlerts(response.data);
         setLoading(false);
       } catch (err) {
@@ -34,7 +34,7 @@ const DiseaseAlerts = () => {
 
   const handleShowDetails = async (id) => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/disease/disease-alerts/${id}`);
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/disease/disease-alerts/${id}`);
       setSelectedAlert(response.data);
       setFormData({
         title: response.data.title,
@@ -55,7 +55,7 @@ const DiseaseAlerts = () => {
     }
   
     try {
-      await axios.delete(`http://localhost:5000/api/disease/disease-alerts/${id}`);
+      await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/api/disease/disease-alerts/${id}`);
       setAlerts(alerts.filter((alert) => alert._id !== id));
       alert('Alert deleted successfully.');
     } catch (err) {
