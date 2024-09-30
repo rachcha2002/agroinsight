@@ -24,7 +24,7 @@ const UpdatePesticideForm = () => {
   useEffect(() => {
     // Fetch pesticide details by ID
     axios
-      .get(`http://localhost:5000/api/f&p/pesticides/${id}`)
+      .get(`${process.env.REACT_APP_BACKEND_URL}/api/f&p/pesticides/${id}`)
       .then((response) => {
         const pesticide = response.data;
         setPesticideName(pesticide.name);
@@ -50,7 +50,7 @@ const UpdatePesticideForm = () => {
 
     // Fetch crop categories
     axios
-      .get("http://localhost:5000/api/f&p/cropcategories")
+      .get(`${process.env.REACT_APP_BACKEND_URL}/api/f&p/cropcategories`)
       .then((response) => setCropCategories(response.data))
       .catch((error) =>
         console.error("Error fetching crop categories:", error)
@@ -70,7 +70,7 @@ const UpdatePesticideForm = () => {
 
   const fetchCrops = (categoryId) => {
     axios
-      .get(`http://localhost:5000/api/f&p/crops/${categoryId}`)
+      .get(`${process.env.REACT_APP_BACKEND_URL}/api/f&p/crops/${categoryId}`)
       .then((response) => {
         setCropsByCategory((prevCrops) => ({
           ...prevCrops,
@@ -126,6 +126,19 @@ const UpdatePesticideForm = () => {
       return;
     }
 
+    // Validate form before submission
+    if (
+      !pesticideName ||
+      !instructions ||
+      selectedCrops.some((crop) => !crop.cropId || !crop.recommendedUsage) ||
+      targetPests.some((pest) => !pest) ||
+      regions.some((region) => !region) ||
+      brands.some((brand) => !brand)
+    ) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("name", pesticideName);
     formData.append("instructions", instructions);
@@ -141,7 +154,7 @@ const UpdatePesticideForm = () => {
 
     try {
       await axios.put(
-        `http://localhost:5000/api/f&p/update-pesticides/${id}`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/f&p/update-pesticides/${id}`,
         formData
       );
       alert("Pesticide updated successfully");
@@ -186,6 +199,7 @@ const UpdatePesticideForm = () => {
                   value={pesticideName}
                   onChange={(e) => setPesticideName(e.target.value)}
                   required
+                  disabled
                 />
               </Form.Group>
               <Form.Group controlId="formPesticideInstructions">

@@ -3,13 +3,14 @@ const FarmerFertilizers = require("../../models/f&pModels/FarmerFertilizerSchema
 // Create a new record without email, farmerId, region, and comment
 exports.createFarmerFertilizer = async (req, res) => {
   try {
-    const { crop, fertilizer, amount, email } = req.body;
+    const { crop, fertilizer, amount, email, region } = req.body;
 
     const newFarmerFertilizer = new FarmerFertilizers({
       email,
       crop,
       fertilizer,
       amount,
+      region,
     });
 
     await newFarmerFertilizer.save();

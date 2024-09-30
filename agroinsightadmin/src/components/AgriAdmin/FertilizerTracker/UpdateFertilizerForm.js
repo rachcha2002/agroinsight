@@ -20,11 +20,12 @@ const UpdateFertilizerForm = () => {
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
   const [type, setType] = useState("");
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     // Fetch fertilizer details by ID
     axios
-      .get(`http://localhost:5000/api/f&p/fertilizers/${id}`)
+      .get(`${process.env.REACT_APP_BACKEND_URL}/api/f&p/fertilizers/${id}`)
       .then((response) => {
         const fertilizer = response.data;
         setFertilizerName(fertilizer.name);
@@ -50,7 +51,7 @@ const UpdateFertilizerForm = () => {
 
     // Fetch crop categories
     axios
-      .get("http://localhost:5000/api/f&p/cropcategories")
+      .get(`${process.env.REACT_APP_BACKEND_URL}/api/f&p/cropcategories`)
       .then((response) => setCropCategories(response.data))
       .catch((error) =>
         console.error("Error fetching crop categories:", error)
@@ -70,7 +71,7 @@ const UpdateFertilizerForm = () => {
 
   const fetchCrops = (categoryId) => {
     axios
-      .get(`http://localhost:5000/api/f&p/crops/${categoryId}`)
+      .get(`${process.env.REACT_APP_BACKEND_URL}/api/f&p/crops/${categoryId}`)
       .then((response) => {
         setCropsByCategory((prevCrops) => ({
           ...prevCrops,
@@ -110,13 +111,25 @@ const UpdateFertilizerForm = () => {
     setImagePreview(URL.createObjectURL(file));
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+    if (!instructions) newErrors.instructions = "Instructions are required.";
+    if (selectedCrops.some((crop) => !crop.cropId || !crop.cropCategoryId)) {
+      newErrors.selectedCrops = "All crop fields are required.";
+    }
+    if (regions.some((region) => !region))
+      newErrors.regions = "All regions are required.";
+    if (brands.some((brand) => !brand))
+      newErrors.brands = "All brands are required.";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Ensure all crops have a valid cropId
-    const invalidCrop = selectedCrops.find((crop) => !crop.cropId);
-    if (invalidCrop) {
-      alert("Please select a valid crop for each category.");
+    // Validate before submission
+    if (!validateForm()) {
       return;
     }
 
@@ -124,7 +137,9 @@ const UpdateFertilizerForm = () => {
     formData.append("name", fertilizerName);
     formData.append("type", type);
     formData.append("instructions", instructions);
-    formData.append("fertilizerImage", image);
+    if (image) {
+      formData.append("fertilizerImage", image);
+    }
     formData.append("suitableCrops", JSON.stringify(selectedCrops));
     regions.forEach((region, index) => {
       formData.append(`region[${index}]`, region);
@@ -133,7 +148,7 @@ const UpdateFertilizerForm = () => {
 
     try {
       await axios.put(
-        `http://localhost:5000/api/f&p/update-fertilizers/${id}`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/f&p/update-fertilizers/${id}`,
         formData
       );
       alert("Fertilizer updated successfully");
@@ -174,6 +189,7 @@ const UpdateFertilizerForm = () => {
                   value={fertilizerName}
                   onChange={(e) => setFertilizerName(e.target.value)}
                   required
+                  disabled
                 />
               </Form.Group>
               <Form.Group controlId="formFertilizerType">
@@ -183,6 +199,7 @@ const UpdateFertilizerForm = () => {
                   value={type}
                   onChange={(e) => setType(e.target.value)}
                   required
+                  disabled
                 >
                   <option value="">Select Type</option>
                   <option value="Chemical">Chemical</option>
@@ -197,7 +214,11 @@ const UpdateFertilizerForm = () => {
                   value={instructions}
                   onChange={(e) => setInstructions(e.target.value)}
                   required
+                  isInvalid={!!errors.instructions}
                 />
+                <Form.Control.Feedback type="invalid">
+                  {errors.instructions}
+                </Form.Control.Feedback>
               </Form.Group>
             </Col>
             <Col md={6}>
@@ -226,7 +247,11 @@ const UpdateFertilizerForm = () => {
                     value={region}
                     onChange={(e) => handleRegionChange(index, e.target.value)}
                     required
+                    isInvalid={!!errors.regions}
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.regions}
+                  </Form.Control.Feedback>
                 </Col>
                 <Col xs="auto">
                   {regions.length > 1 && (
@@ -261,7 +286,11 @@ const UpdateFertilizerForm = () => {
                     value={brand}
                     onChange={(e) => handleBrandChange(index, e.target.value)}
                     required
+                    isInvalid={!!errors.brands}
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.brands}
+                  </Form.Control.Feedback>
                 </Col>
                 <Col xs="auto">
                   {brands.length > 1 && (
@@ -298,6 +327,7 @@ const UpdateFertilizerForm = () => {
                       handleCropCategoryChange(index, e.target.value)
                     }
                     required
+                    isInvalid={!!errors.selectedCrops}
                   >
                     <option value="">Select Crop Category</option>
                     {cropCategories.map((category) => (
@@ -340,7 +370,11 @@ const UpdateFertilizerForm = () => {
                     }
                     placeholder="Recommended Usage"
                     required
+                    isInvalid={!!errors.selectedCrops}
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.selectedCrops}
+                  </Form.Control.Feedback>
                 </Col>
                 <Col xs="auto">
                   {selectedCrops.length > 1 && (

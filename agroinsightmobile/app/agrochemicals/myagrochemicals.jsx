@@ -1,10 +1,17 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  ScrollView,
+} from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Ionicons from "react-native-vector-icons/Ionicons"; // Import Ionicons from react-native-vector-icons
 import { SafeAreaView } from "react-native-safe-area-context";
 import { images } from "../../constants";
-import { useRouter, useLocalSearchParams} from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import FertilizersTab from "./myfertilizertab";
 import PesticidesTab from "./mypesticidestab";
 
@@ -24,7 +31,7 @@ const MyAgrochemicalsScreen = () => {
         <View style={styles.headerContainer}>
           {/* Back button with Ionicons */}
           <TouchableOpacity
-            onPress={() => router.back()}
+            onPress={() => router.push("/agrochemicals")}
             style={styles.backButton} // Use style instead of className
           >
             <Ionicons name="arrow-back" size={24} color="#000" />
@@ -98,6 +105,7 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
     justifyContent: "center",
     alignItems: "center",
+    zIndex: 10,
   },
   logoContainer: {
     flex: 1,

@@ -88,11 +88,15 @@ const PesticideList = () => {
       ];
       const cropPromises = pesticides.flatMap((pesticide) =>
         pesticide.suitableCrops.map((crop) =>
-          axios.get(`${process.env.EXPO_PUBLIC_BACKEND_URL}/api/f&p/cropbyid/${crop.cropId}`)
+          axios.get(
+            `${process.env.EXPO_PUBLIC_BACKEND_URL}/api/f&p/cropbyid/${crop.cropId}`
+          )
         )
       );
       const categoryPromises = categoryIds.map((id) =>
-        axios.get(`${process.env.EXPO_PUBLIC_BACKEND_URL}/api/f&p/cropcategories/${id}`)
+        axios.get(
+          `${process.env.EXPO_PUBLIC_BACKEND_URL}/api/f&p/cropcategories/${id}`
+        )
       );
 
       const categoryResults = await Promise.all(categoryPromises);
@@ -177,7 +181,7 @@ const PesticideList = () => {
           </View>
         </View>
 
-        <Text className="text-black text-2xl font-bold ml-2 mt-2 ml-4 bg-white">
+        <Text className="text-black text-2xl font-bold mt-2 ml-4 bg-white">
           Pesticide Recommendations
         </Text>
 

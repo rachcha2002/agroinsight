@@ -32,7 +32,7 @@ const agrochemicalsLayout = () => {
             headerShown: false,
           }}
         />
-         <Stack.Screen
+        <Stack.Screen
           name="createffertilizer"
           options={{
             headerShown: false,

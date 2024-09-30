@@ -14,7 +14,7 @@ const AdminProfiles = () => {
   const fetchAdminProfiles = async () => {
     try {
       const response = await fetch(
-        "http://localhost:5000/api/admin-profile/all-admins"
+        `${process.env.REACT_APP_BACKEND_URL}/api/admin-profile/all-admins`
       );
       const data = await response.json();
 
@@ -32,7 +32,7 @@ const AdminProfiles = () => {
   const handleDelete = async (adminId) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/admin-profile/delete-admin/${adminId}`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/admin-profile/delete-admin/${adminId}`,
         { method: "DELETE" }
       );
       const data = await response.json();
@@ -64,14 +64,12 @@ const AdminProfiles = () => {
       <Container className="mt-2">
         <h3>Admin Profiles</h3>
         <Button
-            variant="dark"
-            onClick={() =>
-              navigate("/superadmin/add-profile")
-            }
-            style={{ margin: "10px" }}
-          >
-            Add Profile
-          </Button>
+          variant="dark"
+          onClick={() => navigate("/superadmin/add-profile")}
+          style={{ margin: "10px" }}
+        >
+          Add Profile
+        </Button>
         {error && <Alert variant="danger">{error}</Alert>}
         {success && <Alert variant="success">{success}</Alert>}
 

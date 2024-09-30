@@ -27,6 +27,7 @@ const CreateFarmerPesticide = () => {
     pesticide: "",
     amount: "",
     targetPest: "",
+    region: "", // Added region field
   });
   const [loading, setLoading] = useState(false);
   const [pesticides, setPesticides] = useState([]);
@@ -51,14 +52,38 @@ const CreateFarmerPesticide = () => {
     setForm({ ...form, [field]: value });
   };
 
-  const submitForm = async () => {
-    if (!form.crop || !form.pesticide || !form.amount || !form.targetPest) {
+  const validateFields = () => {
+    if (
+      !form.crop ||
+      !form.pesticide ||
+      !form.amount ||
+      !form.targetPest ||
+      !form.region
+    ) {
       Alert.alert("Error", "Please fill in all the fields.");
-      return;
+      return false;
+    }
+
+    if (form.crop.length < 3) {
+      Alert.alert("Error", "Crop name must be at least 3 characters long.");
+      return false;
     }
 
     if (isNaN(form.amount) || form.amount <= 0) {
       Alert.alert("Error", "Amount should be a positive number.");
+      return false;
+    }
+
+    if (form.region.length < 3) {
+      Alert.alert("Error", "Region name must be at least 3 characters long.");
+      return false;
+    }
+
+    return true;
+  };
+
+  const submitForm = async () => {
+    if (!validateFields()) {
       return;
     }
 
@@ -78,6 +103,7 @@ const CreateFarmerPesticide = () => {
             pesticide: form.pesticide,
             amount: parseFloat(form.amount), // Ensure amount is sent as a number
             targetPest: form.targetPest,
+            region: form.region, // Include region in the payload
             email: user?.email || "abc@gmail.com",
           }),
         }
@@ -115,7 +141,7 @@ const CreateFarmerPesticide = () => {
               } else {
                 router.push("/agrochemicals/myagrochemicals"); // If can't go back, push to a specific route
               }
-            }} // Ensure this route exists // Ensure this route exists
+            }} // Ensure this route exists
             style={styles.backButton} // Use style instead of className
           >
             <Ionicons name="arrow-back" size={24} color="#000" />
@@ -132,7 +158,7 @@ const CreateFarmerPesticide = () => {
           </View>
         </View>
         <ScrollView contentContainerStyle={styles.formContainer}>
-          <Text style={styles.title}>Create Farmer Pesticide Record</Text>
+          <Text style={styles.title}>Create Pesticide Record</Text>
 
           {/* Crop Input */}
           <View style={styles.inputContainer}>
@@ -166,7 +192,7 @@ const CreateFarmerPesticide = () => {
 
           {/* Amount Input */}
           <View style={styles.inputContainer}>
-            <Text style={styles.label}>Amount</Text>
+            <Text style={styles.label}>Amount(ml)</Text>
             <TextInput
               style={styles.input}
               placeholder="Enter pesticide amount"
@@ -184,6 +210,17 @@ const CreateFarmerPesticide = () => {
               placeholder="Enter target pest"
               value={form.targetPest}
               onChangeText={(text) => handleInputChange("targetPest", text)}
+            />
+          </View>
+
+          {/* Region Input */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Region</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter region"
+              value={form.region}
+              onChangeText={(text) => handleInputChange("region", text)}
             />
           </View>
 
@@ -222,6 +259,7 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
     justifyContent: "center",
     alignItems: "center",
+    zIndex: 10,
   },
   logoContainer: {
     flex: 1,

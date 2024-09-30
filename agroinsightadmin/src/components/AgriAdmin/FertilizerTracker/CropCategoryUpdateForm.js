@@ -22,10 +22,14 @@ const CropCategoryUpdateForm = () => {
     ],
   });
 
+  const [errors, setErrors] = useState({}); // Track validation errors
+
   useEffect(() => {
     // Fetch the category details by ID
     axios
-      .get(`http://localhost:5000/api/f&p/cropcategories/${categoryId}`)
+      .get(
+        `${process.env.REACT_APP_BACKEND_URL}/api/f&p/cropcategories/${categoryId}`
+      )
       .then((response) => {
         setCategory(response.data);
       })
@@ -35,7 +39,7 @@ const CropCategoryUpdateForm = () => {
   }, [categoryId]);
 
   const handleChange = (e) => {
-    const { name, value, dataset } = e.target;
+    const { name, value } = e.target;
     const [level, index, field] = name.split("-");
 
     setCategory((prevState) => {
@@ -74,11 +78,43 @@ const CropCategoryUpdateForm = () => {
     }));
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!category.description.trim()) {
+      newErrors.description = "Description is required.";
+    }
+
+    category.crops.forEach((crop, index) => {
+      if (!crop.name.trim()) {
+        newErrors[`crop-${index}-name`] = "Crop name is required.";
+      }
+      if (!crop.soilType.trim()) {
+        newErrors[`crop-${index}-soilType`] = "Soil type is required.";
+      }
+      if (!crop.growthStage.trim()) {
+        newErrors[`crop-${index}-growthStage`] = "Growth stage is required.";
+      }
+      if (!crop.weatherCondition.trim()) {
+        newErrors[`crop-${index}-weatherCondition`] =
+          "Weather condition is required.";
+      }
+    });
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
     axios
       .put(
-        `http://localhost:5000/api/f&p/update-cropcategories/${categoryId}`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/f&p/update-cropcategories/${categoryId}`,
         category
       )
       .then((response) => {
@@ -134,7 +170,11 @@ const CropCategoryUpdateForm = () => {
                   value={category.description}
                   onChange={handleChange}
                   placeholder="Enter Category Description"
+                  isInvalid={!!errors.description} // Bootstrap validation
                 />
+                <Form.Control.Feedback type="invalid">
+                  {errors.description}
+                </Form.Control.Feedback>
               </Form.Group>
             </Col>
           </Row>
@@ -150,7 +190,11 @@ const CropCategoryUpdateForm = () => {
                     value={crop.name}
                     onChange={handleChange}
                     placeholder="Enter Crop Name"
+                    isInvalid={!!errors[`crop-${cropIndex}-name`]}
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {errors[`crop-${cropIndex}-name`]}
+                  </Form.Control.Feedback>
                 </Form.Group>
                 <br />
                 <Form.Group controlId={`formCropSoilType-${cropIndex}`}>
@@ -161,7 +205,11 @@ const CropCategoryUpdateForm = () => {
                     value={crop.soilType}
                     onChange={handleChange}
                     placeholder="Enter Soil Type"
+                    isInvalid={!!errors[`crop-${cropIndex}-soilType`]}
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {errors[`crop-${cropIndex}-soilType`]}
+                  </Form.Control.Feedback>
                 </Form.Group>
                 <br />
                 <Form.Group controlId={`formCropGrowthStage-${cropIndex}`}>
@@ -172,7 +220,11 @@ const CropCategoryUpdateForm = () => {
                     value={crop.growthStage}
                     onChange={handleChange}
                     placeholder="Enter Growth Stage"
+                    isInvalid={!!errors[`crop-${cropIndex}-growthStage`]}
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {errors[`crop-${cropIndex}-growthStage`]}
+                  </Form.Control.Feedback>
                 </Form.Group>
                 <br />
                 <Form.Group controlId={`formCropWeatherCondition-${cropIndex}`}>
@@ -183,7 +235,11 @@ const CropCategoryUpdateForm = () => {
                     value={crop.weatherCondition}
                     onChange={handleChange}
                     placeholder="Enter Weather Condition"
+                    isInvalid={!!errors[`crop-${cropIndex}-weatherCondition`]}
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {errors[`crop-${cropIndex}-weatherCondition`]}
+                  </Form.Control.Feedback>
                 </Form.Group>
                 <br />
                 <Button

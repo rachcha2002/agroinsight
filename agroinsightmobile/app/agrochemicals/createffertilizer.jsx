@@ -26,6 +26,7 @@ const CreateFarmerFertilizer = () => {
     crop: "",
     fertilizer: "",
     amount: "",
+    region: "", // New field for region
   });
   const [loading, setLoading] = useState(false);
   const [fertilizers, setFertilizers] = useState([]);
@@ -50,14 +51,32 @@ const CreateFarmerFertilizer = () => {
     setForm({ ...form, [field]: value });
   };
 
-  const submitForm = async () => {
-    if (!form.crop || !form.fertilizer || !form.amount) {
+  const validateFields = () => {
+    if (!form.crop || !form.fertilizer || !form.amount || !form.region) {
       Alert.alert("Error", "Please fill in all the fields.");
-      return;
+      return false;
+    }
+
+    if (form.crop.length < 3) {
+      Alert.alert("Error", "Crop name must be at least 3 characters long.");
+      return false;
     }
 
     if (isNaN(form.amount) || form.amount <= 0) {
       Alert.alert("Error", "Amount should be a positive number.");
+      return false;
+    }
+
+    if (form.region.length < 3) {
+      Alert.alert("Error", "Region name must be at least 3 characters long.");
+      return false;
+    }
+
+    return true;
+  };
+
+  const submitForm = async () => {
+    if (!validateFields()) {
       return;
     }
 
@@ -76,6 +95,7 @@ const CreateFarmerFertilizer = () => {
             crop: form.crop,
             fertilizer: form.fertilizer,
             amount: parseFloat(form.amount), // Ensure amount is sent as a number
+            region: form.region, // Include region in the payload
             email: user?.email || "abc@gmail.com",
           }),
         }
@@ -127,7 +147,7 @@ const CreateFarmerFertilizer = () => {
           </View>
         </View>
         <ScrollView contentContainerStyle={styles.formContainer}>
-          <Text style={styles.title}>Create Farmer Fertilizer Record</Text>
+          <Text style={styles.title}>Create Fertilizer Record</Text>
 
           {/* Crop Input */}
           <View style={styles.inputContainer}>
@@ -161,13 +181,24 @@ const CreateFarmerFertilizer = () => {
 
           {/* Amount Input */}
           <View style={styles.inputContainer}>
-            <Text style={styles.label}>Amount</Text>
+            <Text style={styles.label}>Amount(ml/kg)</Text>
             <TextInput
               style={styles.input}
               placeholder="Enter fertilizer amount"
               value={form.amount}
               onChangeText={(text) => handleInputChange("amount", text)}
               keyboardType="numeric"
+            />
+          </View>
+
+          {/* Region Input */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Region</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter region"
+              value={form.region}
+              onChangeText={(text) => handleInputChange("region", text)}
             />
           </View>
 
@@ -206,6 +237,7 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
     justifyContent: "center",
     alignItems: "center",
+    zIndex: 10,
   },
   logoContainer: {
     flex: 1,

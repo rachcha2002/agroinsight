@@ -20,7 +20,7 @@ import AgrochemicalNews from "./AgrochemicalNews";
 import FertilizerUsage from "./FertilizerUsage";
 import PesticideUsage from "./PesticideUsage";
 
-function FertilizerDashboard() {
+function FertilizerDashboard({ toggleLoading }) {
   const location = useLocation();
   const [key, setKey] = useState("fertilizers");
   useEffect(() => {
@@ -46,22 +46,22 @@ function FertilizerDashboard() {
           className="mb-3"
         >
           <Tab eventKey="fertilizers" title="Fertilizer Recomendations">
-            <Fertilizers />
+            <Fertilizers toggleLoading={toggleLoading} />
           </Tab>
           <Tab eventKey="pesticides" title="Pesticide Recommendations">
-            <Pesticides />
+            <Pesticides toggleLoading={toggleLoading} />
           </Tab>
           <Tab eventKey="cropcategory" title="Crop Categories">
-            <CropCategory />
+            <CropCategory toggleLoading={toggleLoading} />
           </Tab>
           <Tab eventKey="agrochemicalnews" title="Agrochemical News">
-            <AgrochemicalNews />
+            <AgrochemicalNews toggleLoading={toggleLoading} />
           </Tab>
           <Tab eventKey="fertilizerusage" title="Fertilizer Usage">
-            <FertilizerUsage />
+            <FertilizerUsage toggleLoading={toggleLoading} />
           </Tab>
           <Tab eventKey="pesticideusage" title="Pesticide Usage">
-            <PesticideUsage />
+            <PesticideUsage toggleLoading={toggleLoading} />
           </Tab>
         </Tabs>
       </section>

@@ -6,7 +6,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import logo from "../../../images/logoNoBack.png";
-import ChartDataLabels from 'chartjs-plugin-datalabels';
+import ChartDataLabels from "chartjs-plugin-datalabels";
 
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
@@ -26,7 +26,9 @@ const PesticideUsage = () => {
   // Fetch all farmer pesticides records
   const fetchRecords = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/f&p/getallfp`);
+      const response = await axios.get(
+        `${process.env.REACT_APP_BACKEND_URL}/api/f&p/getallfp`
+      );
       setRecords(response.data.data); // Assuming the response has a data field with records
       setFilteredRecords(response.data.data); // Initially set filtered records to all records
       setLoading(false);
@@ -44,9 +46,16 @@ const PesticideUsage = () => {
   const filterRecords = () => {
     const filtered = records.filter((record) => {
       return (
-        (!regionSearch || record.region.toLowerCase().includes(regionSearch.toLowerCase())) &&
-        (!pesticideSearch || record.pesticide.toLowerCase().includes(pesticideSearch.toLowerCase())) &&
-        (!targetPestSearch || record.targetPest.toLowerCase().includes(targetPestSearch.toLowerCase()))
+        (!regionSearch ||
+          record.region.toLowerCase().includes(regionSearch.toLowerCase())) &&
+        (!pesticideSearch ||
+          record.pesticide
+            .toLowerCase()
+            .includes(pesticideSearch.toLowerCase())) &&
+        (!targetPestSearch ||
+          record.targetPest
+            .toLowerCase()
+            .includes(targetPestSearch.toLowerCase()))
       );
     });
     setFilteredRecords(filtered);
@@ -133,10 +142,13 @@ const PesticideUsage = () => {
   const handleSaveComment = async () => {
     try {
       // Send a PATCH request to update only the comment field
-      await axios.patch(`http://localhost:5000/api/f&p/updatecommentfp/${selectedRecord._id}`, {
-        comment,
-      });
-  
+      await axios.patch(
+        `${process.env.REACT_APP_BACKEND_URL}/api/f&p/updatecommentfp/${selectedRecord._id}`,
+        {
+          comment,
+        }
+      );
+
       // Update the local records with the new comment
       const updatedRecords = records.map((record) =>
         record._id === selectedRecord._id ? { ...record, comment } : record
@@ -205,7 +217,17 @@ const PesticideUsage = () => {
 
     // Add table
     doc.autoTable({
-      head: [["Email", "Region", "Crop", "Pesticide", "Amount", "Target Pest", "Comment"]],
+      head: [
+        [
+          "Email",
+          "Region",
+          "Crop",
+          "Pesticide",
+          "Amount",
+          "Target Pest",
+          "Comment",
+        ],
+      ],
       body: filteredRecords.map((record) => [
         record.email,
         record.region,

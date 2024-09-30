@@ -3,7 +3,7 @@ const FarmerPesticides = require("../../models/f&pModels/FarmerPesticidesSchema"
 // Create a new record without email, farmerId, region, and comment
 exports.createFarmerPesticide = async (req, res) => {
   try {
-    const { crop, pesticide, amount, targetPest, email } = req.body;
+    const { crop, pesticide, amount, targetPest, email, region } = req.body;
 
     const newFarmerPesticide = new FarmerPesticides({
       email,
@@ -11,6 +11,7 @@ exports.createFarmerPesticide = async (req, res) => {
       pesticide,
       amount,
       targetPest, // New field for target pest
+      region,
     });
 
     await newFarmerPesticide.save();
@@ -86,7 +87,6 @@ exports.updateComment = async (req, res) => {
     });
   }
 };
-
 
 // Delete a record by id
 exports.deleteFarmerPesticide = async (req, res) => {

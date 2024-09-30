@@ -12,6 +12,8 @@ const AddNewNews = () => {
   const [imagePreview, setImagePreview] = useState(null); // State for image preview
   const [details, setDetails] = useState("");
   const [source, setSource] = useState(""); // State for source
+
+  const [errors, setErrors] = useState({}); // For validation errors
   const navigate = useNavigate();
 
   const handleImageChange = (e) => {
@@ -26,8 +28,26 @@ const AddNewNews = () => {
     reader.readAsDataURL(file);
   };
 
+  // Validation function
+  const validateForm = () => {
+    const newErrors = {};
+    if (!title) newErrors.title = "Title is required.";
+    if (!description) newErrors.description = "Description is required.";
+    if (!image) newErrors.image = "Image is required.";
+    //if (!details) newErrors.details = "Details are required.";
+    if (!source) newErrors.source = "Source is required.";
+    return newErrors;
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    // Perform validation
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors); // Set the errors if any
+      return;
+    }
 
     const formData = new FormData();
     formData.append("title", title);
@@ -37,11 +57,15 @@ const AddNewNews = () => {
     formData.append("source", source); // Append source field
 
     try {
-      await axios.post("http://localhost:5000/api/f&p/add-news", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}/api/f&p/add-news`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       // Reset the form after successful submission
       setTitle("");
@@ -50,6 +74,7 @@ const AddNewNews = () => {
       setImagePreview(null);
       setDetails("");
       setSource(""); // Reset source field
+      setErrors({}); // Reset errors
 
       alert("New agrochemical news added successfully");
       navigate("/agriadmin/fertilizers&pesticides?tab=agrochemicalnews");
@@ -86,8 +111,11 @@ const AddNewNews = () => {
               placeholder="Enter title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              required
+              isInvalid={!!errors.title} // Apply validation style
             />
+            <Form.Control.Feedback type="invalid">
+              {errors.title}
+            </Form.Control.Feedback>
           </Form.Group>
 
           <Form.Group controlId="formDescription" className="mb-3">
@@ -98,8 +126,11 @@ const AddNewNews = () => {
               placeholder="Enter description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              required
+              isInvalid={!!errors.description} // Apply validation style
             />
+            <Form.Control.Feedback type="invalid">
+              {errors.description}
+            </Form.Control.Feedback>
           </Form.Group>
 
           <Form.Group controlId="formImage" className="mb-3">
@@ -108,8 +139,11 @@ const AddNewNews = () => {
               type="file"
               onChange={handleImageChange}
               accept="image/*"
-              required
+              isInvalid={!!errors.image} // Apply validation style
             />
+            <Form.Control.Feedback type="invalid">
+              {errors.image}
+            </Form.Control.Feedback>
             {imagePreview && (
               <div className="mt-3">
                 <Image
@@ -135,7 +169,11 @@ const AddNewNews = () => {
               placeholder="Enter details"
               value={details}
               onChange={(e) => setDetails(e.target.value)}
+              isInvalid={!!errors.details} // Apply validation style
             />
+            <Form.Control.Feedback type="invalid">
+              {errors.details}
+            </Form.Control.Feedback>
           </Form.Group>
 
           <Form.Group controlId="formSource" className="mb-3">
@@ -145,7 +183,11 @@ const AddNewNews = () => {
               placeholder="Enter source"
               value={source}
               onChange={(e) => setSource(e.target.value)}
+              isInvalid={!!errors.source} // Apply validation style
             />
+            <Form.Control.Feedback type="invalid">
+              {errors.source}
+            </Form.Control.Feedback>
           </Form.Group>
 
           <Button variant="primary" type="submit">

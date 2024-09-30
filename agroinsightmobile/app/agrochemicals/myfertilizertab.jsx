@@ -13,6 +13,7 @@ import { useRouter } from "expo-router";
 import axios from "axios";
 import { useGlobalContext } from "../../context/GlobalProvider";
 import Ionicons from "react-native-vector-icons/Ionicons"; // Import Ionicons
+import { Picker } from "@react-native-picker/picker"; // Import Picker for dropdown
 
 const FertilizersTab = () => {
   const router = useRouter();
@@ -21,6 +22,7 @@ const FertilizersTab = () => {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [selectedFertilizer, setSelectedFertilizer] = useState(null);
+  const [availableFertilizers, setAvailableFertilizers] = useState([]); // To store fertilizers from API
   const [updatedForm, setUpdatedForm] = useState({
     region: "",
     crop: "",
@@ -47,6 +49,22 @@ const FertilizersTab = () => {
       fetchFertilizers();
     }
   }, [user?.email]);
+
+  // Fetch available fertilizers for the dropdown
+  useEffect(() => {
+    const fetchAvailableFertilizers = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.EXPO_PUBLIC_BACKEND_URL}/api/f&p/fertilizers`
+        );
+        setAvailableFertilizers(response.data); // Set fetched fertilizers
+      } catch (error) {
+        console.error("Error fetching fertilizers:", error);
+      }
+    };
+
+    fetchAvailableFertilizers();
+  }, []);
 
   // Delete a fertilizer record
   const deleteFertilizer = async (id) => {
@@ -146,14 +164,14 @@ const FertilizersTab = () => {
             </View>
             <View style={styles.column}>
               <Text style={styles.label}>Amount:</Text>
-              <Text style={styles.value}>{item.amount}</Text>
+              <Text style={styles.value}>{item.amount} ml/kg</Text>
             </View>
           </View>
 
           {/* Comment Section */}
           <Text style={styles.label}>Comment:</Text>
           <Text style={styles.value}>
-            {item.comment ? item.comment : "No comments"}
+            {item.comment ? item.comment : "No expert comments"}
           </Text>
 
           {/* Delete and Update buttons */}
@@ -184,31 +202,50 @@ const FertilizersTab = () => {
           </View>
         </View>
       ))}
-      
+
       {/* Modal for updating fertilizer */}
       <Modal visible={showModal} transparent={true} animationType="slide">
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Update Fertilizer</Text>
 
-            <TextInput
-              style={styles.input}
-              placeholder="Region"
-              value={updatedForm.region}
-              onChangeText={(text) => handleInputChange("region", text)}
-            />
+            {/* Disabled Crop Input */}
             <TextInput
               style={styles.input}
               placeholder="Crop"
               value={updatedForm.crop}
-              onChangeText={(text) => handleInputChange("crop", text)}
+              editable={false} // Disable editing of crop
             />
+
+            {/* Disabled Region Input */}
             <TextInput
               style={styles.input}
-              placeholder="Fertilizer"
-              value={updatedForm.fertilizer}
-              onChangeText={(text) => handleInputChange("fertilizer", text)}
+              placeholder="Region"
+              value={updatedForm.region}
+              editable={false} // Disable editing of region
             />
+
+            {/* Fertilizer Dropdown */}
+            <View style={styles.pickerContainer}>
+              <Picker
+                selectedValue={updatedForm.fertilizer}
+                onValueChange={(value) =>
+                  handleInputChange("fertilizer", value)
+                }
+                style={styles.picker}
+              >
+                <Picker.Item label="Select Fertilizer" value="" />
+                {availableFertilizers.map((fertilizer) => (
+                  <Picker.Item
+                    key={fertilizer._id}
+                    label={fertilizer.name}
+                    value={fertilizer.name}
+                  />
+                ))}
+              </Picker>
+            </View>
+
+            {/* Amount Input */}
             <TextInput
               style={styles.input}
               placeholder="Amount"
@@ -235,8 +272,6 @@ const FertilizersTab = () => {
           </View>
         </View>
       </Modal>
-      
-      
     </ScrollView>
   );
 };
@@ -346,6 +381,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     fontSize: 16,
     marginBottom: 15,
+  },
+  pickerContainer: {
+    marginVertical: 15,
+  },
+  picker: {
+    height: 50,
+    borderColor: "#ccc",
+    borderWidth: 1,
+    borderRadius: 8,
+    backgroundColor: "#f9f9f9",
+    fontSize: 16,
   },
 });
 

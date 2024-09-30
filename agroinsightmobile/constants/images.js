@@ -12,8 +12,13 @@ import fpnews from "../assets/images/agrochemicals/fpnews.jpg";
 import frecommend from "../assets/images/agrochemicals/fertilizertile.jpg";
 import precommend from "../assets/images/agrochemicals/pesticdetile.jpg";
 import mychemicals from "../assets/images/agrochemicals/mychemicalstile.jpg";
-import googlelogo from "../assets/images/google-logo.png"
-import agrominilogo from "../assets/images/agroinsight-logo-mini.png"
+import googlelogo from "../assets/images/google-logo.png";
+import agrominilogo from "../assets/images/agroinsight-logo-mini.png";
+import homecard from "../assets/images/farmlady.jpg";
+import pdcard from "../assets/images/p&dcard.jpg";
+import marketcard from "../assets/images/marketcard.jpg";
+import agrochemcard from "../assets/images/agrochemcard.jpg";
+import cropcard from "../assets/images/cropcard.jpg";
 
 export default {
   profile,
@@ -31,5 +36,10 @@ export default {
   precommend,
   mychemicals,
   googlelogo,
-  agrominilogo
+  agrominilogo,
+  homecard,
+  pdcard,
+  marketcard,
+  agrochemcard,
+  cropcard,
 };

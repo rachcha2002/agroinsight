@@ -13,11 +13,13 @@ import { useRouter } from "expo-router";
 import axios from "axios";
 import { useGlobalContext } from "../../context/GlobalProvider";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { Picker } from "@react-native-picker/picker"; // Import Picker for dropdown
 
 const PesticidesTab = () => {
   const router = useRouter();
   const { user } = useGlobalContext(); // Get the logged-in user's email
   const [pesticides, setPesticides] = useState([]);
+  const [availablePesticides, setAvailablePesticides] = useState([]); // To store available pesticides from API
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [selectedPesticide, setSelectedPesticide] = useState(null);
@@ -48,6 +50,22 @@ const PesticidesTab = () => {
       fetchPesticides();
     }
   }, [user?.email]);
+
+  // Fetch available pesticides for the dropdown
+  useEffect(() => {
+    const fetchAvailablePesticides = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.EXPO_PUBLIC_BACKEND_URL}/api/f&p/pesticides`
+        );
+        setAvailablePesticides(response.data); // Set fetched pesticides
+      } catch (error) {
+        console.error("Error fetching pesticides:", error);
+      }
+    };
+
+    fetchAvailablePesticides();
+  }, []);
 
   // Delete a pesticide record
   const deletePesticide = async (id) => {
@@ -155,17 +173,20 @@ const PesticidesTab = () => {
             </View>
             <View style={styles.column}>
               <Text style={styles.label}>Amount:</Text>
-              <Text style={styles.value}>{item.amount}</Text>
+              <Text style={styles.value}>{item.amount} ml</Text>
             </View>
+          </View>
+
+          <View style={styles.column}>
+            <Text style={styles.label}>Target Pest:</Text>
+            <Text style={styles.value}>{item.targetPest}</Text>
           </View>
 
           {/* Comment Section */}
           <Text style={styles.label}>Comment:</Text>
           <Text style={styles.value}>
-            {item.comment ? item.comment : "No comments"}
+            {item.comment ? item.comment : "No expert comments"}
           </Text>
-
-          
 
           {/* Delete and Update buttons */}
           <View style={styles.buttonRow}>
@@ -202,24 +223,41 @@ const PesticidesTab = () => {
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Update Pesticide</Text>
 
+            {/* Disabled Region Input */}
             <TextInput
               style={styles.input}
               placeholder="Region"
               value={updatedForm.region}
-              onChangeText={(text) => handleInputChange("region", text)}
+              editable={false} // Disable editing of region
             />
+
+            {/* Disabled Crop Input */}
             <TextInput
               style={styles.input}
               placeholder="Crop"
               value={updatedForm.crop}
-              onChangeText={(text) => handleInputChange("crop", text)}
+              editable={false} // Disable editing of crop
             />
-            <TextInput
-              style={styles.input}
-              placeholder="Pesticide"
-              value={updatedForm.pesticide}
-              onChangeText={(text) => handleInputChange("pesticide", text)}
-            />
+
+            {/* Pesticide Dropdown */}
+            <View style={styles.pickerContainer}>
+              <Picker
+                selectedValue={updatedForm.pesticide}
+                onValueChange={(value) => handleInputChange("pesticide", value)}
+                style={styles.picker}
+              >
+                <Picker.Item label="Select Pesticide" value="" />
+                {availablePesticides.map((pesticide) => (
+                  <Picker.Item
+                    key={pesticide._id}
+                    label={pesticide.name}
+                    value={pesticide.name}
+                  />
+                ))}
+              </Picker>
+            </View>
+
+            {/* Amount Input */}
             <TextInput
               style={styles.input}
               placeholder="Amount"
@@ -227,6 +265,8 @@ const PesticidesTab = () => {
               keyboardType="numeric"
               onChangeText={(text) => handleInputChange("amount", text)}
             />
+
+            {/* Target Pest Input */}
             <TextInput
               style={styles.input}
               placeholder="Target Pest"
@@ -361,6 +401,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     fontSize: 16,
     marginBottom: 15,
+  },
+  pickerContainer: {
+    marginVertical: 15,
+  },
+  picker: {
+    height: 50,
+    borderColor: "#ccc",
+    borderWidth: 1,
+    borderRadius: 8,
+    backgroundColor: "#f9f9f9",
+    fontSize: 16,
   },
 });
 

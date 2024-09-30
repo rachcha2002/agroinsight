@@ -16,7 +16,6 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { images } from "../../constants";
 import Ionicons from "react-native-vector-icons/Ionicons"; // Import Ionicons from react-native-vector-icons
-//import { useRouter } from "expo-router";
 
 const AgrochemicalNews = () => {
   const [news, setNews] = useState([]);
@@ -85,14 +84,9 @@ const AgrochemicalNews = () => {
           <View>
             {/* Back button with Ionicons */}
             <TouchableOpacity
-              onPress={() => {
-                if (router.canGoBack()) {
-                  router.back(); // Try to go back
-                } else {
-                  router.push("/agrochemicals"); // If can't go back, push to a specific route
-                }
-              }} // Ensure this route exists
-              style={styles.backButton} // Use style instead of className
+              onPress={() => router.back()} // Use router.back() for back functionality
+              style={styles.backButton} // Apply styles correctly
+              activeOpacity={0.7} // Add an activeOpacity to give visual feedback on press
             >
               <Ionicons name="arrow-back" size={24} color="#000" />
             </TouchableOpacity>
@@ -108,7 +102,6 @@ const AgrochemicalNews = () => {
           </View>
         </View>
         <Text className="text-black text-2xl font-bold ml-2 mt-4 ml-4">
-          
           What new about Agrochemicals?
         </Text>
         <ScrollView
@@ -211,7 +204,7 @@ const AgrochemicalNews = () => {
                       {selectedNews.description}
                     </Text>
                     <Text style={{ marginBottom: 10 }}>
-                      Details: {selectedNews.details}
+                      Additional Details: {selectedNews.details}
                     </Text>
                     <Text style={{ marginBottom: 10 }}>
                       Source: {selectedNews.source}
@@ -239,9 +232,10 @@ const styles = {
     backgroundColor: "#fff",
   },
   backButton: {
-    paddingLeft: 20, // Adjust padding as needed
+    paddingLeft: 15, // Adjust padding as needed
     justifyContent: "center",
     alignItems: "center",
+    zIndex: 10,
   },
   logoContainer: {
     flex: 1,

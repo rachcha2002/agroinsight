@@ -27,7 +27,7 @@ const PesticideList = () => {
   useEffect(() => {
     // Fetch pesticides from the backend
     axios
-      .get("http://localhost:5000/api/f&p/pesticides") // Adjust the endpoint as needed
+      .get(`${process.env.REACT_APP_BACKEND_URL}/api/f&p/pesticides`) // Adjust the endpoint as needed
       .then((response) => {
         setPesticides(response.data);
       })
@@ -48,7 +48,9 @@ const PesticideList = () => {
           ),
         ];
         const categoryPromises = categoryIds.map((id) =>
-          axios.get(`http://localhost:5000/api/f&p/cropcategories/${id}`)
+          axios.get(
+            `${process.env.REACT_APP_BACKEND_URL}/api/f&p/cropcategories/${id}`
+          )
         );
         const categoryResults = await Promise.all(categoryPromises);
         const categories = {};
@@ -59,7 +61,9 @@ const PesticideList = () => {
 
         const cropPromises = pesticides.flatMap((pesticide) =>
           pesticide.suitableCrops.map((crop) =>
-            axios.get(`http://localhost:5000/api/f&p/cropbyid/${crop.cropId}`)
+            axios.get(
+              `${process.env.REACT_APP_BACKEND_URL}/api/f&p/cropbyid/${crop.cropId}`
+            )
           )
         );
         const cropResults = await Promise.all(cropPromises);
@@ -99,7 +103,7 @@ const PesticideList = () => {
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `http://localhost:5000/api/f&p/delete-pesticides/${deletePesticideId}`
+        `${process.env.REACT_APP_BACKEND_URL}/api/f&p/delete-pesticides/${deletePesticideId}`
       );
       setPesticides(pesticides.filter((p) => p._id !== deletePesticideId)); // Update local state
       setShowDeleteConfirm(false);

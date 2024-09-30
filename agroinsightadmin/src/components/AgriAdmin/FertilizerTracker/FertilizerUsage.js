@@ -31,7 +31,9 @@ const FertilizerUsage = () => {
   // Fetch all farmer fertilizers records
   const fetchRecords = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/f&p/getallff`);
+      const response = await axios.get(
+        `${process.env.REACT_APP_BACKEND_URL}/api/f&p/getallff`
+      );
       setRecords(response.data.data); // Assuming the response has a data field with records
       setFilteredRecords(response.data.data); // Initially set filtered records to all records
       setLoading(false);
@@ -54,7 +56,9 @@ const FertilizerUsage = () => {
         (!cropSearch ||
           record.crop.toLowerCase().includes(cropSearch.toLowerCase())) &&
         (!fertilizerSearch ||
-          record.fertilizer.toLowerCase().includes(fertilizerSearch.toLowerCase()))
+          record.fertilizer
+            .toLowerCase()
+            .includes(fertilizerSearch.toLowerCase()))
       );
     });
     setFilteredRecords(filtered);
@@ -142,7 +146,7 @@ const FertilizerUsage = () => {
     try {
       // Send a PATCH request to update only the comment field
       await axios.patch(
-        `http://localhost:5000/api/f&p/updatecommentff/${selectedRecord._id}`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/f&p/updatecommentff/${selectedRecord._id}`,
         { comment }
       );
 
@@ -190,20 +194,25 @@ const FertilizerUsage = () => {
       // Add a timeout to allow charts to fully render before capturing them
       await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait 1 second
 
-      const chartElements = document.querySelectorAll(".chart-container canvas");
+      const chartElements = document.querySelectorAll(
+        ".chart-container canvas"
+      );
       const chartsImages = await Promise.all(
         Array.from(chartElements).map((chart) =>
-          html2canvas(chart).then((canvas) => canvas.toDataURL("image/png")).catch((error) => {
-            console.error("Error capturing chart image", error);
-            return null;
-          })
+          html2canvas(chart)
+            .then((canvas) => canvas.toDataURL("image/png"))
+            .catch((error) => {
+              console.error("Error capturing chart image", error);
+              return null;
+            })
         )
       );
 
       chartsImages.forEach((chartImage, idx) => {
         if (chartImage) {
           const xPos = 10 + (idx % 3) * (chartWidth + chartSpacing); // X-position for each chart
-          const yPos = yOffset + Math.floor(idx / 3) * (chartHeight + chartSpacing); // Y-position for each row
+          const yPos =
+            yOffset + Math.floor(idx / 3) * (chartHeight + chartSpacing); // Y-position for each row
           doc.addImage(chartImage, "PNG", xPos, yPos, chartWidth, chartHeight);
         }
       });
