@@ -24,7 +24,7 @@ export const uploadDiseaseData = async (form, setUploading, setForm) => {
 
   try {
     const response = await fetch(
-      "http://192.168.1.167:5000/api/disease/complaints",
+      `${process.env.EXPO_PUBLIC_BACKEND_URL}/api/disease/complaints`,
       {
         method: "POST",
         body: formData,
