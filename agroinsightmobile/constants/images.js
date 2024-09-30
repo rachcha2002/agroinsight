@@ -12,6 +12,8 @@ import fpnews from "../assets/images/agrochemicals/fpnews.jpg";
 import frecommend from "../assets/images/agrochemicals/fertilizertile.jpg";
 import precommend from "../assets/images/agrochemicals/pesticdetile.jpg";
 import mychemicals from "../assets/images/agrochemicals/mychemicalstile.jpg";
+import dailyprice from "../assets/images/market/daily price.jpg"
+import pricehistory from "../assets/images/market/price history.jpeg"
 import googlelogo from "../assets/images/google-logo.png"
 import agrominilogo from "../assets/images/agroinsight-logo-mini.png"
 
@@ -30,6 +32,8 @@ export default {
   frecommend,
   precommend,
   mychemicals,
+  dailyprice,
+  pricehistory,
   googlelogo,
   agrominilogo
 };
