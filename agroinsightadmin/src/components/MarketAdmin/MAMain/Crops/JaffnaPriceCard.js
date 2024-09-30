@@ -139,16 +139,18 @@ function JaffnaPriceCard() {
     <main className="mainproduct">
       <Row>
         <Col sm={3}>
-          <InputGroup className="mb-2">
+        <InputGroup className="mb-2">
             <Form.Control
               placeholder="Search Crop"
               value={searchCrop}
-              onChange={(e) =>
-                setSearchCrop(
-                  e.target.value.charAt(0).toUpperCase() +
-                    e.target.value.slice(1)
-                )
-              }
+              onChange={(e) => {
+                const value = e.target.value;
+                if (/^[a-zA-Z]*$/.test(value)) {
+                  setSearchCrop(
+                    value.charAt(0).toUpperCase() + value.slice(1)
+                  );
+                }
+              }}
             />
             <Button
               variant="secondary"

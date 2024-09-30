@@ -5,11 +5,11 @@ const MMDBCard = ({ title, value1,value2, iconClass, duration }) => {
     <div className="col-lg-4">
       <Card bg="white" text="black" className="shadow-lg">
         <Card.Body>
-          <Card.Title>
+          <Card.Title className="text-success" style={{ whiteSpace: "nowrap" }}>
             {title}
-            <span>|{duration} </span>
+            <span className="text-success">|{duration} </span>
             <i className={`bi ${iconClass} fa-9x float-end`}></i>
-          </Card.Title>
+          </Card.Title> 
           <Card.Text>
             <h2 className="mb-2 text-body-dark">
               {title === "Total Salaries"

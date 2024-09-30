@@ -89,89 +89,93 @@ const AddCrop = ()=>{
   
     return (
       <main id="main" className="main">
-        <PageTitle
-          title="Add Crop"
-          url="/market/pricelist/addcrop/"
-        />
-  
-        <Form onSubmit={CropSubmitHandler}>
-          <Row className="mb-3">
-            <Form.Group as={Col} md="5" controlId="validationCustom01">
-              <Form.Label>Crop Name</Form.Label>
-              <Form.Control
-                id="Crop_name"
-                type="text"
-                placeholder="Enter Crop name"
-                maxLength={100}
-                onInput={(event) =>
-                  inputHandler("Crop_name", event.target.value, true)
-                }
-                required
-              />
-            </Form.Group>
-            <Form.Group as={Col} md="5" controlId="validationCustom01">
-              <Form.Label>Price Per 1kg</Form.Label>
-              <InputGroup>
-              <InputGroup.Text>Rs.</InputGroup.Text>
-              <Form.Control
-                className="remove-spinner"
-                id="Price"
-                type="number"
-                placeholder="Enter unit price"
-                min="1"
-                onInput={(event) =>{
-                  let input = event.target.value.replace(/[^\d]/g, ''); // Remove non-digit characters
-                event.target.value = input;
-                  inputHandler("Price", input, true)
-                }}
-                required
-              />
-              </InputGroup>
-            </Form.Group>
-            </Row>
-            <Row className="mb-3">
-            <Form.Group as={Col} md="5" controlId="validationCustom01">
-              <Form.Label>Market</Form.Label>
-              <Form.Control
-                id="Market"
-                type="text"
-                placeholder="Enter Market name"
-                maxLength={100}
-                onInput={(event) =>
-                  inputHandler("Market", event.target.value, true)
-                }
-                required
-              />
-            </Form.Group>
-            <Form.Group as={Col} md="5" controlId="validationCustom01">
-              <Form.Label>Image</Form.Label>
-              <Form.Control
-                id="image"
-                type="file"
-                accept=".jpg,.png,.jpeg"
-                placeholder="add image"
-                onInput={(event) =>
-                  inputHandler("image", event.target.files[0], true)
-                }
-                required
-              />
-              {fileError && (
-                <Form.Text className="text-danger">{fileError}</Form.Text>
-              )}
-            </Form.Group>
-  
-            {previewUrl && (
-              <img
-                src={previewUrl}
-                alt="Crop image"
-                style={{ marginTop: "3%", width: "20%", height: "20%" }}
-              />
-            )}
-          </Row>
-          <Button variant="primary" type="submit" disabled={!formState.isValid}>
-            Submit
-          </Button>
-        </Form>
+      <PageTitle
+        title="Add Crop"
+        url="/market/pricelist/addcrop/"
+      />
+    
+      <Form onSubmit={CropSubmitHandler}>
+        <Row className="mb-3">
+        <Form.Group as={Col} md="5" controlId="validationCustom01">
+          <Form.Label>Crop Name</Form.Label>
+          <Form.Control
+          id="Crop_name"
+          type="text"
+          placeholder="Enter Crop name"
+          maxLength={100}
+          onInput={(event) => {
+            let input = event.target.value.replace(/[^a-zA-Z\s]/g, ''); // Remove non-letter characters
+            event.target.value = input;
+            inputHandler("Crop_name", input, true);
+          }}
+          required
+          />
+        </Form.Group>
+        <Form.Group as={Col} md="5" controlId="validationCustom01">
+          <Form.Label>Price Per 1kg</Form.Label>
+          <InputGroup>
+          <InputGroup.Text>Rs.</InputGroup.Text>
+          <Form.Control
+          className="remove-spinner"
+          id="Price"
+          type="number"
+          placeholder="Enter unit price"
+          min="1"
+          onInput={(event) =>{
+            let input = event.target.value.replace(/[^\d]/g, ''); // Remove non-digit characters
+            event.target.value = input;
+            inputHandler("Price", input, true);
+          }}
+          required
+          />
+          </InputGroup>
+        </Form.Group>
+        </Row>
+        <Row className="mb-3">
+        <Form.Group as={Col} md="5" controlId="validationCustom01">
+          <Form.Label>Market</Form.Label>
+          <Form.Control
+          id="Market"
+          type="text"
+          placeholder="Enter Market name"
+          maxLength={100}
+          onInput={(event) => {
+            let input = event.target.value.replace(/[^a-zA-Z\s]/g, ''); // Remove non-letter characters
+            event.target.value = input;
+            inputHandler("Market", input, true);
+          }}
+          required
+          />
+        </Form.Group>
+        <Form.Group as={Col} md="5" controlId="validationCustom01">
+          <Form.Label>Image</Form.Label>
+          <Form.Control
+          id="image"
+          type="file"
+          accept=".jpg,.png,.jpeg"
+          placeholder="add image"
+          onInput={(event) =>
+            inputHandler("image", event.target.files[0], true)
+          }
+          required
+          />
+          {fileError && (
+          <Form.Text className="text-danger">{fileError}</Form.Text>
+          )}
+        </Form.Group>
+    
+        {previewUrl && (
+          <img
+          src={previewUrl}
+          alt="Crop image"
+          style={{ marginTop: "3%", width: "20%", height: "20%" }}
+          />
+        )}
+        </Row>
+        <Button variant="primary" type="submit" disabled={!formState.isValid}>
+        Submit
+        </Button>
+      </Form>
       </main>
     );
   };
