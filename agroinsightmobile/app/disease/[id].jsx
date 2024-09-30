@@ -1,9 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  ActivityIndicator,
+  TouchableOpacity,
+} from "react-native";
 import axios from "axios";
 import { useLocalSearchParams } from "expo-router";
+import { images } from "../../constants"; // Adjust the path to where `images` is imported from
 
-const DiseaseDetails = () => {
+const DiseaseDetails = ({ navigation }) => {
   const { id } = useLocalSearchParams();
   const [alert, setAlert] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -12,11 +19,9 @@ const DiseaseDetails = () => {
   useEffect(() => {
     const fetchAlertDetails = async () => {
       try {
-
         const response = await axios.get(
           `${process.env.EXPO_PUBLIC_BACKEND_URL}/api/disease/disease-alerts/${id}`
         );
-
 
         setAlert(response.data);
         setLoading(false);
@@ -28,6 +33,10 @@ const DiseaseDetails = () => {
 
     fetchAlertDetails();
   }, [id]);
+
+  const handleComplaintPress = () => {
+    navigation.navigate("Complaints"); // Adjust this if needed to match your navigation route
+  };
 
   if (loading) {
     return (
@@ -46,27 +55,42 @@ const DiseaseDetails = () => {
   }
 
   return (
-    <View className="flex-1 p-4 items-center justify-center">
-      {alert && (
-        <>
+    <View className="flex-1 p-4">
+      {/* Header View */}
+      <View className="justify-between items-center flex-row mt-3">
+        <View className="flex-1 items-center pl-7">
           <Image
-            source={{ uri: alert.imageURL }}
-            className="w-full h-48 rounded-lg"
-            resizeMode="cover"
+            source={images.agroinsightlogo}
+            className="w-30 h-20"
+            resizeMode="contain"
           />
-          <Text className="text-xl font-bold mt-4">{alert.title}</Text>
-          <Text className="text-gray-700 mt-2">{alert.description}</Text>
-          <Text className="text-gray-500 mt-2">
-            Date: {new Date(alert.date).toLocaleDateString()}
-          </Text>
-          {alert.details && (
-            <Text className="text-gray-700 mt-4">
-              <Text className="font-bold">Details: </Text>
-              {alert.details}
+        </View>
+       
+      </View>
+
+      {/* Content View */}
+      <View className="flex-1 items-center mt-12 ">
+        {alert && (
+          <>
+            <Image
+              source={{ uri: alert.imageURL }}
+              className="w-full h-48 rounded-lg"
+              resizeMode="cover"
+            />
+            <Text className="text-xl font-bold mt-4">{alert.title}</Text>
+            <Text className="text-gray-700 mt-2">{alert.description}</Text>
+            <Text className="text-gray-500 mt-2">
+              Date: {new Date(alert.date).toLocaleDateString()}
             </Text>
-          )}
-        </>
-      )}
+            {alert.details && (
+              <Text className="text-gray-700 mt-4">
+                <Text className="font-bold">Details: </Text>
+                {alert.details}
+              </Text>
+            )}
+          </>
+        )}
+      </View>
     </View>
   );
 };

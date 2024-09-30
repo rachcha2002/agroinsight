@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Button, Container, Image } from 'react-bootstrap';
+import { Form, Button, Container, Image, Alert } from 'react-bootstrap';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,29 +7,61 @@ const AddNewAlert = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [image, setImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null); // State for image preview
+  const [imagePreview, setImagePreview] = useState(null);
   const [details, setDetails] = useState('');
-  const navigate=useNavigate()
+  const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    setImage(file); // Save the selected file to the state
+    setImage(file);
 
-    // Generate a preview of the image
     const reader = new FileReader();
     reader.onloadend = () => {
-      setImagePreview(reader.result); // Set the preview URL
+      setImagePreview(reader.result);
     };
     reader.readAsDataURL(file);
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    // Title validation
+    if (!title.trim()) {
+      newErrors.title = 'Title is required';
+    }
+
+    // Description validation
+    if (!description.trim()) {
+      newErrors.description = 'Description is required';
+    }
+
+    // Image validation
+    if (!image) {
+      newErrors.image = 'Image is required';
+    }
+
+    // Details validation
+    if (!details.trim()) {
+      newErrors.details = 'Details are required';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    // Validate the form before submitting
+    if (!validateForm()) {
+      return;
+    }
+
     const formData = new FormData();
     formData.append('title', title);
     formData.append('description', description);
-    formData.append('diseaseImage', image); // Append the image file to the form data
+    formData.append('diseaseImage', image);
     formData.append('details', details);
 
     try {
@@ -47,7 +79,7 @@ const AddNewAlert = () => {
       setDetails('');
 
       alert('New alert added successfully');
-      navigate("/agriadmin/diseases")
+      navigate('/agriadmin/diseases');
     } catch (error) {
       console.error('There was an error adding the alert!', error);
       alert('Failed to add the alert');
@@ -66,8 +98,9 @@ const AddNewAlert = () => {
               placeholder="Enter title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              required
+              isInvalid={!!errors.title}
             />
+            {errors.title && <Form.Control.Feedback type="invalid">{errors.title}</Form.Control.Feedback>}
           </Form.Group>
 
           <Form.Group controlId="formDescription" className="mb-3">
@@ -78,8 +111,9 @@ const AddNewAlert = () => {
               placeholder="Enter description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              required
+              isInvalid={!!errors.description}
             />
+            {errors.description && <Form.Control.Feedback type="invalid">{errors.description}</Form.Control.Feedback>}
           </Form.Group>
 
           <Form.Group controlId="formImage" className="mb-3">
@@ -88,8 +122,9 @@ const AddNewAlert = () => {
               type="file"
               onChange={handleImageChange}
               accept="image/*"
-              required
+              isInvalid={!!errors.image}
             />
+            {errors.image && <Form.Control.Feedback type="invalid">{errors.image}</Form.Control.Feedback>}
             {imagePreview && (
               <div className="mt-3">
                 <Image src={imagePreview} thumbnail fluid alt="Image Preview" />
@@ -105,7 +140,9 @@ const AddNewAlert = () => {
               placeholder="Enter details"
               value={details}
               onChange={(e) => setDetails(e.target.value)}
+              isInvalid={!!errors.details}
             />
+            {errors.details && <Form.Control.Feedback type="invalid">{errors.details}</Form.Control.Feedback>}
           </Form.Group>
 
           <Button variant="primary" type="submit">
