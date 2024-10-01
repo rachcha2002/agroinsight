@@ -37,7 +37,7 @@ const NewRotatorAlert = () => {
     formData.append('details', details);
 
     try {
-      await axios.post('http://localhost:5000/api/crop-rotator/rotator-alerts', formData, {
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/crop-rotator/rotator-alerts`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

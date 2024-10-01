@@ -131,3 +131,23 @@ exports.deleteComplaint = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+
+// Get complaints by farmerID
+exports.getComplaintsByFarmerId = async (req, res) => {
+  try {
+    // Extract farmerID from the request parameters or query string
+    const farmerID = req.params.farmerID 
+
+    // Find complaints based on the farmerID
+    const complaints = await Complaint.find({ farmerID: farmerID });
+
+    if (!complaints || complaints.length === 0) {
+      return res.status(404).json({ message: 'No complaints found for the given farmer Email' });
+    }
+
+    res.status(200).json(complaints);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
