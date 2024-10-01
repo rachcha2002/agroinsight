@@ -1,11 +1,17 @@
-
-import React, { useState, useEffect } from 'react';
-import { View, Text, Image, TouchableOpacity, ActivityIndicator,Linking } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
-import { supabase } from '../lib/supabase'; // Your Supabase client setup
-import { router } from 'expo-router'; // Import the router from expo-router
-import { useGlobalContext } from '../context/GlobalProvider'; // Import your Global Context
-import { images } from '../constants';
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  ActivityIndicator,
+  Linking,
+} from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage"; // Import AsyncStorage
+import { supabase } from "../lib/supabase"; // Your Supabase client setup
+import { router } from "expo-router"; // Import the router from expo-router
+import { useGlobalContext } from "../context/GlobalProvider"; // Import your Global Context
+import { images } from "../constants";
 
 export default function App() {
   const { setUser: setGlobalUser, setIsLoggedIn } = useGlobalContext(); // Access the context's setUser function
@@ -14,8 +20,8 @@ export default function App() {
   // Function to load and validate session from AsyncStorage
   const loadSession = async () => {
     try {
-      console.log(process.env.EXPO_PUBLIC_MOBILE_URL)
-      const session = await AsyncStorage.getItem('userSession');
+      console.log(process.env.EXPO_PUBLIC_MOBILE_URL);
+      const session = await AsyncStorage.getItem("userSession");
       if (session) {
         const parsedSession = JSON.parse(session);
 
@@ -26,7 +32,7 @@ export default function App() {
         });
 
         if (error) {
-          console.error('Session validation failed:', error.message);
+          console.error("Session validation failed:", error.message);
           // If token validation fails, simply stop loading and show sign-in button
           setIsLoading(false);
         } else if (data?.session?.user) {
@@ -38,14 +44,14 @@ export default function App() {
             imageUrl: user.user_metadata.avatar_url,
           });
           setIsLoggedIn(true);
-          router.push('/home'); // Automatically navigate to home if session exists and is valid
+          router.push("/home"); // Automatically navigate to home if session exists and is valid
         }
       } else {
         // No session found
         setIsLoading(false); // If no session, stop loading and allow sign in
       }
     } catch (err) {
-      console.error('Failed to load session from storage:', err);
+      console.error("Failed to load session from storage:", err);
       setIsLoading(false);
     }
   };
@@ -59,11 +65,10 @@ export default function App() {
   useEffect(() => {
     const handleDeepLink = async (event) => {
       const { url } = event;
-      
 
-      const params = new URLSearchParams(url.split('#')[1]); // Extracting the fragment part of the URL (after #)
-      const accessToken = params.get('access_token');
-      const refreshToken = params.get('refresh_token');
+      const params = new URLSearchParams(url.split("#")[1]); // Extracting the fragment part of the URL (after #)
+      const accessToken = params.get("access_token");
+      const refreshToken = params.get("refresh_token");
 
       if (accessToken) {
         // Store tokens in Supabase and handle the session manually
@@ -73,13 +78,13 @@ export default function App() {
         });
 
         if (error) {
-          console.error('Error setting session:', error.message);
+          console.error("Error setting session:", error.message);
           setIsLoading(false); // Stop loading on failure
         } else {
           const user = data.session.user;
           // Save session to AsyncStorage
           await AsyncStorage.setItem(
-            'userSession',
+            "userSession",
             JSON.stringify({
               access_token: accessToken,
               refresh_token: refreshToken,
@@ -96,7 +101,7 @@ export default function App() {
           setIsLoggedIn(true); // Mark user as logged in
 
           // Navigate to the home page after receiving the token
-          router.push('/home'); // Redirect to the home page
+          router.push("/home"); // Redirect to the home page
         }
       } else {
         setIsLoading(false); // No access token found, allow login
@@ -104,7 +109,7 @@ export default function App() {
     };
 
     // Add an event listener for deep linking
-    const subscription = Linking.addEventListener('url', handleDeepLink);
+    const subscription = Linking.addEventListener("url", handleDeepLink);
 
     // Clean up the event listener
     return () => {
@@ -117,14 +122,14 @@ export default function App() {
     setIsLoading(true); // Start loading
 
     const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
+      provider: "google",
       options: {
-        redirectTo: 'agroinsight://home', // Your development redirect URI
+        redirectTo: process.env.EXPO_PUBLIC_MOBILE_URL, // Your development redirect URI
       },
     });
 
     if (error) {
-      console.error('Error signing in with Google:', error.message);
+      console.error("Error signing in with Google:", error.message);
       setIsLoading(false); // Stop loading on failure
     } else if (data) {
       // Open the Google OAuth URL with Linking
@@ -136,7 +141,7 @@ export default function App() {
     <View className="flex-1 justify-center items-center bg-white">
       {/* Logo Section */}
       <View className="mb-16 items-center">
-        <Image 
+        <Image
           source={images.agroinsightlogo} // Replace with your actual logo path
           className="w-80 h-28 object-contain" // Adjusted the size for a larger logo
         />
@@ -147,16 +152,16 @@ export default function App() {
           AgroInsight
         </Text>
       </View>
-  
+
       {/* Google Sign-in Button */}
       {isLoading ? (
         <ActivityIndicator size="large" color="#4CAF50" /> // Show loading indicator
       ) : (
-        <TouchableOpacity 
-          onPress={signInWithGoogle} 
+        <TouchableOpacity
+          onPress={signInWithGoogle}
           className="flex-row items-center px-6 py-3 bg-green-600 rounded-full shadow-lg"
         >
-          <Image 
+          <Image
             source={images.googlelogo} // Replace with the actual Google logo path
             className="w-6 h-6 mr-3"
           />

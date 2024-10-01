@@ -39,7 +39,12 @@ const FertilizersTab = () => {
         );
         setFertilizers(response.data.data);
       } catch (error) {
-        Alert.alert("Error", "Failed to fetch fertilizers");
+        if (error.response && error.response.status === 404) {
+          // Handle the 404 case by setting fertilizers to an empty array
+          setFertilizers([]);
+        } else {
+          Alert.alert("Error", "Failed to fetch fertilizers");
+        }
       } finally {
         setLoading(false);
       }
@@ -125,83 +130,84 @@ const FertilizersTab = () => {
     );
   }
 
-  if (!fertilizers.length) {
-    return (
-      <View style={styles.noRecordsContainer}>
-        <Text style={styles.noRecordsText}>
-          No records found for this email
-        </Text>
-      </View>
-    );
-  }
-
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <Text style={styles.contentText}>My Fertilizers</Text>
+
+      {/* Always show the create button */}
       <TouchableOpacity
         style={styles.createbutton}
         onPress={() => router.push("/agrochemicals/createffertilizer")}
       >
         <Text style={styles.createbuttonText}>Create New Fertilizer</Text>
       </TouchableOpacity>
-      {fertilizers.map((item, index) => (
-        <View key={index} style={styles.card}>
-          {/* Two-column layout */}
-          <View style={styles.row}>
-            <View style={styles.column}>
-              <Text style={styles.label}>Region:</Text>
-              <Text style={styles.value}>{item.region}</Text>
-            </View>
-            <View style={styles.column}>
-              <Text style={styles.label}>Crop:</Text>
-              <Text style={styles.value}>{item.crop}</Text>
-            </View>
-          </View>
-          <View style={styles.row}>
-            <View style={styles.column}>
-              <Text style={styles.label}>Fertilizer:</Text>
-              <Text style={styles.value}>{item.fertilizer}</Text>
-            </View>
-            <View style={styles.column}>
-              <Text style={styles.label}>Amount:</Text>
-              <Text style={styles.value}>{item.amount} ml/kg</Text>
-            </View>
-          </View>
 
-          {/* Comment Section */}
-          <Text style={styles.label}>Comment:</Text>
-          <Text style={styles.value}>
-            {item.comment ? item.comment : "No expert comments"}
+      {/* If no fertilizers exist, show a message */}
+      {!fertilizers.length ? (
+        <View style={styles.noRecordsContainer}>
+          <Text style={styles.noRecordsText}>
+            No records found for this email
           </Text>
-
-          {/* Delete and Update buttons */}
-          <View style={styles.buttonRow}>
-            <TouchableOpacity
-              style={[styles.button, styles.deleteButton]}
-              onPress={() => deleteFertilizer(item._id)}
-            >
-              <Ionicons
-                name="trash-outline"
-                size={18}
-                color="#fff"
-                style={{ marginRight: 5 }}
-              />
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.button, styles.updateButton]}
-              onPress={() => openUpdateModal(item)}
-            >
-              <Ionicons
-                name="pencil-outline"
-                size={18}
-                color="#fff"
-                style={{ marginRight: 5 }}
-              />
-            </TouchableOpacity>
-          </View>
         </View>
-      ))}
+      ) : (
+        fertilizers.map((item, index) => (
+          <View key={index} style={styles.card}>
+            {/* Two-column layout */}
+            <View style={styles.row}>
+              <View style={styles.column}>
+                <Text style={styles.label}>Region:</Text>
+                <Text style={styles.value}>{item.region}</Text>
+              </View>
+              <View style={styles.column}>
+                <Text style={styles.label}>Crop:</Text>
+                <Text style={styles.value}>{item.crop}</Text>
+              </View>
+            </View>
+            <View style={styles.row}>
+              <View style={styles.column}>
+                <Text style={styles.label}>Fertilizer:</Text>
+                <Text style={styles.value}>{item.fertilizer}</Text>
+              </View>
+              <View style={styles.column}>
+                <Text style={styles.value}>{item.amount} ml/kg</Text>
+              </View>
+            </View>
+
+            {/* Comment Section */}
+            <Text style={styles.label}>Comment:</Text>
+            <Text style={styles.value}>
+              {item.comment ? item.comment : "No expert comments"}
+            </Text>
+
+            {/* Delete and Update buttons */}
+            <View style={styles.buttonRow}>
+              <TouchableOpacity
+                style={[styles.button, styles.deleteButton]}
+                onPress={() => deleteFertilizer(item._id)}
+              >
+                <Ionicons
+                  name="trash-outline"
+                  size={18}
+                  color="#fff"
+                  style={{ marginRight: 5 }}
+                />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.button, styles.updateButton]}
+                onPress={() => openUpdateModal(item)}
+              >
+                <Ionicons
+                  name="pencil-outline"
+                  size={18}
+                  color="#fff"
+                  style={{ marginRight: 5 }}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+        ))
+      )}
 
       {/* Modal for updating fertilizer */}
       <Modal visible={showModal} transparent={true} animationType="slide">
@@ -392,6 +398,14 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: "#f9f9f9",
     fontSize: 16,
+  },
+  noRecordsContainer: {
+    alignItems: "center",
+    marginTop: 20,
+  },
+  noRecordsText: {
+    fontSize: 18,
+    color: "#666",
   },
 });
 

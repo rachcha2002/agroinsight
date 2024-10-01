@@ -40,7 +40,12 @@ const PesticidesTab = () => {
         );
         setPesticides(response.data.data);
       } catch (error) {
-        Alert.alert("Error", "Failed to fetch pesticides");
+        if (error.response && error.response.status === 404) {
+          // Handle the 404 case by setting pesticides to an empty array
+          setPesticides([]);
+        } else {
+          Alert.alert("Error", "Failed to fetch pesticides");
+        }
       } finally {
         setLoading(false);
       }
@@ -134,88 +139,90 @@ const PesticidesTab = () => {
     );
   }
 
-  if (!pesticides.length) {
-    return (
-      <View style={styles.noRecordsContainer}>
-        <Text style={styles.noRecordsText}>
-          No records found for this email
-        </Text>
-      </View>
-    );
-  }
-
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <Text style={styles.contentText}>My Pesticides</Text>
+
+      {/* Always show the create button */}
       <TouchableOpacity
         style={styles.createbutton}
         onPress={() => router.push("/agrochemicals/createfpesticide")}
       >
         <Text style={styles.createbuttonText}>Create New Pesticide</Text>
       </TouchableOpacity>
-      {pesticides.map((item, index) => (
-        <View key={index} style={styles.card}>
-          {/* Two-column layout */}
-          <View style={styles.row}>
-            <View style={styles.column}>
-              <Text style={styles.label}>Region:</Text>
-              <Text style={styles.value}>{item.region}</Text>
-            </View>
-            <View style={styles.column}>
-              <Text style={styles.label}>Crop:</Text>
-              <Text style={styles.value}>{item.crop}</Text>
-            </View>
-          </View>
-          <View style={styles.row}>
-            <View style={styles.column}>
-              <Text style={styles.label}>Pesticide:</Text>
-              <Text style={styles.value}>{item.pesticide}</Text>
-            </View>
-            <View style={styles.column}>
-              <Text style={styles.label}>Amount:</Text>
-              <Text style={styles.value}>{item.amount} ml</Text>
-            </View>
-          </View>
 
-          <View style={styles.column}>
-            <Text style={styles.label}>Target Pest:</Text>
-            <Text style={styles.value}>{item.targetPest}</Text>
-          </View>
-
-          {/* Comment Section */}
-          <Text style={styles.label}>Comment:</Text>
-          <Text style={styles.value}>
-            {item.comment ? item.comment : "No expert comments"}
+      {/* If no pesticides exist, show a message */}
+      {!pesticides.length ? (
+        <View style={styles.noRecordsContainer}>
+          <Text style={styles.noRecordsText}>
+            No records found for this email
           </Text>
-
-          {/* Delete and Update buttons */}
-          <View style={styles.buttonRow}>
-            <TouchableOpacity
-              style={[styles.button, styles.deleteButton]}
-              onPress={() => deletePesticide(item._id)}
-            >
-              <Ionicons
-                name="trash-outline"
-                size={18}
-                color="#fff"
-                style={{ marginRight: 5 }}
-              />
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.button, styles.updateButton]}
-              onPress={() => openUpdateModal(item)}
-            >
-              <Ionicons
-                name="pencil-outline"
-                size={18}
-                color="#fff"
-                style={{ marginRight: 5 }}
-              />
-            </TouchableOpacity>
-          </View>
         </View>
-      ))}
+      ) : (
+        pesticides.map((item, index) => (
+          <View key={index} style={styles.card}>
+            {/* Two-column layout */}
+            <View style={styles.row}>
+              <View style={styles.column}>
+                <Text style={styles.label}>Region:</Text>
+                <Text style={styles.value}>{item.region}</Text>
+              </View>
+              <View style={styles.column}>
+                <Text style={styles.label}>Crop:</Text>
+                <Text style={styles.value}>{item.crop}</Text>
+              </View>
+            </View>
+            <View style={styles.row}>
+              <View style={styles.column}>
+                <Text style={styles.label}>Pesticide:</Text>
+                <Text style={styles.value}>{item.pesticide}</Text>
+              </View>
+              <View style={styles.column}>
+                <Text style={styles.label}>Amount:</Text>
+                <Text style={styles.value}>{item.amount} ml</Text>
+              </View>
+            </View>
+
+            <View style={styles.column}>
+              <Text style={styles.label}>Target Pest:</Text>
+              <Text style={styles.value}>{item.targetPest}</Text>
+            </View>
+
+            {/* Comment Section */}
+            <Text style={styles.label}>Comment:</Text>
+            <Text style={styles.value}>
+              {item.comment ? item.comment : "No expert comments"}
+            </Text>
+
+            {/* Delete and Update buttons */}
+            <View style={styles.buttonRow}>
+              <TouchableOpacity
+                style={[styles.button, styles.deleteButton]}
+                onPress={() => deletePesticide(item._id)}
+              >
+                <Ionicons
+                  name="trash-outline"
+                  size={18}
+                  color="#fff"
+                  style={{ marginRight: 5 }}
+                />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.button, styles.updateButton]}
+                onPress={() => openUpdateModal(item)}
+              >
+                <Ionicons
+                  name="pencil-outline"
+                  size={18}
+                  color="#fff"
+                  style={{ marginRight: 5 }}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+        ))
+      )}
 
       {/* Modal for updating pesticide */}
       <Modal visible={showModal} transparent={true} animationType="slide">
@@ -412,6 +419,14 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: "#f9f9f9",
     fontSize: 16,
+  },
+  noRecordsContainer: {
+    alignItems: "center",
+    marginTop: 20,
+  },
+  noRecordsText: {
+    fontSize: 18,
+    color: "#666",
   },
 });
 
