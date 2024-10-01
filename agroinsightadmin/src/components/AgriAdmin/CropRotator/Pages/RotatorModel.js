@@ -171,10 +171,10 @@ export default function RotatorModel() {
         <Card>
           <Card.Body style={{padding:"20px"}}>
         <h4>Crop Rotation Models</h4>
-        <Button variant="primary" onClick={handleAddModel} style={{ paddingBottom: "10px" }}>
+        <Button variant="primary" onClick={handleAddModel} style={{ paddingBottom: "10px",marginBottom:"10px" }}>
           Add New Model
         </Button>
-        <Button variant="success" onClick={generatePDF} style={{ marginLeft: "10px" }}>
+        <Button variant="success" onClick={generatePDF} style={{ marginLeft: "10px",marginBottom:"10px" }}>
           Generate PDF
         </Button>
         {modelChunks.length > 0 ? (
