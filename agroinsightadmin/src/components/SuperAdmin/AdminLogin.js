@@ -33,7 +33,7 @@ const AdminLogin = ({ toggleLoading }) => {
     try {
       toggleLoading(true); // Set loading to true before API call
       const response = await fetch(
-        `http://localhost:5000/api/admin-profile/admin/login`, // Update the URL to your admin login endpoint
+        `${process.env.REACT_APP_BACKEND_URL}/api/admin-profile/admin/login`, // Update the URL to your admin login endpoint
         {
           method: "POST",
           headers: {

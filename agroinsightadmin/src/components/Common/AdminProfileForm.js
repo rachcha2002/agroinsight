@@ -46,7 +46,7 @@ const AdminProfileForm = () => {
 
       // Use the fetch API to send the profileData to the backend
       const response = await fetch(
-        "http://localhost:5000/api/admin-profile/create-admin",
+        `${process.env.REACT_APP_BACKEND_URL}/api/admin-profile/create-admin`,
         {
           method: "POST",
           headers: {
@@ -75,17 +75,21 @@ const AdminProfileForm = () => {
 
   return (
     <main id="main" className="main">
-      <PageTitle title="Admin Profiles" url="/superadmin/admin-profiles/create" />
+      <PageTitle
+        title="Admin Profiles"
+        url="/superadmin/admin-profiles/create"
+      />
       <Container className="mt-2">
-        <h3><Button
+        <h3>
+          <Button
             variant="dark"
-            onClick={() =>
-              navigate("/superadmin/admin-profiles")
-            }
+            onClick={() => navigate("/superadmin/admin-profiles")}
             style={{ margin: "10px" }}
           >
             <BsArrowLeft /> Back
-          </Button>Create Admin Profile</h3>
+          </Button>
+          Create Admin Profile
+        </h3>
         {error && <Alert variant="danger">{error}</Alert>}
         {success && <Alert variant="success">{success}</Alert>}
         <Form onSubmit={handleSubmit}>

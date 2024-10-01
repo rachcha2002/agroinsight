@@ -89,11 +89,15 @@ const FertilizerList = () => {
       ];
       const cropPromises = fertilizers.flatMap((fertilizer) =>
         fertilizer.suitableCrops.map((crop) =>
-          axios.get(`${process.env.EXPO_PUBLIC_BACKEND_URL}/api/f&p/cropbyid/${crop.cropId}`)
+          axios.get(
+            `${process.env.EXPO_PUBLIC_BACKEND_URL}/api/f&p/cropbyid/${crop.cropId}`
+          )
         )
       );
       const categoryPromises = categoryIds.map((id) =>
-        axios.get(`${process.env.EXPO_PUBLIC_BACKEND_URL}/api/f&p/cropcategories/${id}`)
+        axios.get(
+          `${process.env.EXPO_PUBLIC_BACKEND_URL}/api/f&p/cropcategories/${id}`
+        )
       );
 
       // Resolve all promises
@@ -161,7 +165,7 @@ const FertilizerList = () => {
           </View>
         </View>
 
-        <Text className="text-black text-2xl font-bold ml-2 mt-2 ml-4 bg-white">
+        <Text className="text-black text-2xl font-bold  mt-2 ml-4 bg-white">
           Fertilizer Recommendations
         </Text>
 

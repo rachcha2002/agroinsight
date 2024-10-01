@@ -15,24 +15,42 @@ import UpdatePesticideForm from "./UpdatePesticidesForm";
 import AgrochemicalNews from "./AgrochemicalNews";
 import AddNewNews from "./AddNewNews";
 
-function FertilizeGuidance() {
+function FertilizeGuidance({ toggleLoading }) {
   return (
     <>
       <Routes>
-        <Route path="/" element={<FertilizerDashboard />} />
-        <Route path="/addcropcategory" element={<CropCategoryForm />} />
-        <Route path="/addpesticide" element={<PesticideForm />} />
-        <Route path="/addfertilizer" element={<FertilizerForm />} />
+        <Route
+          path="/"
+          element={<FertilizerDashboard toggleLoading={toggleLoading} />}
+        />
+        <Route
+          path="/addcropcategory"
+          element={<CropCategoryForm toggleLoading={toggleLoading} />}
+        />
+        <Route
+          path="/addpesticide"
+          element={<PesticideForm toggleLoading={toggleLoading} />}
+        />
+        <Route
+          path="/addfertilizer"
+          element={<FertilizerForm toggleLoading={toggleLoading} />}
+        />
         <Route
           path="/updatecropcategory/:categoryId"
-          element={<CropCategoryUpdateForm />}
+          element={<CropCategoryUpdateForm toggleLoading={toggleLoading} />}
         />
         <Route
           path="/updatefertilizer/:id"
-          element={<UpdateFertilizerForm />}
+          element={<UpdateFertilizerForm toggleLoading={toggleLoading} />}
         />
-        <Route path="/updatepesticide/:id" element={<UpdatePesticideForm />} />
-        <Route path="/addnews" element={<AddNewNews />} />
+        <Route
+          path="/updatepesticide/:id"
+          element={<UpdatePesticideForm toggleLoading={toggleLoading} />}
+        />
+        <Route
+          path="/addnews"
+          element={<AddNewNews toggleLoading={toggleLoading} />}
+        />
       </Routes>
     </>
   );

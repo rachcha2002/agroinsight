@@ -15,7 +15,7 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import logo from "../../../images/logoNoBack.png";
 
-const FertilizerList = () => {
+const FertilizerList = ({ toggleLoading }) => {
   const [fertilizers, setFertilizers] = useState([]);
   const [expanded, setExpanded] = useState({});
   const [cropCategories, setCropCategories] = useState({});
@@ -26,15 +26,17 @@ const FertilizerList = () => {
 
   useEffect(() => {
     // Fetch fertilizers from the backend
-    axios.get("http://localhost:5000/api/f&p/fertilizers").then((response) => {
-      setFertilizers(response.data);
-    });
+    axios
+      .get(`${process.env.REACT_APP_BACKEND_URL}/api/f&p/fertilizers`)
+      .then((response) => {
+        setFertilizers(response.data);
+      });
   }, []);
 
   const handleDeleteFertilizer = async () => {
     // Refetch the updated list of fertilizers from the server
     const response = await axios.get(
-      "http://localhost:5000/api/f&p/fertilizers"
+      `${process.env.REACT_APP_BACKEND_URL}/api/f&p/fertilizers`
     );
     setFertilizers(response.data);
   };
@@ -68,7 +70,7 @@ const FertilizerList = () => {
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `http://localhost:5000/api/f&p/delete-fertilizers/${deletingFertilizer}`
+        `${process.env.REACT_APP_BACKEND_URL}/api/f&p/delete-fertilizers/${deletingFertilizer}`
       );
       alert("Fertilizer deleted successfully");
       // Optionally, refresh the list
@@ -88,7 +90,9 @@ const FertilizerList = () => {
         ...new Set(fertilizer.suitableCrops.map((crop) => crop.cropCategoryId)),
       ];
       const categoryPromises = categoryIds.map((id) =>
-        axios.get(`http://localhost:5000/api/f&p/cropcategories/${id}`)
+        axios.get(
+          `${process.env.REACT_APP_BACKEND_URL}/api/f&p/cropcategories/${id}`
+        )
       );
       const categoryResults = await Promise.all(categoryPromises);
       const categories = {};
@@ -99,7 +103,9 @@ const FertilizerList = () => {
 
       // Fetch crops
       const cropPromises = fertilizer.suitableCrops.map((crop) =>
-        axios.get(`http://localhost:5000/api/f&p/cropbyid/${crop.cropId}`)
+        axios.get(
+          `${process.env.REACT_APP_BACKEND_URL}/api/f&p/cropbyid/${crop.cropId}`
+        )
       );
       const cropResults = await Promise.all(cropPromises);
       const cropDetails = {};
@@ -150,11 +156,15 @@ const FertilizerList = () => {
         ),
       ];
       const categoryPromises = categoryIds.map((id) =>
-        axios.get(`http://localhost:5000/api/f&p/cropcategories/${id}`)
+        axios.get(
+          `${process.env.REACT_APP_BACKEND_URL}/api/f&p/cropcategories/${id}`
+        )
       );
       const cropPromises = fertilizers.flatMap((fertilizer) =>
         fertilizer.suitableCrops.map((crop) =>
-          axios.get(`http://localhost:5000/api/f&p/cropbyid/${crop.cropId}`)
+          axios.get(
+            `${process.env.REACT_APP_BACKEND_URL}/api/f&p/cropbyid/${crop.cropId}`
+          )
         )
       );
 
