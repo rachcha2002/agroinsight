@@ -15,7 +15,7 @@ export default function RotatorModel() {
 
     useEffect(() => {
         // Fetch data from the backend
-        axios.get('http://localhost:5000/api/crop-rotator/model')
+        axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/crop-rotator/model`)
           .then(response => {
             const arrayData = Object.values(response.data);
             setModels(arrayData);
@@ -46,7 +46,7 @@ export default function RotatorModel() {
   const handleDelete = async (id) => {
       try {
         // Send DELETE request to backend API using axios
-        await axios.delete(`http://localhost:5000/api/crop-rotator/model/${id}`);
+        await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/api/crop-rotator/model/${id}`);
         alert("Model deleted successfully!");
         navigate("/agriadmin"); // Redirect to home page or any other desired page
       } catch (error) {
@@ -63,7 +63,7 @@ export default function RotatorModel() {
     const handleUpdateSubmit = async () => {
       try {
         // Send PUT request to update the model
-        await axios.put(`http://localhost:5000/api/crop-rotator/model/${currentModel._id}`, currentModel);
+        await axios.put(`${process.env.REACT_APP_BACKEND_URL}/api/crop-rotator/model/${currentModel._id}`, currentModel);
         alert("Model updated successfully!");
         setModels(models.map(model => model._id === currentModel._id ? currentModel : model));
         setShowUpdateModal(false);
@@ -171,10 +171,10 @@ export default function RotatorModel() {
         <Card>
           <Card.Body style={{padding:"20px"}}>
         <h4>Crop Rotation Models</h4>
-        <Button variant="primary" onClick={handleAddModel} style={{ paddingBottom: "10px" }}>
+        <Button variant="primary" onClick={handleAddModel} style={{ paddingBottom: "10px",marginBottom:"10px" }}>
           Add New Model
         </Button>
-        <Button variant="success" onClick={generatePDF} style={{ marginLeft: "10px" }}>
+        <Button variant="success" onClick={generatePDF} style={{ marginLeft: "10px",marginBottom:"10px" }}>
           Generate PDF
         </Button>
         {modelChunks.length > 0 ? (

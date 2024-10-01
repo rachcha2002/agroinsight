@@ -64,7 +64,7 @@ const PesticideList = () => {
   const fetchPesticides = async () => {
     try {
       const response = await axios.get(
-        "http://192.168.1.167:5000/api/f&p/pesticides"
+        `${process.env.EXPO_PUBLIC_BACKEND_URL}/api/f&p/pesticides`
       );
       setPesticides(response.data);
       setFilteredPesticides(response.data);
@@ -88,11 +88,11 @@ const PesticideList = () => {
       ];
       const cropPromises = pesticides.flatMap((pesticide) =>
         pesticide.suitableCrops.map((crop) =>
-          axios.get(`http://192.168.1.167:5000/api/f&p/cropbyid/${crop.cropId}`)
+          axios.get(`${process.env.EXPO_PUBLIC_BACKEND_URL}/api/f&p/cropbyid/${crop.cropId}`)
         )
       );
       const categoryPromises = categoryIds.map((id) =>
-        axios.get(`http://192.168.1.167:5000/api/f&p/cropcategories/${id}`)
+        axios.get(`${process.env.EXPO_PUBLIC_BACKEND_URL}/api/f&p/cropcategories/${id}`)
       );
 
       const categoryResults = await Promise.all(categoryPromises);

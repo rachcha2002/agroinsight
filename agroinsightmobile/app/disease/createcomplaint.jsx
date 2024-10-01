@@ -46,7 +46,7 @@ const CreateComplaint = () => {
       setForm({
         ...form,
         diseaseImage: result.assets[0],
-        farmerID:user?.$id
+        farmerID:user?.email
       });
     } else {
       setTimeout(() => {
