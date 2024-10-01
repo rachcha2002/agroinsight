@@ -11,37 +11,58 @@ const Home = () => {
   const router = useRouter();
 
   const cards = [
-    { id: 1, name: "Report Desease", image: images.pdcard },
-    { id: 2, name: "Market Trends", image: images.marketcard },
+    { id: "disease/complaints", name: "Report Desease", image: images.pdcard },
+    { id: "market", name: "Market Trends", image: images.marketcard },
     {
       id: "agrochemicals/agrochemicalnews",
       name: "Agrochemicals News",
       image: images.agrochemcard,
     },
-    { id: 4, name: "Crop Rotation News", image: images.cropcard },
+    {
+      id: "rotator",
+      name: "Crop Rotation Alerts",
+      image: images.cropcard,
+    },
   ];
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaView className="bg-white h-full">
         <ScrollView contentContainerStyle={{ padding: 20 }}>
-          <View className="mt-6 px-4 space-y-6">
+          <View className="mt-2 px-2 space-y-6">
             <View className="justify-between items-start flex-row mb-2">
-              <View>
-                <Text className="font-pmedium text-sm text-black">
-                  Welcome Back,
-                </Text>
-                <Text className="text-2xl font-psemibold text-green-900">
-                  {user?.name}
-                </Text>
+              <View className="flex flex-row">
+                <View className="mt-1.5">
+                  <Image
+                    source={images.agrominilogo}
+                    className="w-9 h-10"
+                    resizeMode="contain"
+                  />
+                </View>
+                <View>
+                  <Text className="font-pmedium text-sm text-black">
+                    Welcome Back,
+                  </Text>
+                  <Text className="text-2xl font-psemibold text-green-900">
+                    {user?.name}
+                  </Text>
+                </View>
               </View>
-              <View className="mt-1.5">
+
+              <TouchableOpacity
+                onPress={() => {
+                  router.push("/profile");
+                }}
+              >
                 <Image
-                  source={images.agrominilogo}
-                  className="w-9 h-10"
-                  resizeMode="contain"
+                  source={{ uri: user?.imageUrl }}
+                  style={{
+                    width: 45,
+                    height: 45,
+                    borderRadius: 50,
+                  }}
                 />
-              </View>
+              </TouchableOpacity>
             </View>
           </View>
           <View
@@ -86,7 +107,7 @@ const Home = () => {
             </View>
           </View>
           <Text className="text-black text-lg font-bold ml-4 mt-4">
-            Trendi Features
+            Trending Features
           </Text>
           <View className="flex flex-row flex-wrap justify-between ml-4 mr-4 mt-2">
             {cards.map((card) => (

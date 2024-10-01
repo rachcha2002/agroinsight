@@ -40,8 +40,9 @@ const RootLayout = () => {
         <Stack.Screen name="search/[query]" options={{ headerShown: false }} />
         <Stack.Screen name="disease" options={{ headerShown: false }} />
         <Stack.Screen name="agrochemicals" options={{ headerShown: false }} />
-        <Stack.Screen name="market" options={{ headerShown: false}}/>
-        <Stack.Screen name='rotator' options={{headerShown:false}}/>
+        <Stack.Screen name="market" options={{ headerShown: false }} />
+        <Stack.Screen name="rotator" options={{ headerShown: false }} />
+        <Stack.Screen name="profile" options={{ headerShown: false }} />
       </Stack>
     </GlobalProvider>
   );

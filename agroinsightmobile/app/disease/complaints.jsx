@@ -14,6 +14,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import DiseaseHeader from "../../components/disease-Management/DeseaseHeader";
 import { useGlobalContext } from "../../context/GlobalProvider";
+import { router } from "expo-router";
 
 const Complaints = ({ navigation }) => {
   const [complaints, setComplaints] = useState([]);
@@ -23,6 +24,8 @@ const Complaints = ({ navigation }) => {
   const { user } = useGlobalContext();
 
   const fetchComplaints = async (email) => {
+    setLoading(true);
+    setError(null); // Clear previous errors before fetching
     try {
       const response = await axios.get(
         `${process.env.EXPO_PUBLIC_BACKEND_URL}/api/disease/complaints/farmer/${email}`
@@ -34,9 +37,14 @@ const Complaints = ({ navigation }) => {
       );
 
       setComplaints(sortedComplaints);
-      setLoading(false);
     } catch (err) {
-      setError(err.message);
+      if (err.response && err.response.status === 404) {
+        // If the status code is 404, it means no complaints were found
+        setComplaints([]);
+      } else {
+        setError(err.message);
+      }
+    } finally {
       setLoading(false);
     }
   };
@@ -109,17 +117,25 @@ const Complaints = ({ navigation }) => {
 
   if (!loading && complaints.length === 0) {
     return (
-      <View className="flex-1 justify-center items-center">
-        <Text className="text-gray-500 text-lg mb-4">No Complaints Found</Text>
-        <TouchableOpacity
-          className="bg-blue-500 p-3 rounded-lg"
-          onPress={() => navigation.navigate("CreateComplaint")} // Adjust to match your create complaint screen name
-        >
-          <Text className="text-white text-center font-bold">
-            Create Complaint
-          </Text>
-        </TouchableOpacity>
-      </View>
+      <GestureHandlerRootView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
+        <SafeAreaView className="h-full">
+          <DiseaseHeader />
+
+          <View className="flex-1 justify-center items-center">
+            <Text className="text-gray-500 text-lg mb-4">
+              No Complaints Found
+            </Text>
+            <TouchableOpacity
+              className="bg-green-500 p-3 rounded-lg"
+              onPress={() => router.push("/disease/createcomplaint")} // Adjust to match your create complaint screen name
+            >
+              <Text className="text-white text-center font-bold">
+                Create Complaint
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </SafeAreaView>
+      </GestureHandlerRootView>
     );
   }
 

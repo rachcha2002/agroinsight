@@ -63,6 +63,7 @@ const TabsLayout = () => {
           tabBarIcon: ({ color, focused }) => (
             <TabIcon
               icon={icons.rotator}
+              name="Crop Rotator"
               color={color}
               focused={focused}
             />
@@ -112,22 +113,6 @@ const TabsLayout = () => {
               icon={icons.market}
               color={color}
               name="Market"
-              focused={focused}
-            />
-          ),
-        }}
-      />
-
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: "Profile",
-          headerShown: false,
-          tabBarIcon: ({ color, focused }) => (
-            <TabIcon
-              icon={icons.profile}
-              color={color}
-              name="Profile"
               focused={focused}
             />
           ),
