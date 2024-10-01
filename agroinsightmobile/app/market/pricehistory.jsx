@@ -5,6 +5,7 @@ import {
   TextInput,
   Text,
   Platform,
+  ActivityIndicator,
 } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import React, { useState, useEffect } from "react";
@@ -25,6 +26,7 @@ const pricehistory = () => {
   const router = useRouter();
 
   const [Crops, setCrops] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [searchCrop, setSearchCrop] = useState("");
   const [fromDate, setFromDate] = useState(null);
   const [toDate, setToDate] = useState(new Date());
@@ -39,6 +41,7 @@ const pricehistory = () => {
           `${process.env.EXPO_PUBLIC_BACKEND_URL}/crop/gethistory`
         );
         const filteredCrops = res.data;
+        setLoading(false);
         setCrops(filteredCrops);
 
         if (filteredCrops.length > 0) {
@@ -75,6 +78,14 @@ const pricehistory = () => {
     const toDateMatch = !toDate || cropDate <= toDate;
     return cropNameMatch && fromDateMatch && toDateMatch;
   }).sort((a, b) => parseDate(b.date) - parseDate(a.date));
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
 
   return (
     <GestureHandlerRootView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>

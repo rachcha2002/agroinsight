@@ -5,7 +5,8 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
-  StyleSheet,
+  StyleSheet, 
+  ActivityIndicator,
   ScrollView,
 } from "react-native";
 import axios from "axios";
@@ -14,6 +15,7 @@ import { generatePDF } from "./generatepricepdf";
 function ColomboPriceCard() {
   const [Crops, setCrops] = useState([]);
   const [searchCrop, setSearchCrop] = useState("");
+  const [loading, setLoading] = useState(true);
   const marketName = "Colombo";
   useEffect(() => {
     async function getCrops() {
@@ -22,6 +24,7 @@ function ColomboPriceCard() {
         const filteredCrops = res.data.filter(
           (crop) => crop.Market === "Colombo"
         );
+        setLoading(false);
         setCrops(filteredCrops);
       } catch (err) {
         console.error(err);
@@ -33,6 +36,14 @@ function ColomboPriceCard() {
   const filteredCrops = Crops.filter((Crop) =>
     Crop.Crop_name.toLowerCase().includes(searchCrop.toLowerCase())
   );
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
 
   return (
     <ScrollView className="p-5">

@@ -17,9 +17,6 @@ function MarketManager() {
         <Route path="/pricelist/*" element={<Crops/>} />
        <Route path="/pricehistory" element={<PriceHistory/>}/>
         <Route path="/pricelist/addcrop" element={<AddCrop/>} />
-       {/* //  <Route path="Tires/addproduct/" element={<Tireform toggleLoading={toggleLoading}/>} />
-        // <Route path="sp/*" element={<SpareParts toggleLoading={toggleLoading}/>} />
-        // <Route path="sales/*" element={<Sales toggleLoading={toggleLoading}/>} />   */}
       </Routes>
     </>
   );

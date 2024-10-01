@@ -7,12 +7,14 @@ import {
   Image,
   StyleSheet,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import axios from "axios";
 import { generatePDF } from "./generatepricepdf";
 
 function JaffnaPriceCard() {
   const [Crops, setCrops] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [searchCrop, setSearchCrop] = useState("");
   const marketName = "Jaffna";
 
@@ -23,6 +25,7 @@ function JaffnaPriceCard() {
         const filteredCrops = res.data.filter(
           (crop) => crop.Market === "Jaffna"
         );
+        setLoading(false);
         setCrops(filteredCrops);
       } catch (err) {
         console.error(err);
@@ -34,6 +37,14 @@ function JaffnaPriceCard() {
   const filteredCrops = Crops.filter((Crop) =>
     Crop.Crop_name.toLowerCase().includes(searchCrop.toLowerCase())
   );
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
 
   return (
     <ScrollView className="p-5">

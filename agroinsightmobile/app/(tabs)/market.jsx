@@ -6,6 +6,7 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -18,6 +19,7 @@ const Market = () => {
   const [highestPriceCrop, setHighestPriceCrop] = useState(null);
   const [highestThisWeek, setHighestThisWeek] = useState(null);
   const router = useRouter();
+  const [loading, setLoading] = useState(true);
 
 
   useEffect(() => {
@@ -26,6 +28,7 @@ const Market = () => {
         .get(`${process.env.EXPO_PUBLIC_BACKEND_URL}/crop/croplist`)
         .then((res) => {
           const crops = res.data;
+          setLoading(false);
           if (crops.length > 0) {
             const highestCrop = crops.reduce((prev, current) => {
               return prev.Price > current.Price ? prev : current;
@@ -46,6 +49,7 @@ const Market = () => {
         .get(`${process.env.EXPO_PUBLIC_BACKEND_URL}/crop/gethistory`)
         .then((res) => {
           const filteredCrops = res.data;
+          setLoading(false);
           const today = moment();
           const weekStart = today.subtract(7, "days");
 
@@ -68,6 +72,14 @@ const Market = () => {
     }
     getCrophistory();
   }, []);
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
 
   return (
     <GestureHandlerRootView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
