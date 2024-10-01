@@ -8,13 +8,11 @@ import {
   TouchableOpacity,
   RefreshControl,
   Modal,
-  Button,
 } from "react-native";
 import axios from "axios";
-import { useRouter, usePathname } from "expo-router";
+import { useRouter } from "expo-router";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { images } from "../../constants";
 import Ionicons from "react-native-vector-icons/Ionicons"; // Import Ionicons from react-native-vector-icons
 import Header from "../../components/header";
 
@@ -35,8 +33,14 @@ const AgrochemicalNews = () => {
       setNews(response.data);
       setLoading(false);
     } catch (err) {
-      setError(err.message);
-      setLoading(false);
+      if (err.response && err.response.status === 404) {
+        // Handle the 404 case by setting news to an empty array
+        setNews([]);
+        setLoading(false);
+      } else {
+        setError(err.message);
+        setLoading(false);
+      }
     }
   };
 
@@ -82,8 +86,8 @@ const AgrochemicalNews = () => {
     <GestureHandlerRootView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
       <SafeAreaView>
         <Header />
-        <Text className="text-black text-2xl font-bold ml-2 mt-4 ml-4">
-          What new about Agrochemicals?
+        <Text style={{ fontSize: 24, fontWeight: "bold", margin: 10 }}>
+          What's new about Agrochemicals?
         </Text>
         <ScrollView
           refreshControl={
@@ -91,43 +95,50 @@ const AgrochemicalNews = () => {
           }
         >
           <View style={{ padding: 10 }}>
-            {news.map((item) => (
-              <TouchableOpacity
-                key={item._id}
-                onPress={() => handleShowDetails(item._id)}
-              >
-                <View
-                  style={{
-                    marginBottom: 20,
-                    backgroundColor: "#fff",
-                    borderRadius: 10,
-                    shadowColor: "#000",
-                    shadowOffset: { width: 0, height: 2 },
-                    shadowOpacity: 0.1,
-                    shadowRadius: 4,
-                    padding: 10,
-                  }}
+            {/* If no news exist, show a message */}
+            {!news.length ? (
+              <View style={styles.noRecordsContainer}>
+                <Text style={styles.noRecordsText}>No news</Text>
+              </View>
+            ) : (
+              news.map((item) => (
+                <TouchableOpacity
+                  key={item._id}
+                  onPress={() => handleShowDetails(item._id)}
                 >
-                  <Image
-                    source={{ uri: item.imageURL }}
+                  <View
                     style={{
-                      width: "100%",
-                      height: 200,
+                      marginBottom: 20,
+                      backgroundColor: "#fff",
                       borderRadius: 10,
-                      marginBottom: 10,
+                      shadowColor: "#000",
+                      shadowOffset: { width: 0, height: 2 },
+                      shadowOpacity: 0.1,
+                      shadowRadius: 4,
+                      padding: 10,
                     }}
-                    resizeMode="cover"
-                  />
-                  <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-                    {item.title}
-                  </Text>
-                  <Text>{item.description}</Text>
-                  <Text style={{ color: "#888", marginTop: 5 }}>
-                    Date: {new Date(item.date).toLocaleDateString()}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            ))}
+                  >
+                    <Image
+                      source={{ uri: item.imageURL }}
+                      style={{
+                        width: "100%",
+                        height: 200,
+                        borderRadius: 10,
+                        marginBottom: 10,
+                      }}
+                      resizeMode="cover"
+                    />
+                    <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+                      {item.title}
+                    </Text>
+                    <Text>{item.description}</Text>
+                    <Text style={{ color: "#888", marginTop: 5 }}>
+                      Date: {new Date(item.date).toLocaleDateString()}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              ))
+            )}
           </View>
         </ScrollView>
 
@@ -231,9 +242,15 @@ const styles = {
     top: 5,
     right: 10,
     zIndex: 1, // Ensures it's on top of other elements
-    //backgroundColor: "rgba(0, 0, 0, 0.5)", // Black background with 0.5 opacity
     padding: 3, // Adjust padding for better touch area
-    //borderRadius: 20, // Rounded edges for the close button
+  },
+  noRecordsContainer: {
+    alignItems: "center",
+    marginTop: 20,
+  },
+  noRecordsText: {
+    fontSize: 18,
+    color: "#666",
   },
 };
 
