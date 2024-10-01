@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useLocalSearchParams } from 'expo-router';
 import { icons, images } from "../../constants";
 import { router } from "expo-router";
+import Header from '../../components/header';
 
 const RotatorDetails = () => {
   const { id } = useLocalSearchParams();
@@ -43,29 +44,12 @@ const RotatorDetails = () => {
   }
 
   return (
-    <SafeAreaView className="bg-white h-full">
-    <View className="flex-1 px-4 items-center">
-      <View className="justify-between items-center flex-row">
-       <View className="items-center pl-3 mt-2">
-          <Image
-            source={images.agroinsightlogo}
-            className="w-15 h-10"
-            resizeMode="contain"
-          />
-        </View>
-        </View>
+  <SafeAreaView className="bg-white h-full">
+    <View className="flex-1 px-4 mt-8 items-center">
+      <Header/>
       {alert && (
         <>
-      <View style={{ flexDirection: 'row',  alignItems: 'center' }}>
-      <TouchableOpacity  onPress={() => router.back()}> 
-            <Image
-              source={icons.leftArrow}
-              className="w-50 h-15"
-              resizeMode="contain"
-            />
-        </TouchableOpacity>
         <Text className="text-2xl text-black font-semibold ml-4 ">{alert.title}</Text>
-       </View>
           <Image
             source={{ uri: alert.imageURL }}
             className="mt-4 w-full h-48 rounded-lg"

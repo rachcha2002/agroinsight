@@ -18,6 +18,7 @@ import FormField from "../../components/FormField";
 import { useGlobalContext } from "../../context/GlobalProvider";
 import { icons, images } from "../../constants";
 import { uploadRotatorDetails} from "../../lib/rotationAPI";
+import Header from "../../components/header";
 
 function RotationDetails() {
   const [alerts, setAlerts] = useState([]);
@@ -77,24 +78,9 @@ function RotationDetails() {
  
   return (
     <SafeAreaView className="bg-white h-full">
-      <View className="justify-between items-center flex-row ">
-        <View className="flex-1 items-center pl-4">
-          <Image
-            source={images.agroinsightlogo}
-            className="w-15 h-10"
-            resizeMode="contain"
-          />
-        </View>
-      </View>
+      <Header/>
       <ScrollView className="px-4 my-6">
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-      <TouchableOpacity  onPress={() => router.back()}> 
-            <Image
-              source={icons.leftArrow}
-              className="w-50 h-15"
-              resizeMode="contain"
-            />
-        </TouchableOpacity>
+      <View style={{ alignItems: 'center' }}>
         <Text className="text-2xl text-black font-semibold ml-4">Crop Rotation Details</Text>
        </View>
        <FormField

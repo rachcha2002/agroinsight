@@ -19,6 +19,7 @@ import CustomButton from "../../components/CustomButton";
 import FormField from "../../components/FormField";
 import { useGlobalContext } from "../../context/GlobalProvider";
 import { icons, images } from "../../constants";
+import Header from "../../components/header";
 
 function FarmerDetails() {
   const [details, setDetails] = useState([]);
@@ -167,23 +168,8 @@ const renderItem = ({ item }) => (
 
   return (
     <SafeAreaView className="bg-white h-full">
-      <View className="justify-between items-center flex-row ">
-        <View className="flex-1 items-center pl-4">
-          <Image
-            source={images.agroinsightlogo}
-            className="w-15 h-10"
-            resizeMode="contain"
-          />
-        </View>
-      </View>
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <TouchableOpacity  onPress={() => router.back()}> 
-            <Image
-              source={icons.leftArrow}
-              className="w-50 h-15 ml-4"
-              resizeMode="contain"
-            />
-        </TouchableOpacity>
+      <Header/>
+      <View style={{ alignItems: 'center' }}>
         <Text className="text-2xl text-black font-semibold ml-3.5">Crop Rotation Details</Text></View>
         <View className="mt-2.5 items-center">
           <TouchableOpacity onPress={handleRotationDetailsPress}>
