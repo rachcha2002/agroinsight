@@ -20,7 +20,7 @@ const NewsLetter = () => {
   useEffect(() => {
     const fetchAlerts = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/crop-rotator/rotator-alerts');
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/crop-rotator/rotator-alerts`);
         setAlerts(response.data);
         setLoading(false);
       } catch (err) {
@@ -34,7 +34,7 @@ const NewsLetter = () => {
 
   const handleShowDetails = async (id) => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/crop-rotator/rotator-alerts/${id}`);
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/crop-rotator/rotator-alerts/${id}`);
       setSelectedAlert(response.data);
       setFormData({
         title: response.data.title,
@@ -50,7 +50,7 @@ const NewsLetter = () => {
 
   const handleDeleteAlert = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/crop-rotator/rotator-alerts/${id}`);
+      await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/api/crop-rotator/rotator-alerts/${id}`);
       setAlerts(alerts.filter(alert => alert._id !== id));
     } catch (err) {
       console.error("Error deleting alert:", err.message);
@@ -68,7 +68,7 @@ const NewsLetter = () => {
 
   const handleEditAlert = async () => {
     try {
-      const response = await axios.put(`http://localhost:5000/api/crop-rotator/rotator-alerts/${selectedAlert._id}`, formData);
+      const response = await axios.put(`${process.env.REACT_APP_BACKEND_URL}/api/crop-rotator/rotator-alerts/${selectedAlert._id}`, formData);
       if (response.status === 200) {
         // Update the alert in the list with the new data
         setAlerts(alerts.map(alert => 
