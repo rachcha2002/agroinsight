@@ -15,7 +15,8 @@ import CustomButton from "../../components/CustomButton";
 import FormField from "../../components/FormField";
 import { useGlobalContext } from "../../context/GlobalProvider";
 import { icons, images } from "../../constants";
-import { uploadDiseaseData } from "../../lib/diseaseAPI"; // Adjust the path as needed
+import { uploadDiseaseData } from "../../lib/diseaseAPI";
+import Header from "../../components/header" // Adjust the path as needed
 
 const CreateComplaint = () => {
   const { user } = useGlobalContext();
@@ -61,15 +62,8 @@ const CreateComplaint = () => {
 
   return (
     <SafeAreaView className="bg-white h-full">
-      <View className="justify-between items-center flex-row ">
-        <View className="flex-1 items-center pl-4">
-          <Image
-            source={images.agroinsightlogo}
-            className="w-15 h-10"
-            resizeMode="contain"
-          />
-        </View>
-      </View>
+      <Header/>
+      
       <ScrollView className="px-4 my-6">
         <Text className="text-2xl text-black font-semibold">Report new pest or disease</Text>
         <FormField
