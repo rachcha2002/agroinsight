@@ -10,7 +10,7 @@ import ChartDataLabels from "chartjs-plugin-datalabels";
 
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
-const PesticideUsage = () => {
+const FertilizerUsage = () => {
   const [records, setRecords] = useState([]);
   const [filteredRecords, setFilteredRecords] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,14 +20,19 @@ const PesticideUsage = () => {
   const [comment, setComment] = useState("");
 
   const [regionSearch, setRegionSearch] = useState("");
-  const [pesticideSearch, setPesticideSearch] = useState("");
-  const [targetPestSearch, setTargetPestSearch] = useState("");
+  const [cropSearch, setCropSearch] = useState("");
+  const [fertilizerSearch, setFertilizerSearch] = useState("");
 
-  // Fetch all farmer pesticides records
+  // Define chart dimensions
+  const chartWidth = 60; // Width of each chart
+  const chartHeight = 60; // Height of each chart
+  const chartSpacing = 10; // Spacing between charts
+
+  // Fetch all farmer fertilizers records
   const fetchRecords = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_BACKEND_URL}/api/f&p/getallfp`
+        `${process.env.REACT_APP_BACKEND_URL}/api/f&p/getallff`
       );
       setRecords(response.data.data); // Assuming the response has a data field with records
       setFilteredRecords(response.data.data); // Initially set filtered records to all records
@@ -48,14 +53,12 @@ const PesticideUsage = () => {
       return (
         (!regionSearch ||
           record.region.toLowerCase().includes(regionSearch.toLowerCase())) &&
-        (!pesticideSearch ||
-          record.pesticide
+        (!cropSearch ||
+          record.crop.toLowerCase().includes(cropSearch.toLowerCase())) &&
+        (!fertilizerSearch ||
+          record.fertilizer
             .toLowerCase()
-            .includes(pesticideSearch.toLowerCase())) &&
-        (!targetPestSearch ||
-          record.targetPest
-            .toLowerCase()
-            .includes(targetPestSearch.toLowerCase()))
+            .includes(fertilizerSearch.toLowerCase()))
       );
     });
     setFilteredRecords(filtered);
@@ -64,13 +67,13 @@ const PesticideUsage = () => {
   // Re-filter records whenever the search fields change
   useEffect(() => {
     filterRecords();
-  }, [regionSearch, pesticideSearch, targetPestSearch]);
+  }, [regionSearch, cropSearch, fertilizerSearch]);
 
   // Clear search fields
   const clearSearch = () => {
     setRegionSearch("");
-    setPesticideSearch("");
-    setTargetPestSearch("");
+    setCropSearch("");
+    setFertilizerSearch("");
     setFilteredRecords(records); // Reset to all records
   };
 
@@ -143,10 +146,8 @@ const PesticideUsage = () => {
     try {
       // Send a PATCH request to update only the comment field
       await axios.patch(
-        `${process.env.REACT_APP_BACKEND_URL}/api/f&p/updatecommentfp/${selectedRecord._id}`,
-        {
-          comment,
-        }
+        `${process.env.REACT_APP_BACKEND_URL}/api/f&p/updatecommentff/${selectedRecord._id}`,
+        { comment }
       );
 
       // Update the local records with the new comment
@@ -161,7 +162,6 @@ const PesticideUsage = () => {
     }
   };
 
-  // Generate PDF with charts and table
   const generatePDF = async () => {
     const doc = new jsPDF();
 
@@ -185,56 +185,53 @@ const PesticideUsage = () => {
 
     // Add title for the PDF
     doc.setFontSize(16); // Title font size
-    doc.text("Farmer Pesticide Records", 10, yOffset);
+    doc.text("Farmer Fertilizer Records", 10, yOffset);
 
     // Adjust yOffset for pie chart row
     yOffset += 10;
 
-    // Add a timeout to allow charts to fully render before capturing them
-    await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait 1 second
+    try {
+      // Add a timeout to allow charts to fully render before capturing them
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait 1 second
 
-    // Add Pie Charts in a Row
-    const chartElements = document.querySelectorAll(".chart-container canvas");
-    const chartsImages = await Promise.all(
-      Array.from(chartElements).map((chart) =>
-        html2canvas(chart).then((canvas) => canvas.toDataURL("image/png"))
-      )
-    );
+      const chartElements = document.querySelectorAll(
+        ".chart-container canvas"
+      );
+      const chartsImages = await Promise.all(
+        Array.from(chartElements).map((chart) =>
+          html2canvas(chart)
+            .then((canvas) => canvas.toDataURL("image/png"))
+            .catch((error) => {
+              console.error("Error capturing chart image", error);
+              return null;
+            })
+        )
+      );
 
-    // Place the pie charts in a row (xOffset changes for each chart)
-    const chartWidth = 60; // Width of each chart
-    const chartHeight = 60; // Height of each chart
-    const chartSpacing = 10; // Spacing between charts
-
-    chartsImages.forEach((chartImage, idx) => {
-      const xPos = 10 + (idx % 3) * (chartWidth + chartSpacing); // X-position for each chart
-      const yPos = yOffset + Math.floor(idx / 3) * (chartHeight + chartSpacing); // Y-position for each row
-      doc.addImage(chartImage, "PNG", xPos, yPos, chartWidth, chartHeight);
-    });
+      chartsImages.forEach((chartImage, idx) => {
+        if (chartImage) {
+          const xPos = 10 + (idx % 3) * (chartWidth + chartSpacing); // X-position for each chart
+          const yPos =
+            yOffset + Math.floor(idx / 3) * (chartHeight + chartSpacing); // Y-position for each row
+          doc.addImage(chartImage, "PNG", xPos, yPos, chartWidth, chartHeight);
+        }
+      });
+    } catch (error) {
+      console.error("Error capturing pie charts:", error);
+    }
 
     // Adjust yOffset for table after the pie charts
     yOffset += chartHeight + chartSpacing + 20;
 
-    // Add table
+    // Add table (corrected columns)
     doc.autoTable({
-      head: [
-        [
-          "Email",
-          "Region",
-          "Crop",
-          "Pesticide",
-          "Amount",
-          "Target Pest",
-          "Comment",
-        ],
-      ],
+      head: [["Email", "Region", "Crop", "Fertilizer", "Amount", "Comment"]],
       body: filteredRecords.map((record) => [
         record.email,
         record.region,
         record.crop,
-        record.pesticide,
+        record.fertilizer,
         record.amount,
-        record.targetPest,
         record.comment,
       ]),
       startY: yOffset, // Start the table after the pie charts
@@ -250,7 +247,7 @@ const PesticideUsage = () => {
     doc.text(`Generated on: ${currentDateTime}`, 10, finalY);
 
     // Save the PDF
-    doc.save("farmer_pesticide_records.pdf");
+    doc.save("farmer_fertilizer_records.pdf");
   };
 
   if (loading) {
@@ -263,7 +260,7 @@ const PesticideUsage = () => {
 
   return (
     <div className="container mt-4">
-      <h2>Farmer Pesticides Usage</h2>
+      <h2>Farmer Fertilizers Usage</h2>
 
       {/* Search Fields */}
       <Row className="mb-3">
@@ -278,17 +275,17 @@ const PesticideUsage = () => {
         <Col md={3}>
           <Form.Control
             type="text"
-            placeholder="Search by Pesticide"
-            value={pesticideSearch}
-            onChange={(e) => setPesticideSearch(e.target.value)}
+            placeholder="Search by Crop"
+            value={cropSearch}
+            onChange={(e) => setCropSearch(e.target.value)}
           />
         </Col>
         <Col md={3}>
           <Form.Control
             type="text"
-            placeholder="Search by Target Pest"
-            value={targetPestSearch}
-            onChange={(e) => setTargetPestSearch(e.target.value)}
+            placeholder="Search by Fertilizer"
+            value={fertilizerSearch}
+            onChange={(e) => setFertilizerSearch(e.target.value)}
           />
         </Col>
         <Col md={3}>
@@ -303,7 +300,6 @@ const PesticideUsage = () => {
       <Button variant="primary" onClick={generatePDF} className="mb-3 ml-2">
         Generate PDF
       </Button>
-
       <h3 className="mt-2 mb-2">Graphical Representation</h3>
 
       {/* Pie Charts Row */}
@@ -316,23 +312,21 @@ const PesticideUsage = () => {
           />
         </Col>
         <Col md={4}>
-          <h4>Pesticide Distribution</h4>
+          <h4>Crop Distribution</h4>
           <Pie
-            data={preparePieChartData("pesticide")}
-            options={preparePieChartData("pesticide").options}
+            data={preparePieChartData("crop")}
+            options={preparePieChartData("crop").options}
           />
         </Col>
         <Col md={4}>
-          <h4>Target Pest Distribution</h4>
+          <h4>Fertilizer Distribution</h4>
           <Pie
-            data={preparePieChartData("targetPest")}
-            options={preparePieChartData("targetPest").options}
+            data={preparePieChartData("fertilizer")}
+            options={preparePieChartData("fertilizer").options}
           />
         </Col>
       </Row>
-
       <h3 className="mt-2 mb-2">Usage Records</h3>
-
       {/* Table with records */}
       <Table striped bordered hover className="mt-5">
         <thead>
@@ -340,9 +334,8 @@ const PesticideUsage = () => {
             <th>Email</th>
             <th>Region</th>
             <th>Crop</th>
-            <th>Pesticide</th>
+            <th>Fertilizer</th>
             <th>Amount</th>
-            <th>Target Pest</th>
             <th>Comment</th>
             <th>Actions</th>
           </tr>
@@ -353,9 +346,8 @@ const PesticideUsage = () => {
               <td>{record.email}</td>
               <td>{record.region}</td>
               <td>{record.crop}</td>
-              <td>{record.pesticide}</td>
+              <td>{record.fertilizer}</td>
               <td>{record.amount}</td>
-              <td>{record.targetPest}</td>
               <td>{record.comment}</td>
               <td>
                 <Button
@@ -401,4 +393,4 @@ const PesticideUsage = () => {
   );
 };
 
-export default PesticideUsage;
+export default FertilizerUsage;

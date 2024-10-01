@@ -1,19 +1,17 @@
 const mongoose = require("mongoose");
 
-// Define the schema for storing farmer data
-const FarmerFertilizerSchema = new mongoose.Schema({
+// Define the schema for storing farmer pesticides data
+const FarmerPesticidesSchema = new mongoose.Schema({
   farmerId: {
     type: String,
-    required: true,
-    //unique: true, // Ensures each farmer has a unique ID
-    default: "F00000001",
+    //required: true,
+    default: "F00000001", // Default farmer ID, can be changed as needed
   },
   email: {
     type: String,
-    required: true,
-    //unique: true, // Ensures that the email is unique
+    //required: true,
     match: [/.+\@.+\..+/, "Please enter a valid email address"], // Simple email validation
-    default: "abc@gmail.com", // Default email is 'Unknown'
+    default: "abc@gmail.com", // Default email
   },
   region: {
     type: String,
@@ -24,7 +22,7 @@ const FarmerFertilizerSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  fertilizer: {
+  pesticide: {
     type: String,
     required: true,
   },
@@ -33,9 +31,14 @@ const FarmerFertilizerSchema = new mongoose.Schema({
     required: true,
     min: [0, "Amount cannot be negative"], // Ensures that the amount is non-negative
   },
+  targetPest: {
+    type: String,
+    required: true, // New field for the target pest
+    default: "Unknown Pest",
+  },
   comment: {
     type: String,
-    default: "", // Optional comment field, defaulting to an empty string
+    default: "", // Optional comment field
   },
   createdAt: {
     type: Date,
@@ -43,10 +46,10 @@ const FarmerFertilizerSchema = new mongoose.Schema({
   },
 });
 
-// Create the Farmer model from the schema
-const FarmerFertilizers = mongoose.model(
-  "FarmerFertilizers",
-  FarmerFertilizerSchema
+// Create the FarmerPesticides model from the schema
+const FarmerPesticides = mongoose.model(
+  "FarmerPesticides",
+  FarmerPesticidesSchema
 );
 
-module.exports = FarmerFertilizers;
+module.exports = FarmerPesticides;

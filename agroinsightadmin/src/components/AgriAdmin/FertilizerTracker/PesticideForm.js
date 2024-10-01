@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 import { BsArrowLeft } from "react-icons/bs";
 
 const PesticideForm = () => {
-  //to redirect after success
   const navigate = useNavigate();
 
   const [cropCategories, setCropCategories] = useState([]);
@@ -26,7 +25,7 @@ const PesticideForm = () => {
   useEffect(() => {
     // Fetch crop categories from the backend
     axios
-      .get("http://localhost:5000/api/f&p/cropcategories")
+      .get(`${process.env.REACT_APP_BACKEND_URL}/api/f&p/cropcategories`)
       .then((response) => {
         setCropCategories(response.data);
       });
@@ -55,13 +54,12 @@ const PesticideForm = () => {
 
   const fetchCrops = (categoryId) => {
     axios
-      .get(`http://localhost:5000/api/f&p/crops/${categoryId}`)
+      .get(`${process.env.REACT_APP_BACKEND_URL}/api/f&p/crops/${categoryId}`)
       .then((response) => {
         setCropsByCategory((prevCrops) => ({
           ...prevCrops,
           [categoryId]: response.data,
         }));
-        console.log("Crops fetched successfully!", response.data);
       })
       .catch((error) => {
         console.error("There was an error fetching the crops!", error);
@@ -126,6 +124,20 @@ const PesticideForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validation: Check if all required fields are filled
+    if (
+      !image ||
+      selectedCrops.some((crop) => !crop.cropId) ||
+      targetPests.some((pest) => !pest) ||
+      regions.some((region) => !region) ||
+      brands.some((brand) => !brand) ||
+      !instructions
+    ) {
+      alert("Please fill out all fields correctly.");
+      return;
+    }
+
     const formData = new FormData(e.target);
 
     // Append dynamically added fields to formData
@@ -137,17 +149,13 @@ const PesticideForm = () => {
     regions.forEach((region) => formData.append("region[]", region));
     brands.forEach((brand) => formData.append("brands[]", brand));
 
-    /* if (image) {
-      formData.append("fertilizerImage", image);
-    }*/
-    // Inspect FormData content
     for (let [key, value] of formData.entries()) {
       console.log(`${key}: ${value}`);
     }
 
     try {
       await axios.post(
-        "http://localhost:5000/api/f&p/add-pesticides",
+        `${process.env.REACT_APP_BACKEND_URL}/api/f&p/add-pesticides`,
         formData
       );
       alert("Pesticide submitted successfully");
@@ -189,6 +197,7 @@ const PesticideForm = () => {
               type="file"
               name="fertilizerImage"
               onChange={handleImageChange}
+              required
             />
             {imagePreview && (
               <img

@@ -16,7 +16,6 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { images } from "../../constants";
 import Ionicons from "react-native-vector-icons/Ionicons"; // Import Ionicons from react-native-vector-icons
-//import { useRouter } from "expo-router";
 
 const AgrochemicalNews = () => {
   const [news, setNews] = useState([]);
@@ -82,14 +81,16 @@ const AgrochemicalNews = () => {
     <GestureHandlerRootView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
       <SafeAreaView>
         <View style={styles.headerContainer}>
-          {/* Back button with Ionicons */}
-          <TouchableOpacity
-            onPress={() => router.push("/agrochemicals")} // Ensure this route exists
-            style={styles.backButton} // Use style instead of className
-          >
-            <Ionicons name="arrow-back" size={24} color="#000" />
-          </TouchableOpacity>
-
+          <View>
+            {/* Back button with Ionicons */}
+            <TouchableOpacity
+              onPress={() => router.back()} // Use router.back() for back functionality
+              style={styles.backButton} // Apply styles correctly
+              activeOpacity={0.7} // Add an activeOpacity to give visual feedback on press
+            >
+              <Ionicons name="arrow-back" size={24} color="#000" />
+            </TouchableOpacity>
+          </View>
           {/* Logo in the center */}
           <View style={styles.logoContainer}>
             <Image
@@ -203,7 +204,7 @@ const AgrochemicalNews = () => {
                       {selectedNews.description}
                     </Text>
                     <Text style={{ marginBottom: 10 }}>
-                      Details: {selectedNews.details}
+                      Additional Details: {selectedNews.details}
                     </Text>
                     <Text style={{ marginBottom: 10 }}>
                       Source: {selectedNews.source}
@@ -234,6 +235,7 @@ const styles = {
     paddingLeft: 15, // Adjust padding as needed
     justifyContent: "center",
     alignItems: "center",
+    zIndex: 10,
   },
   logoContainer: {
     flex: 1,

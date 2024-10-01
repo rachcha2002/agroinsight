@@ -1,56 +1,57 @@
-const FarmerFertilizers = require("../../models/f&pModels/FarmerFertilizerSchema");
+const FarmerPesticides = require("../../models/f&pModels/FarmerPesticidesSchema");
 
 // Create a new record without email, farmerId, region, and comment
-exports.createFarmerFertilizer = async (req, res) => {
+exports.createFarmerPesticide = async (req, res) => {
   try {
-    const { crop, fertilizer, amount, email, region } = req.body;
+    const { crop, pesticide, amount, targetPest, email, region } = req.body;
 
-    const newFarmerFertilizer = new FarmerFertilizers({
+    const newFarmerPesticide = new FarmerPesticides({
       email,
       crop,
-      fertilizer,
+      pesticide,
       amount,
+      targetPest, // New field for target pest
       region,
     });
 
-    await newFarmerFertilizer.save();
+    await newFarmerPesticide.save();
     res.status(201).json({
-      message: "Farmer fertilizer record created successfully",
-      data: newFarmerFertilizer,
+      message: "Farmer pesticide record created successfully",
+      data: newFarmerPesticide,
     });
   } catch (error) {
     res.status(500).json({
-      error: "Error creating farmer fertilizer record",
+      error: "Error creating farmer pesticide record",
       details: error.message,
     });
   }
 };
 
-// Update region, crop, fertilizer, and amount
-exports.updateFarmerFertilizer = async (req, res) => {
+// Update region, crop, pesticide, amount, and targetPest
+exports.updateFarmerPesticide = async (req, res) => {
   try {
     const { id } = req.params;
-    const { region, crop, fertilizer, amount } = req.body;
+    const { region, crop, pesticide, amount, targetPest } = req.body;
 
-    const updatedFarmerFertilizer = await FarmerFertilizers.findByIdAndUpdate(
+    const updatedFarmerPesticide = await FarmerPesticides.findByIdAndUpdate(
       id,
-      { region, crop, fertilizer, amount },
+      { region, crop, pesticide, amount, targetPest },
       { new: true } // Return the updated record
     );
 
-    if (!updatedFarmerFertilizer) {
+    if (!updatedFarmerPesticide) {
       return res
         .status(404)
-        .json({ message: "Farmer fertilizer record not found" });
+        .json({ message: "Farmer pesticide record not found" });
     }
 
     res.status(200).json({
-      message: "Farmer fertilizer record updated successfully",
-      data: updatedFarmerFertilizer,
+      message: "Farmer pesticide record updated successfully",
+      data: updatedFarmerPesticide,
     });
   } catch (error) {
     res.status(500).json({
-      error: "Error updating farmer fertilizer record",
+      error: "Error updating farmer pesticide record",
       details: error.message,
     });
   }
@@ -59,56 +60,53 @@ exports.updateFarmerFertilizer = async (req, res) => {
 // Update only the comment field using PATCH
 exports.updateComment = async (req, res) => {
   try {
-    const { id } = req.params; // Get the farmer fertilizer record ID
-    const { comment } = req.body; // Get the updated comment from the request body
-    console.log(comment);
-    console.log(id);
-    console.log(req.body);
-    // Find the record by ID and update only the comment field
-    const updatedFarmerFertilizer = await FarmerFertilizers.findByIdAndUpdate(
+    const { id } = req.params; // Extract the ID from the URL parameters
+    const { comment } = req.body; // Extract the comment from the request body
+
+    // Use $set to update only the comment field
+    const updatedFarmerPesticide = await FarmerPesticides.findByIdAndUpdate(
       id,
       { $set: { comment } }, // Use $set to update only the comment field
       { new: true } // Return the updated document
     );
 
-    if (!updatedFarmerFertilizer) {
+    if (!updatedFarmerPesticide) {
       return res
         .status(404)
-        .json({ message: "Farmer fertilizer record not found" });
+        .json({ message: "Farmer pesticide record not found" });
     }
 
     res.status(200).json({
       message: "Comment updated successfully",
-      data: updatedFarmerFertilizer,
+      data: updatedFarmerPesticide,
     });
   } catch (error) {
-    res
-      .status(500)
-      .json({ error: "Error updating comment", details: error.message });
+    res.status(500).json({
+      error: "Error updating comment",
+      details: error.message,
+    });
   }
 };
 
 // Delete a record by id
-exports.deleteFarmerFertilizer = async (req, res) => {
+exports.deleteFarmerPesticide = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const deletedFarmerFertilizer = await FarmerFertilizers.findByIdAndDelete(
-      id
-    );
+    const deletedFarmerPesticide = await FarmerPesticides.findByIdAndDelete(id);
 
-    if (!deletedFarmerFertilizer) {
+    if (!deletedFarmerPesticide) {
       return res
         .status(404)
-        .json({ message: "Farmer fertilizer record not found" });
+        .json({ message: "Farmer pesticide record not found" });
     }
 
     res
       .status(200)
-      .json({ message: "Farmer fertilizer record deleted successfully" });
+      .json({ message: "Farmer pesticide record deleted successfully" });
   } catch (error) {
     res.status(500).json({
-      error: "Error deleting farmer fertilizer record",
+      error: "Error deleting farmer pesticide record",
       details: error.message,
     });
   }
@@ -119,7 +117,7 @@ exports.getAllByEmail = async (req, res) => {
   try {
     const { email } = req.params;
 
-    const records = await FarmerFertilizers.find({ email });
+    const records = await FarmerPesticides.find({ email });
 
     if (!records.length) {
       return res
@@ -139,7 +137,7 @@ exports.getAllByEmail = async (req, res) => {
 // Get all records
 exports.getAllRecords = async (req, res) => {
   try {
-    const records = await FarmerFertilizers.find();
+    const records = await FarmerPesticides.find();
     res.status(200).json({ data: records });
   } catch (error) {
     res
@@ -153,7 +151,7 @@ exports.getRecordById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const record = await FarmerFertilizers.findById(id);
+    const record = await FarmerPesticides.findById(id);
 
     if (!record) {
       return res.status(404).json({ message: "Record not found" });

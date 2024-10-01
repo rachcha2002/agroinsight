@@ -34,7 +34,7 @@ const CropCategoryList = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/f&p/cropcategories")
+      .get(`${process.env.REACT_APP_BACKEND_URL}/api/f&p/cropcategories`)
       .then((response) => {
         setCategories(response.data);
       })
@@ -62,12 +62,12 @@ const CropCategoryList = () => {
 
       // Make an API call to delete the category
       await axios.delete(
-        `http://localhost:5000/api/f&p/delete-cropcategories/${categoryIdToDelete}`
+        `${process.env.REACT_APP_BACKEND_URL}/api/f&p/delete-cropcategories/${categoryIdToDelete}`
       );
 
       // Refetch the updated list of categories from the server
       const response = await axios.get(
-        "http://localhost:5000/api/f&p/cropcategories"
+        `${process.env.REACT_APP_BACKEND_URL}/api/f&p/cropcategories`
       );
       setCategories(response.data);
 

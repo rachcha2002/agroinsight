@@ -87,7 +87,7 @@ const AgrochemicalsDashboard = () => {
               <View className="relative">
                 <Image
                   source={images.sprayingpesticides}
-                  className="w-full h-40 rounded-lg" // Adjusted height
+                  className="w-full h-60 rounded-lg" // Adjusted height
                   resizeMode="cover"
                 />
                 {/* Overlay to darken the image */}
@@ -104,7 +104,7 @@ const AgrochemicalsDashboard = () => {
                     borderBottomRightRadius: 8,
                   }}
                 >
-                  <Text className="text-white text-m">
+                  <Text className="text-white text-lg">
                     "Empowering farmers with safe agrochemical practices for a
                     greener, more productive Sri Lanka"
                   </Text>
@@ -113,12 +113,14 @@ const AgrochemicalsDashboard = () => {
             </View>
 
             <View style={styles.container}>
-              <Text className="text-black text-2xl font-bold ml-2">
-                Agrochemicals
-              </Text>
-              <Text className="text-black text-l font-bold ml-2">
-                About fertilizers and pesticides
-              </Text>
+              <View className="w-full flex flex-col">
+                <Text className="text-black text-2xl font-bold ml-2">
+                  Agrochemicals
+                </Text>
+                <Text className="text-black text-lg font-bold ml-2">
+                  About fertilizers and pesticides
+                </Text>
+              </View>
               <TouchableOpacity
                 style={styles.card}
                 onPress={() => router.push("/agrochemicals/agrochemicalnews")}

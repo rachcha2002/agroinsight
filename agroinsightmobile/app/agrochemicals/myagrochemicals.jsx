@@ -5,16 +5,21 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
+  ScrollView,
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Ionicons from "react-native-vector-icons/Ionicons"; // Import Ionicons from react-native-vector-icons
 import { SafeAreaView } from "react-native-safe-area-context";
 import { images } from "../../constants";
-import { useRouter, usePathname } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
+import FertilizersTab from "./myfertilizertab";
+import PesticidesTab from "./mypesticidestab";
 
 const MyAgrochemicalsScreen = () => {
-  const [activeTab, setActiveTab] = useState("Fertilizers");
+  //const [activeTab, setActiveTab] = useState("Fertilizers");
   const router = useRouter();
+  const { activeTab: initialActiveTab } = useLocalSearchParams(); // Get the activeTab from query params
+  const [activeTab, setActiveTab] = useState(initialActiveTab || "Fertilizers"); // Default to Fertilizers
 
   const handleTabSwitch = (tab) => {
     setActiveTab(tab);
@@ -22,11 +27,11 @@ const MyAgrochemicalsScreen = () => {
 
   return (
     <GestureHandlerRootView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
-      <SafeAreaView>
-      <View style={styles.headerContainer}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <View style={styles.headerContainer}>
           {/* Back button with Ionicons */}
           <TouchableOpacity
-            onPress={() => router.push("/agrochemicals")} // Ensure this route exists
+            onPress={() => router.push("/agrochemicals")}
             style={styles.backButton} // Use style instead of className
           >
             <Ionicons name="arrow-back" size={24} color="#000" />
@@ -36,12 +41,12 @@ const MyAgrochemicalsScreen = () => {
           <View style={styles.logoContainer}>
             <Image
               source={images.agroinsightlogo} // Use the correct path for the image
-              //style={styles.logo}
               resizeMode="contain"
               className="w-15 h-12"
             />
           </View>
         </View>
+
         <Text className="text-black text-2xl font-bold ml-2 mt-4 ml-4">
           My Agrochemicals
         </Text>
@@ -65,10 +70,7 @@ const MyAgrochemicalsScreen = () => {
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[
-              styles.tab,
-              activeTab === "Pesticides" && styles.activeTab,
-            ]}
+            style={[styles.tab, activeTab === "Pesticides" && styles.activeTab]}
             onPress={() => handleTabSwitch("Pesticides")}
           >
             <Text
@@ -82,14 +84,10 @@ const MyAgrochemicalsScreen = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Content based on selected tab */}
-        <View style={styles.contentContainer}>
-          {activeTab === "Fertilizers" ? (
-            <Text style={styles.contentText}>Fertilizers Content</Text>
-          ) : (
-            <Text style={styles.contentText}>Pesticides Content</Text>
-          )}
-        </View>
+        {/* Make content scrollable */}
+        <ScrollView style={styles.contentContainer}>
+          {activeTab === "Fertilizers" ? <FertilizersTab /> : <PesticidesTab />}
+        </ScrollView>
       </SafeAreaView>
     </GestureHandlerRootView>
   );
@@ -107,6 +105,7 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
     justifyContent: "center",
     alignItems: "center",
+    zIndex: 10,
   },
   logoContainer: {
     flex: 1,
@@ -139,11 +138,25 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   contentContainer: {
+    flex: 1, // Ensure it takes full height
     padding: 20,
   },
   contentText: {
     fontSize: 18,
     textAlign: "center",
+  },
+  button: {
+    backgroundColor: "green",
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
 
