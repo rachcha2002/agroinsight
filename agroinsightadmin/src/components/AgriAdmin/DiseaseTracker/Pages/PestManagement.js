@@ -71,6 +71,12 @@ const PestManagement = () => {
   };
 
   const handleDelete = async () => {
+    const confirmDelete = window.confirm('Are you sure you want to delete this complaint?');
+  
+    if (!confirmDelete) {
+      return; // If the user cancels, stop the deletion process
+    }
+  
     try {
       const response = await axios.delete(
         `${process.env.REACT_APP_BACKEND_URL}/api/disease/complaints/${selectedComplaint._id}`
@@ -82,15 +88,16 @@ const PestManagement = () => {
           )
         );
         setShow(false);
-        alert("Complaint deleted successfully.");
+        alert('Complaint deleted successfully.');
       } else {
-        alert("Failed to delete the complaint.");
+        alert('Failed to delete the complaint.');
       }
     } catch (error) {
-      console.error("Delete error:", error);
-      alert("Failed to delete the complaint.");
+      console.error('Delete error:', error);
+      alert('Failed to delete the complaint.');
     }
   };
+  
 
   // PDF generation function
   const generatePDF = () => {

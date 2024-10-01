@@ -6,6 +6,7 @@ const {
   getComplaintById,
   updateComplaint,
   deleteComplaint,
+  getComplaintsByFarmerId
 } = require("../controllers/diseaseControllers/disease");
 
 const {
@@ -25,6 +26,7 @@ router.post("/complaints", createComplaint);
 // Route to get all complaints
 router.get("/complaints", getAllComplaints);
 
+
 // Route to get a specific complaint by ID
 router.get("/complaints/:id", getComplaintById);
 
@@ -34,6 +36,9 @@ router.put("/complaints/:id", updateComplaint);
 // Route to delete a specific complaint by ID
 router.delete("/complaints/:id", deleteComplaint);
 
+// Route to get complaints by Farmer ID
+
+router.get('/complaints/farmer/:farmerID',getComplaintsByFarmerId )
 //Disease Alerts Routes//
 
 // Create a new DiseaseAlert
@@ -50,5 +55,8 @@ router.put("/disease-alerts/:id", updateDiseaseAlert);
 
 // Delete a DiseaseAlert by ID
 router.delete("/disease-alerts/:id", deleteDiseaseAlert);
+
+
+
 
 module.exports = router;
