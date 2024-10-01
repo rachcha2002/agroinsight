@@ -53,7 +53,7 @@ router.post('/rotator-detail', createRotationDetail);
 // Route to get all crop rotation details
 router.get('/rotator-detail', getAllRotationDetails);
 // Route to get a specific crop rotation details by ID
-router.get('/rotator-detail/:id', getRotationDetailById);
+router.get('/rotator-details/:email', getRotationDetailById);
 // Route to update a specific crop rotation details by ID
 router.put('/rotator-detail/:id', updateRecommendedCrop);
 // Route to delete a specific crop rotation details by ID

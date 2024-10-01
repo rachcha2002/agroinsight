@@ -26,9 +26,11 @@ function RotationDetails() {
   const { user } = useGlobalContext();
   const [uploading, setUploading] = useState(false);
   const [form, setForm] = useState({
+    region: "",
     season: "",
     currentCrop: "",  
     status: "",
+    //farmerId:"",
   });
 
   const fetchAlerts = async () => {
@@ -46,8 +48,14 @@ function RotationDetails() {
     fetchAlerts();
   }, []);
 
+  
+
   const submit = () => {
-    uploadRotatorDetails(form, setUploading, setForm);
+    const formDataWithFarmerId = {
+      ...form,
+      farmerId: user?.email, // Include user email as farmerId
+    };
+    uploadRotatorDetails(formDataWithFarmerId, setUploading, setForm);
   };
 
 
@@ -89,12 +97,26 @@ function RotationDetails() {
         </TouchableOpacity>
         <Text className="text-2xl text-black font-semibold ml-4">Crop Rotation Details</Text>
        </View>
+       <FormField
+          title="Farming Region"
+          value={form.region}
+          placeholder="Region of farming"
+          handleChangeText={(e) => setForm({ ...form, region: e })}
+          otherStyles="mt-10"
+          textClass="text-black"
+          placeholderTextColor="gray"
+        />
+
          <FormField
           title="Farming Season"
           value={form.season}
           placeholder="Yala season / Maha season / Not specified..."
-          handleChangeText={(e) => setForm({ ...form, season: e })}
-          otherStyles="mt-10"
+          handleChangeText={(e) => {
+            // Allow only letters and spaces
+            if (/^[A-Za-z\s]*$/.test(e)) {
+            setForm({ ...form, season: e });
+            }}}
+          otherStyles="mt-5"
           textClass="text-black"
           placeholderTextColor="gray"
         />
@@ -103,7 +125,11 @@ function RotationDetails() {
           title="Current Farming Crop"
           value={form.currentCrop}
           placeholder="current crop cultivating"
-          handleChangeText={(e) => setForm({ ...form, currentCrop: e })}
+          handleChangeText={(e) => {
+            // Allow only letters and spaces
+            if (/^[A-Za-z\s]*$/.test(e)) {
+            setForm({ ...form, currentCrop: e })}
+          }}
           otherStyles="mt-5"
           textClass="text-black"
           placeholderTextColor="gray"
@@ -113,7 +139,11 @@ function RotationDetails() {
           title="Farming Status"
           value={form.status}
           placeholder="Started / Pending / Completed"
-          handleChangeText={(e) => setForm({ ...form, status: e })}
+          handleChangeText={(e) => {
+            // Allow only letters and spaces
+            if (/^[A-Za-z\s]*$/.test(e)) {
+            setForm({ ...form, status: e })}
+          }}
           otherStyles="mt-5"
           textClass="text-black"
           placeholderTextColor="gray"

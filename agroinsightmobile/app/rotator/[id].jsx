@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, ActivityIndicator } from 'react-native';
+import { View, Text, Image, ActivityIndicator, TouchableOpacity, SafeAreaView } from 'react-native';
 import axios from 'axios';
 import { useLocalSearchParams } from 'expo-router';
-
+import { icons, images } from "../../constants";
+import { router } from "expo-router";
 
 const RotatorDetails = () => {
   const { id } = useLocalSearchParams();
@@ -42,15 +43,34 @@ const RotatorDetails = () => {
   }
 
   return (
-    <View className="flex-1 p-4 items-center justify-center">
+    <SafeAreaView className="bg-white h-full">
+    <View className="flex-1 px-4 items-center">
+      <View className="justify-between items-center flex-row">
+       <View className="items-center pl-3 mt-2">
+          <Image
+            source={images.agroinsightlogo}
+            className="w-15 h-10"
+            resizeMode="contain"
+          />
+        </View>
+        </View>
       {alert && (
         <>
+      <View style={{ flexDirection: 'row',  alignItems: 'center' }}>
+      <TouchableOpacity  onPress={() => router.back()}> 
+            <Image
+              source={icons.leftArrow}
+              className="w-50 h-15"
+              resizeMode="contain"
+            />
+        </TouchableOpacity>
+        <Text className="text-2xl text-black font-semibold ml-4 ">{alert.title}</Text>
+       </View>
           <Image
             source={{ uri: alert.imageURL }}
-            className="w-full h-48 rounded-lg"
+            className="mt-4 w-full h-48 rounded-lg"
             resizeMode="cover"
           />
-          <Text className="text-xl font-bold mt-4">{alert.title}</Text>
           <Text className="text-gray-700 mt-2">{alert.zone}</Text>
           <Text className="text-gray-700 mt-2">{alert.description}</Text>
           {alert.details && (
@@ -63,6 +83,7 @@ const RotatorDetails = () => {
         </>
       )}
     </View>
+    </SafeAreaView>
   );
 };
 

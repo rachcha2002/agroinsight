@@ -24,8 +24,9 @@ exports.getAllRotationDetails = async (req, res) => {
 
 // Get a single Rotattion Detail by ID
 exports.getRotationDetailById = async (req, res) => {
+  const email = req.params.email;
     try {
-      const detail = await RotationDetails.findById(req.params.id);
+      const detail = await RotationDetails.find({ farmerId: email });
   
       if (!detail) {
         return res.status(404).json({ error: "Rotation Detail not found" });

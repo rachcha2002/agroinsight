@@ -3,6 +3,14 @@ const Schema = mongoose.Schema;
 
 // Define the schema for a crop rotator details
 const rotatorDetailsSchema = new Schema({
+  farmerId:{
+    type: String,
+    required: true,
+  },
+  region:{
+    type: String,
+    required: true,
+  },
     season:{
       type: String,
       required: true,

@@ -46,7 +46,7 @@ const NewRotatorModel = () => {
       
   
       try {
-        await axios.post('http://localhost:5000/api/crop-rotator/model', formData, {
+        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/crop-rotator/model`, formData, {
           headers: {
             'Content-Type': 'application/json',
           },
@@ -130,7 +130,11 @@ const NewRotatorModel = () => {
               type="text"
               placeholder="Enter zone"
               value={zone}
-              onChange={(e) => setZone(e.target.value)}
+              onChange={(e) => {
+                // Allow only letters and spaces
+                if (/^[A-Za-z\s]*$/.test(e.target.value)) {
+                setZone(e.target.value)}
+              }}
               required
             />
             </Form.Group>
@@ -142,7 +146,7 @@ const NewRotatorModel = () => {
             <Form.Label>Year</Form.Label>
             <Form.Control
               type="text"
-              placeholder="Enter year"
+              placeholder="Enter year 01/02"
               value={year}
               onChange={(e) => setYear(e.target.value)}
               required
@@ -156,7 +160,11 @@ const NewRotatorModel = () => {
               type="text"
               placeholder="Enter season"
               value={season}
-              onChange={(e) => setSeason(e.target.value)}
+              onChange={(e) => {
+                // Allow only letters and spaces
+               if (/^[A-Za-z\s]*$/.test(e.target.value)) {
+                setSeason(e.target.value)}
+              }}
               required
             />
             </Form.Group>
@@ -222,7 +230,11 @@ const NewRotatorModel = () => {
               type="text"
               placeholder="Enter suggested crop"
               value={crop}
-              onChange={(e) => setCrop(e.target.value)}
+              onChange={(e) => {
+                // Allow only letters and spaces
+                if (/^[A-Za-z\s]*$/.test(e.target.value)) {
+                setCrop(e.target.value)}
+              }}
               required
             />
             </Form.Group>

@@ -9,7 +9,7 @@ function FarmerRegion() {
 
   useEffect(() => {
     // Fetch the data from backend API
-    fetch("http://localhost:5000/api/crop-rotator/rotator-detail")
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/api/crop-rotator/rotator-detail`)
       .then((response) => response.json())
       .then((data) => {
         console.log("Fetched Data:", data);
@@ -35,7 +35,7 @@ function FarmerRegion() {
   setNewCrop("");
   
 //backend API call to update the recommended crop
-fetch(`http://localhost:5000/api/crop-rotator/rotator-detail/${selectedFarmer._id}`, {
+fetch(`${process.env.REACT_APP_BACKEND_URL}/api/crop-rotator/rotator-detail/${selectedFarmer._id}`, {
   method: "PUT",
   headers: {
     "Content-Type": "application/json",
@@ -55,7 +55,6 @@ fetch(`http://localhost:5000/api/crop-rotator/rotator-detail/${selectedFarmer._i
         <thead>
           <tr>
             <th>Farmer ID</th>
-            <th>Farmer Name</th>
             <th>Region / Zone</th>
             <th>Season</th>
             <th>Status</th>
@@ -69,8 +68,7 @@ fetch(`http://localhost:5000/api/crop-rotator/rotator-detail/${selectedFarmer._i
           farmerData.map((farmer, index) => (
           <tr key={index}>
             <td>{`F0${index + 1}`}</td>
-            <td>{"Unknown"}</td>
-            <td>{"Unknown"}</td>
+            <td>{farmer.region}</td>
             <td>{farmer.season}</td>
             <td>{farmer.status}</td>
             <td>{farmer.currentCrop}</td>

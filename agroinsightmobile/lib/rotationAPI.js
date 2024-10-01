@@ -2,7 +2,7 @@ import { router } from "expo-router";
 import { Alert } from "react-native";
 
 export const uploadRotatorDetails = async (form, setUploading, setForm) => {
-  if (!form.season || !form.currentCrop || !form.status ) {
+  if (!form.farmerId ||!form.region ||!form.season || !form.currentCrop || !form.status ) {
     return Alert.alert("Please provide all fields.");
   }
 
@@ -17,6 +17,8 @@ export const uploadRotatorDetails = async (form, setUploading, setForm) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
+            farmerId: form.farmerId,
+            region: form.region,
             season: form.season,
             currentCrop: form.currentCrop,
             status: form.status,
@@ -37,6 +39,7 @@ export const uploadRotatorDetails = async (form, setUploading, setForm) => {
     Alert.alert("Error", "Failed to upload details.");
   } finally {
     setForm({
+        region: "",
         season: "",
         currentCrop: "",
         status: "",

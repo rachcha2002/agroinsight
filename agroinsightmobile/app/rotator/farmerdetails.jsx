@@ -26,10 +26,11 @@ function FarmerDetails() {
   const [error, setError] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const { user } = useGlobalContext();
 
   const fetchDetails = async () => {
     try {
-      const response = await axios.get(`${process.env.EXPO_PUBLIC_BACKEND_URL}/api/crop-rotator/rotator-detail`);
+      const response = await axios.get(`${process.env.EXPO_PUBLIC_BACKEND_URL}/api/crop-rotator/rotator-details/${user.email}`);
       setDetails(response.data);
       setLoading(false);
     } catch (err) {
@@ -39,7 +40,9 @@ function FarmerDetails() {
   };
 
   useEffect(() => {
-    fetchDetails();
+    if (user?.email) {
+    fetchDetails(user.email);
+    }
   }, []);
 
   const handleDelete = async (id) => {
@@ -80,7 +83,9 @@ function FarmerDetails() {
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await fetchDetails();
+    if (user?.email) {
+    await fetchDetails(user.email);
+    }
     setRefreshing(false);
   };
 
@@ -117,6 +122,7 @@ const renderItem = ({ item }) => (
         //handleChangeText={(e) => setForm({ ...form, symptoms: e })}
         textClass="text-black"
         placeholderTextColor="gray"
+        editable={false}
       />
 
       <FormField
@@ -125,6 +131,7 @@ const renderItem = ({ item }) => (
        // handleChangeText={(e) => setForm({ ...form, cropAffected: e })}
         textClass="text-black"
         placeholderTextColor="gray"
+        editable={false}
       />
 
       <FormField
@@ -133,6 +140,7 @@ const renderItem = ({ item }) => (
        // handleChangeText={(e) => setForm({ ...form, cropAffected: e })}
         textClass="text-black"
         placeholderTextColor="gray"
+        editable={false}
       />
 
       <FormField
@@ -141,6 +149,7 @@ const renderItem = ({ item }) => (
        // handleChangeText={(e) => setForm({ ...form, cropAffected: e })}
         textClass="text-black"
         placeholderTextColor="gray"
+        editable={false}
       />
     
        {/* Delete Button */}
