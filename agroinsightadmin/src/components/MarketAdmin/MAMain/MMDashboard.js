@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import MMDBCard from "./MMDBCard";
 import axios from "axios";
 import moment from "moment";
+import Card from "react-bootstrap/Card";
 import {
   BarChart,
   Bar,
@@ -15,7 +16,7 @@ import {
 } from "recharts";
 
 function MMDashboard() {
-  const [crops, setCrops] = useState([]);
+  const [lowestThisWeek, setLowestThisWeek] = useState(null);
   const [highestPriceCrop, setHighestPriceCrop] = useState(null);
   const [highestThisWeek, setHighestThisWeek] = useState(null);
   const [dailyHighest, setDailyHighest] = useState([]);
@@ -35,7 +36,6 @@ function MMDashboard() {
         .get(`${process.env.REACT_APP_BACKEND_URL}/crop/croplist`)
         .then((res) => {
           const crops = res.data;
-          setCrops(crops);
           if (crops.length > 0) {
             const highestCrop = crops.reduce((prev, current) => {
               return prev.Price > current.Price ? prev : current;
@@ -98,6 +98,13 @@ function MMDashboard() {
               }
             );
             setHighestThisWeek(highestCropThisWeek);
+
+            const lowestCropThisWeek = thisWeekCrops.reduce(
+              (prev, current) => {
+                return prev.Price < current.Price ? prev : current;
+              }
+            );
+            setLowestThisWeek(lowestCropThisWeek);
           }
         })
         .catch((err) => {
@@ -121,7 +128,7 @@ function MMDashboard() {
         >
           <p>
             <strong>Crop:</strong> {Crop_name}
-            <br/>
+            <br />
             <strong>Price:</strong> Rs.{Price}.00 per 1kg
           </p>
         </div>
@@ -152,27 +159,37 @@ function MMDashboard() {
               duration="Islandwide"
             />
           )}
+          {lowestThisWeek && (
+            <MMDBCard
+              title="This Week Market Downturn"
+              value1={`${lowestThisWeek.Crop_name}`}
+              value2={`Price Per 1kg : Rs.${lowestThisWeek.Price}.00`}
+              duration="Islandwide"
+            />
+          )}
         </div>
         <div className="row">
-          {/* Bar Chart for this week's highest price crops */}
-          <h2>Daily Trends For This Week</h2>
-          <ResponsiveContainer width="100%" height={400}>
-            <BarChart data={dailyHighest}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="date" />
-              <YAxis />
-              <Tooltip content={<CustomTooltip />} />
-              <Legend />
-              <Bar dataKey="Price" >
-                {dailyHighest.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={colors[index % colors.length]}
-                  />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
+          <Card style={{ width: "50rem" }}>
+            {/* Bar Chart for this week's highest price crops */}
+            <h2>Daily Trends For This Week</h2>
+            <ResponsiveContainer width="100%" height={320}>
+              <BarChart data={dailyHighest}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis />
+                <Tooltip content={<CustomTooltip />} />
+                <Legend />
+                <Bar dataKey="Price">
+                  {dailyHighest.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={colors[index % colors.length]}
+                    />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </Card>
         </div>
       </div>
     </section>

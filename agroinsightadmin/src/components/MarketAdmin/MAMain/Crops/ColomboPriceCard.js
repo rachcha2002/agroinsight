@@ -143,12 +143,14 @@ function ColomboPriceCard() {
             <Form.Control
               placeholder="Search Crop"
               value={searchCrop}
-              onChange={(e) =>
-                setSearchCrop(
-                  e.target.value.charAt(0).toUpperCase() +
-                    e.target.value.slice(1)
-                )
-              }
+              onChange={(e) => {
+                const value = e.target.value;
+                if (/^[a-zA-Z]*$/.test(value)) {
+                  setSearchCrop(
+                    value.charAt(0).toUpperCase() + value.slice(1)
+                  );
+                }
+              }}
             />
             <Button
               variant="secondary"
@@ -163,7 +165,7 @@ function ColomboPriceCard() {
           <Link to="addcrop">
             <button type="button" className="btn-add">
               Add Crop
-              <span class="bi bi-plus-circle"></span>
+              <span className="bi bi-plus-circle"></span>
             </button>
           </Link>
           <Button
@@ -172,7 +174,7 @@ function ColomboPriceCard() {
             style={{ marginLeft: "20px" }}
           >
             Generate PDF
-            <span class="bi bi-file-earmark-pdf"></span>
+            <span className="bi bi-file-earmark-pdf"></span>
           </Button>
           <Button
             onClick={addToHistory}
@@ -180,7 +182,7 @@ function ColomboPriceCard() {
             style={{ marginLeft: "20px" }}
           >
             Add to History
-            <span class="bi bi-clock-history"></span>
+            <span className="bi bi-clock-history"></span>
           </Button>
         </Col>
       </Row>

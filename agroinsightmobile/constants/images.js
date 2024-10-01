@@ -13,6 +13,7 @@ import frecommend from "../assets/images/agrochemicals/fertilizertile.jpg";
 import precommend from "../assets/images/agrochemicals/pesticdetile.jpg";
 import mychemicals from "../assets/images/agrochemicals/mychemicalstile.jpg";
 
+
 import googlelogo from "../assets/images/google-logo.png";
 import agrominilogo from "../assets/images/agroinsight-logo-mini.png";
 import homecard from "../assets/images/farmlady.jpg";
@@ -23,6 +24,8 @@ import cropcard from "../assets/images/cropcard.jpg";
 import rotationimage from "../assets/images/rotatorimages/rotationimage.jpg";
 import rotationicon from "../assets/images/rotatorimages/rotationicon.jpeg";
 import rotationdetails from "../assets/images/rotatorimages/rotationdetails.jpeg";
+import dailyprice from "../assets/images/market/daily price.jpg"
+import pricehistory from "../assets/images/market/price history.jpeg"
 
 
 
@@ -42,6 +45,8 @@ export default {
   frecommend,
   precommend,
   mychemicals,
+  dailyprice,
+  pricehistory,
   googlelogo,
   agrominilogo,
   homecard,
