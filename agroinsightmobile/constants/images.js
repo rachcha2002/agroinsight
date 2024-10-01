@@ -14,6 +14,9 @@ import precommend from "../assets/images/agrochemicals/pesticdetile.jpg";
 import mychemicals from "../assets/images/agrochemicals/mychemicalstile.jpg";
 import googlelogo from "../assets/images/google-logo.png"
 import agrominilogo from "../assets/images/agroinsight-logo-mini.png"
+import rotationimage from "../assets/images/rotatorimages/rotationimage.jpg";
+import rotationicon from "../assets/images/rotatorimages/rotationicon.jpeg";
+import rotationdetails from "../assets/images/rotatorimages/rotationdetails.jpeg";
 
 export default {
   profile,
@@ -31,5 +34,8 @@ export default {
   precommend,
   mychemicals,
   googlelogo,
-  agrominilogo
+  agrominilogo,
+  rotationimage,
+  rotationicon,
+  rotationdetails
 };
