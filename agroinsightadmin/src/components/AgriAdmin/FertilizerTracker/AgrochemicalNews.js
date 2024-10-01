@@ -29,7 +29,9 @@ const AgrochemicalNews = () => {
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/f&p/news");
+        const response = await axios.get(
+          `${process.env.REACT_APP_BACKEND_URL}/api/f&p/news`
+        );
         setNews(response.data);
         setLoading(false);
       } catch (err) {
@@ -44,7 +46,7 @@ const AgrochemicalNews = () => {
   const handleShowDetails = async (id) => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/f&p/news/${id}`
+        `${process.env.REACT_APP_BACKEND_URL}/api/f&p/news/${id}`
       );
       setSelectedNews(response.data);
       setFormData({
@@ -61,7 +63,9 @@ const AgrochemicalNews = () => {
 
   const handleDeleteNews = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/f&p/delete-news/${id}`);
+      await axios.delete(
+        `${process.env.REACT_APP_BACKEND_URL}/api/f&p/delete-news/${id}`
+      );
       setNews(news.filter((item) => item._id !== id));
     } catch (err) {
       console.error("Error deleting news:", err.message);
@@ -80,7 +84,7 @@ const AgrochemicalNews = () => {
   const handleEditNews = async () => {
     try {
       const response = await axios.put(
-        `http://localhost:5000/api/f&p/update-news/${selectedNews._id}`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/f&p/update-news/${selectedNews._id}`,
         formData
       );
       if (response.status === 200) {

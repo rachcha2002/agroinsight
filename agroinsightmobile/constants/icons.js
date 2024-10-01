@@ -15,6 +15,8 @@ import diesease from "../assets/icons/disease.png";
 import market from "../assets/icons/market.png"
 import fertilizer from "../assets/icons/fertilizer.png";
 
+import rotator from "../assets/icons/plant.png";
+
 import plusgreen from "../assets/icons/plus-green.png"
 import logoutgreen from "../assets/icons/logout-green.png"
 
@@ -36,6 +38,7 @@ export default {
   diesease,
   market,
   fertilizer,
+  rotator,
   plusgreen,
   logoutgreen
 

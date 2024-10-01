@@ -13,7 +13,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import FertilizerList from "./FertilizerList";
 
-export default function Fertilizers() {
+export default function Fertilizers({ toggleLoading }) {
   //to add employee button part
   const navigate = useNavigate();
   return (
@@ -31,7 +31,7 @@ export default function Fertilizers() {
             </Button>
           </div>
         </Stack>
-        <FertilizerList />
+        <FertilizerList toggleLoading={toggleLoading} />
       </Row>
     </>
   );

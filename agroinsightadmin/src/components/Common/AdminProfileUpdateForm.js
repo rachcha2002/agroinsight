@@ -29,7 +29,7 @@ const AdminProfileUpdateForm = () => {
   const fetchAdminProfile = async () => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/admin-profile/adminbyId/${adminId}`
+        `${process.env.REACT_APP_BACKEND_URL}/api/admin-profile/adminbyId/${adminId}`
       );
       const data = await response.json();
 
@@ -87,7 +87,7 @@ const AdminProfileUpdateForm = () => {
 
       // Send the updated profile data to the backend
       const response = await fetch(
-        `http://localhost:5000/api/admin-profile/update-admin/${adminId}`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/admin-profile/update-admin/${adminId}`,
         {
           method: "PUT",
           headers: {
@@ -114,17 +114,21 @@ const AdminProfileUpdateForm = () => {
 
   return (
     <main id="main" className="main">
-        <PageTitle title="Admin Profiles" url="/superadmin/admin-profiles/update" />
+      <PageTitle
+        title="Admin Profiles"
+        url="/superadmin/admin-profiles/update"
+      />
       <Container className="mt-2">
-        <h3><Button
+        <h3>
+          <Button
             variant="dark"
-            onClick={() =>
-              navigate("/superadmin/admin-profiles")
-            }
+            onClick={() => navigate("/superadmin/admin-profiles")}
             style={{ margin: "10px" }}
           >
             <BsArrowLeft /> Back
-          </Button>Update Admin Profile</h3>
+          </Button>
+          Update Admin Profile
+        </h3>
         {error && <Alert variant="danger">{error}</Alert>}
         {success && <Alert variant="success">{success}</Alert>}
         <Form onSubmit={handleSubmit}>

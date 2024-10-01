@@ -75,7 +75,7 @@ function App() {
               element={
                 <AdminRoute
                   requiredRole="Super Admin"
-                  element={<SuperAdmin />}
+                  element={<SuperAdmin toggleLoading={toggleLoading} />}
                 />
               }
             />
@@ -84,14 +84,17 @@ function App() {
               element={
                 <AdminRoute
                   requiredRole="Market Admin"
-                  element={<MarketManager />}
+                  element={<MarketManager toggleLoading={toggleLoading} />}
                 />
               }
             />
             <Route
               path="/agriadmin/*"
               element={
-                <AdminRoute requiredRole="Agri Admin" element={<AgriAdmin />} />
+                <AdminRoute
+                  requiredRole="Agri Admin"
+                  element={<AgriAdmin toggleLoading={toggleLoading} />}
+                />
               }
             />
           </Routes>

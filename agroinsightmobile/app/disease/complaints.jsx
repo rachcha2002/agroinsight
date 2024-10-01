@@ -13,18 +13,19 @@ import axios from "axios";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import DiseaseHeader from "../../components/disease-Management/DeseaseHeader";
+import { useGlobalContext } from "../../context/GlobalProvider";
 
-const Complaints = () => {
+const Complaints = ({ navigation }) => {
   const [complaints, setComplaints] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
+  const { user } = useGlobalContext();
 
-  const fetchComplaints = async () => {
+  const fetchComplaints = async (email) => {
     try {
-
       const response = await axios.get(
-        `${process.env.EXPO_PUBLIC_BACKEND_URL}/api/disease/complaints`
+        `${process.env.EXPO_PUBLIC_BACKEND_URL}/api/disease/complaints/farmer/${email}`
       );
 
       // Sort the complaints by dateOfComplaint in descending order
@@ -38,17 +39,19 @@ const Complaints = () => {
       setError(err.message);
       setLoading(false);
     }
-
-
   };
 
   useEffect(() => {
-    fetchComplaints();
-  }, []);
+    if (user?.email) {
+      fetchComplaints(user.email);
+    }
+  }, [user]);
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await fetchComplaints();
+    if (user?.email) {
+      await fetchComplaints(user.email);
+    }
     setRefreshing(false);
   };
 
@@ -66,12 +69,9 @@ const Complaints = () => {
           style: "destructive",
           onPress: async () => {
             try {
-
-
               const response = await axios.delete(
                 `${process.env.EXPO_PUBLIC_BACKEND_URL}/api/disease/complaints/${id}`
               );
-
 
               if (response.status === 200) {
                 setComplaints(
@@ -107,6 +107,22 @@ const Complaints = () => {
     );
   }
 
+  if (!loading && complaints.length === 0) {
+    return (
+      <View className="flex-1 justify-center items-center">
+        <Text className="text-gray-500 text-lg mb-4">No Complaints Found</Text>
+        <TouchableOpacity
+          className="bg-blue-500 p-3 rounded-lg"
+          onPress={() => navigation.navigate("CreateComplaint")} // Adjust to match your create complaint screen name
+        >
+          <Text className="text-white text-center font-bold">
+            Create Complaint
+          </Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
   const renderItem = ({ item }) => (
     <View className="mb-6 p-2 bg-white rounded-lg shadow border border-green-600">
       <View className="mt-0.1">
@@ -121,13 +137,6 @@ const Complaints = () => {
           resizeMode="cover"
         />
       )}
-
-      <View className="mt-2">
-        <Text className="text-gray-700">
-          <Text className="font-bold">Farmer ID: </Text>
-          {item.farmerID}
-        </Text>
-      </View>
       <View className="mt-2">
         <Text className="text-gray-700">
           <Text className="font-bold">Area: </Text>

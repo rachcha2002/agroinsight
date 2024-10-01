@@ -1,35 +1,169 @@
 import { useState, useEffect } from "react";
 import { router } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
+import axios from 'axios';
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   View,
   Text,
   Alert,
+  FlatList,
   Image,
   TouchableOpacity,
   ScrollView,
+  RefreshControl,
+  ActivityIndicator
 } from "react-native";
 
 import CustomButton from "../../components/CustomButton";
 import FormField from "../../components/FormField";
 import { useGlobalContext } from "../../context/GlobalProvider";
 import { icons, images } from "../../constants";
-import { uploadDiseaseData } from "../../lib/diseaseAPI"; // Adjust the path as needed
 
 function FarmerDetails() {
-  const { user, setUser, setIsLogged } = useGlobalContext();
-  const [alerts, setAlerts] = useState([]);
+  const [details, setDetails] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
- 
+  const [uploading, setUploading] = useState(false);
+  const { user } = useGlobalContext();
+
+  const fetchDetails = async () => {
+    try {
+      const response = await axios.get(`${process.env.EXPO_PUBLIC_BACKEND_URL}/api/crop-rotator/rotator-details/${user.email}`);
+      setDetails(response.data);
+      setLoading(false);
+    } catch (err) {
+      setError(err.message);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (user?.email) {
+    fetchDetails(user.email);
+    }
+  }, []);
+
+  const handleDelete = async (id) => {
+    Alert.alert(
+      "Delete Details",
+      "Are you sure you want to delete this details?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              const response = await axios.delete(
+                `${process.env.EXPO_PUBLIC_BACKEND_URL}/api/crop-rotator/rotator-detail/${id}`
+              );
+
+              if (response.status === 200) {
+                setDetails(
+                  details.filter((detail) => detail._id !== id)
+                );
+                Alert.alert("Success", "Details deleted successfully.");
+              } else {
+                Alert.alert("Error", "Failed to delete the detail.");
+              }
+            } catch (error) {
+              console.error("Delete error:", error);
+              Alert.alert("Error", "Failed to delete the detail.");
+            }
+          },
+        },
+      ]
+    );
+  };
 
   const onRefresh = async () => {
     setRefreshing(true);
-   // await fetchAlerts();
+    if (user?.email) {
+    await fetchDetails(user.email);
+    }
     setRefreshing(false);
   };
+
+  const handleRotationModelPress = () => {
+    router.push(`/rotator/rotationmodels`); 
+  };
+
+  const handleRotationDetailsPress = () => {
+    router.push('/rotator/details'); 
+  };
+
+  if (loading) {
+    return (
+      <View className="flex-1 justify-center items-center">
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View className="flex-1 justify-center items-center">
+        <Text className="text-red-500">Error: {error}</Text>
+      </View>
+    );
+  }
+
+const renderItem = ({ item }) => (
+  <View className="mb-6 p-2 bg-white rounded-lg shadow border border-green-600">
+      <Text className="text-xl text-black font-semibold px-3 my-4">Personalized Recommendations</Text>
+       <FormField
+        title="Farming Season"
+        value={item.season}
+        //handleChangeText={(e) => setForm({ ...form, symptoms: e })}
+        textClass="text-black"
+        placeholderTextColor="gray"
+        editable={false}
+      />
+
+      <FormField
+        title="Current Farming Crop"
+        value={item.currentCrop}
+       // handleChangeText={(e) => setForm({ ...form, cropAffected: e })}
+        textClass="text-black"
+        placeholderTextColor="gray"
+        editable={false}
+      />
+
+      <FormField
+        title="Farming Status"
+        value={item.status}
+       // handleChangeText={(e) => setForm({ ...form, cropAffected: e })}
+        textClass="text-black"
+        placeholderTextColor="gray"
+        editable={false}
+      />
+
+      <FormField
+        title="Recommended Crop for Next Season"
+        value={item.recommendedCrop}
+       // handleChangeText={(e) => setForm({ ...form, cropAffected: e })}
+        textClass="text-black"
+        placeholderTextColor="gray"
+        editable={false}
+      />
+    
+       {/* Delete Button */}
+       <TouchableOpacity
+        className="mt-4 bg-red-500 p-3 rounded-lg"
+        onPress={() => handleDelete(item._id)}
+      >
+        <Text className="text-white text-center font-bold">
+          Remove Details
+        </Text>
+      </TouchableOpacity>
+      </View>
+    );
+    
 
   return (
     <SafeAreaView className="bg-white h-full">
@@ -42,56 +176,45 @@ function FarmerDetails() {
           />
         </View>
       </View>
-      <ScrollView className="px-4 my-6">
-        <Text className="text-2xl text-black font-semibold">Farmer Details</Text>
-        <FormField
-          title="Name"
-          //value={form.cropAffected}
-          placeholder="your name"
-         // handleChangeText={(e) => setForm({ ...form, cropAffected: e })}
-          otherStyles="mt-5"
-          textClass="text-black"
-          placeholderTextColor="gray"
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <TouchableOpacity  onPress={() => router.back()}> 
+            <Image
+              source={icons.leftArrow}
+              className="w-50 h-15 ml-4"
+              resizeMode="contain"
+            />
+        </TouchableOpacity>
+        <Text className="text-2xl text-black font-semibold ml-3.5">Crop Rotation Details</Text></View>
+        <View className="mt-2.5 items-center">
+          <TouchableOpacity onPress={handleRotationDetailsPress}>
+            <Image
+              source={images.rotationdetails}
+              className="w-50 h-15"
+              resizeMode="contain"
+            />
+            <Text className="text-l text-black font-semibold text-center">Add Crop Rotation Details</Text>
+          </TouchableOpacity>
+        </View>
+        <View className="mt-2.5 items-center">
+          <TouchableOpacity key={details._id} onPress={() => handleRotationModelPress(details._id)}>
+            <Image
+              source={images.rotationicon}
+              className="w-50 h-15"
+              resizeMode="contain"
+            />
+            <Text className="text-l text-black font-semibold text-center">See Recommended Crop Rotation Models</Text>
+          </TouchableOpacity>
+        
+        </View>
+        <FlatList
+          data={details}
+          keyExtractor={(item) => item._id}
+          renderItem={renderItem}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          contentContainerStyle={{ padding: 16 }}
         />
-
-        <FormField
-          title="Farming Region/Zone"
-          //value={form.symptoms}
-          placeholder="Dry / Wet / Intermediate..."
-          //handleChangeText={(e) => setForm({ ...form, symptoms: e })}
-          otherStyles="mt-10"
-          textClass="text-black"
-          placeholderTextColor="gray"
-        />
-
-         <FormField
-          title="Farming Season"
-          //value={form.symptoms}
-          placeholder="Yala season / Maha season / Not specified..."
-          //handleChangeText={(e) => setForm({ ...form, symptoms: e })}
-          otherStyles="mt-10"
-          textClass="text-black"
-          placeholderTextColor="gray"
-        />
-
-        <FormField
-          title="Farming Years"
-          //value={form.symptoms}
-          placeholder="For how many years you are farming?"
-          //handleChangeText={(e) => setForm({ ...form, symptoms: e })}
-          otherStyles="mt-10"
-          textClass="text-black"
-          placeholderTextColor="gray"
-        />
-      
-        <CustomButton
-          title="Submit"
-          //handlePress={submit}
-          containerStyles="mt-7 bg-green-500"
-          textClass="text-white"
-          //isLoading={uploading}
-        />
-      </ScrollView>
     </SafeAreaView>
   );
 }

@@ -12,10 +12,23 @@ import fpnews from "../assets/images/agrochemicals/fpnews.jpg";
 import frecommend from "../assets/images/agrochemicals/fertilizertile.jpg";
 import precommend from "../assets/images/agrochemicals/pesticdetile.jpg";
 import mychemicals from "../assets/images/agrochemicals/mychemicalstile.jpg";
+
+
+import googlelogo from "../assets/images/google-logo.png";
+import agrominilogo from "../assets/images/agroinsight-logo-mini.png";
+import homecard from "../assets/images/farmlady.jpg";
+import pdcard from "../assets/images/p&dcard.jpg";
+import marketcard from "../assets/images/marketcard.jpg";
+import agrochemcard from "../assets/images/agrochemcard.jpg";
+import cropcard from "../assets/images/cropcard.jpg";
+import rotationimage from "../assets/images/rotatorimages/rotationimage.jpg";
+import rotationicon from "../assets/images/rotatorimages/rotationicon.jpeg";
+import rotationdetails from "../assets/images/rotatorimages/rotationdetails.jpeg";
 import dailyprice from "../assets/images/market/daily price.jpg"
 import pricehistory from "../assets/images/market/price history.jpeg"
-import googlelogo from "../assets/images/google-logo.png"
-import agrominilogo from "../assets/images/agroinsight-logo-mini.png"
+
+
+
 
 export default {
   profile,
@@ -35,5 +48,15 @@ export default {
   dailyprice,
   pricehistory,
   googlelogo,
-  agrominilogo
+  agrominilogo,
+  homecard,
+  pdcard,
+  marketcard,
+  agrochemcard,
+  cropcard,
+  rotationimage,
+  rotationicon,
+  rotationdetails
+  
+
 };

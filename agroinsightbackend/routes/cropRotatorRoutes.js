@@ -15,6 +15,14 @@ const{
   deleteRotatorAlertById,
 } = require('../controllers/cropRotatorControllers/rotatorAlert');
 
+const{
+  createRotationDetail,
+  getAllRotationDetails,
+  getRotationDetailById,
+  updateRecommendedCrop,
+  deleteRotationDetailById
+} = require('../controllers/cropRotatorControllers/rotationDetails');
+
 
 const router = express.Router();
 
@@ -39,5 +47,16 @@ router.get('/rotator-alerts/:id', getRotatorAlertById);
 router.put('/rotator-alerts/:id', updateRotatorAlertById);
 // Route to delete a specific crop rotator alert by ID
 router.delete('/rotator-alerts/:id', deleteRotatorAlertById);
+
+//Route to create a new crop rotation detail
+router.post('/rotator-detail', createRotationDetail);
+// Route to get all crop rotation details
+router.get('/rotator-detail', getAllRotationDetails);
+// Route to get a specific crop rotation details by ID
+router.get('/rotator-details/:email', getRotationDetailById);
+// Route to update a specific crop rotation details by ID
+router.put('/rotator-detail/:id', updateRecommendedCrop);
+// Route to delete a specific crop rotation details by ID
+router.delete('/rotator-detail/:id', deleteRotationDetailById);
 
 module.exports = router;

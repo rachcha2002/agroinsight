@@ -22,11 +22,12 @@ const FertilizerForm = () => {
   const [imagePreview, setImagePreview] = useState("");
   const [type, setType] = useState("");
   const [cropsByCategory, setCropsByCategory] = useState({});
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     // Fetch crop categories from the backend
     axios
-      .get("http://localhost:5000/api/f&p/cropcategories")
+      .get(`${process.env.REACT_APP_BACKEND_URL}/api/f&p/cropcategories`)
       .then((response) => {
         setCropCategories(response.data);
       });
@@ -55,7 +56,7 @@ const FertilizerForm = () => {
 
   const fetchCrops = (categoryId) => {
     axios
-      .get(`http://localhost:5000/api/f&p/crops/${categoryId}`)
+      .get(`${process.env.REACT_APP_BACKEND_URL}/api/f&p/crops/${categoryId}`)
       .then((response) => {
         setCropsByCategory((prevCrops) => ({
           ...prevCrops,
@@ -110,8 +111,30 @@ const FertilizerForm = () => {
     }
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+    if (!image) newErrors.image = "Fertilizer image is required.";
+    if (!type) newErrors.type = "Fertilizer type is required.";
+    if (!instructions) newErrors.instructions = "Instructions are required.";
+    if (
+      selectedCrops.some(
+        (crop) => !crop.cropCategoryId || !crop.cropId || !crop.recommendedUsage
+      )
+    ) {
+      newErrors.selectedCrops = "All crop fields are required.";
+    }
+    if (regions.some((region) => !region))
+      newErrors.regions = "All regions are required.";
+    if (brands.some((brand) => !brand))
+      newErrors.brands = "All brands are required.";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return;
+
     const formData = new FormData(e.target);
 
     // Append dynamically added fields to formData
@@ -127,16 +150,9 @@ const FertilizerForm = () => {
       formData.append(`brands[${index}]`, brand);
     });
 
-    /*if (image) {
-      formData.append("fertilizerImage", image);
-    }*/
-    for (let [key, value] of formData.entries()) {
-      console.log(`${key}: ${value}`);
-    }
-
     try {
       await axios.post(
-        "http://localhost:5000/api/f&p/add-fertilizer",
+        `${process.env.REACT_APP_BACKEND_URL}/api/f&p/add-fertilizer`,
         formData
       );
       alert("Fertilizer submitted successfully");
@@ -178,7 +194,12 @@ const FertilizerForm = () => {
               type="file"
               name="fertilizerImage"
               onChange={handleImageChange}
+              required
+              isInvalid={!!errors.image}
             />
+            <Form.Control.Feedback type="invalid">
+              {errors.image}
+            </Form.Control.Feedback>
             {imagePreview && (
               <img
                 src={imagePreview}
@@ -196,11 +217,15 @@ const FertilizerForm = () => {
               value={type}
               onChange={(e) => setType(e.target.value)}
               required
+              isInvalid={!!errors.type}
             >
               <option value="">Select Type</option>
               <option value="Organic">Organic</option>
               <option value="Chemical">Chemical</option>
             </Form.Control>
+            <Form.Control.Feedback type="invalid">
+              {errors.type}
+            </Form.Control.Feedback>
           </Form.Group>
           <br />
           <Card style={{ padding: "18px" }}>
@@ -216,6 +241,7 @@ const FertilizerForm = () => {
                       }
                       value={crop.cropCategoryId}
                       required
+                      isInvalid={!!errors.selectedCrops}
                     >
                       <option value="">Select Crop Category</option>
                       {cropCategories.map((category) => (
@@ -233,6 +259,7 @@ const FertilizerForm = () => {
                       }
                       value={crop.cropId}
                       required
+                      isInvalid={!!errors.selectedCrops}
                     >
                       <option value="">Select Crop</option>
                       {cropsByCategory[crop.cropCategoryId]?.map((crop) => (
@@ -255,6 +282,7 @@ const FertilizerForm = () => {
                         )
                       }
                       required
+                      isInvalid={!!errors.selectedCrops}
                     />
                   </Col>
                   <Col>
@@ -278,6 +306,9 @@ const FertilizerForm = () => {
               >
                 Add More Crops
               </Button>
+              {errors.selectedCrops && (
+                <div className="text-danger mt-2">{errors.selectedCrops}</div>
+              )}
             </Form.Group>
           </Card>
 
@@ -296,6 +327,7 @@ const FertilizerForm = () => {
                           handleRegionChange(index, e.target.value)
                         }
                         required
+                        isInvalid={!!errors.regions}
                         className="mb-2 flex-grow-1"
                       />
                       {regions.length > 1 && (
@@ -313,6 +345,9 @@ const FertilizerForm = () => {
                   <Button variant="success" onClick={handleAddRegion}>
                     Add More Regions
                   </Button>
+                  {errors.regions && (
+                    <div className="text-danger mt-2">{errors.regions}</div>
+                  )}
                 </Form.Group>
               </Card>
             </Col>
@@ -331,6 +366,7 @@ const FertilizerForm = () => {
                           handleBrandChange(index, e.target.value)
                         }
                         required
+                        isInvalid={!!errors.brands}
                         className="mb-2 flex-grow-1"
                       />
                       {brands.length > 1 && (
@@ -348,6 +384,9 @@ const FertilizerForm = () => {
                   <Button variant="success" onClick={handleAddBrand}>
                     Add More Brands
                   </Button>
+                  {errors.brands && (
+                    <div className="text-danger mt-2">{errors.brands}</div>
+                  )}
                 </Form.Group>
               </Card>
             </Col>
@@ -363,7 +402,11 @@ const FertilizerForm = () => {
               value={instructions}
               onChange={(e) => setInstructions(e.target.value)}
               required
+              isInvalid={!!errors.instructions}
             />
+            <Form.Control.Feedback type="invalid">
+              {errors.instructions}
+            </Form.Control.Feedback>
           </Form.Group>
 
           <br />

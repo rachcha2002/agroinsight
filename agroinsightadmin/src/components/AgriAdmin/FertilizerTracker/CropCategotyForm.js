@@ -8,7 +8,6 @@ import PageTitle from "../AgriPageTitle";
 import { BiPlus } from "react-icons/bi"; // Assuming you're using react-icons
 
 const CropCategoryForm = () => {
-  //to redirect after success
   const navigate = useNavigate();
 
   const [category, setCategory] = useState({
@@ -24,8 +23,10 @@ const CropCategoryForm = () => {
     ],
   });
 
+  const [errors, setErrors] = useState({}); // Track validation errors
+
   const handleChange = (e) => {
-    const { name, value, dataset } = e.target;
+    const { name, value } = e.target;
     const [level, index, field] = name.split("-");
 
     setCategory((prevState) => {
@@ -64,13 +65,50 @@ const CropCategoryForm = () => {
     }));
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!category.name.trim()) {
+      newErrors.name = "Category name is required.";
+    }
+    if (!category.description.trim()) {
+      newErrors.description = "Category description is required.";
+    }
+
+    category.crops.forEach((crop, index) => {
+      if (!crop.name.trim()) {
+        newErrors[`crop-${index}-name`] = "Crop name is required.";
+      }
+      if (!crop.soilType.trim()) {
+        newErrors[`crop-${index}-soilType`] = "Soil type is required.";
+      }
+      if (!crop.growthStage.trim()) {
+        newErrors[`crop-${index}-growthStage`] = "Growth stage is required.";
+      }
+      if (!crop.weatherCondition.trim()) {
+        newErrors[`crop-${index}-weatherCondition`] =
+          "Weather condition is required.";
+      }
+    });
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
     axios
-      .post("http://localhost:5000/api/f&p/add-cropcategory", category)
+      .post(
+        `${process.env.REACT_APP_BACKEND_URL}/api/f&p/add-cropcategory`,
+        category
+      )
       .then((response) => {
         console.log("Category saved successfully!", response.data);
-        // Redirect or show a success message
         navigate("/agriadmin/fertilizers&pesticides?tab=cropcategory");
       })
       .catch((error) => {
@@ -108,7 +146,11 @@ const CropCategoryForm = () => {
                   value={category.name}
                   onChange={handleChange}
                   placeholder="Enter Category Name"
+                  isInvalid={!!errors.name} // Bootstrap validation styling
                 />
+                <Form.Control.Feedback type="invalid">
+                  {errors.name}
+                </Form.Control.Feedback>
               </Form.Group>
             </Col>
             <Col md={6}>
@@ -121,7 +163,11 @@ const CropCategoryForm = () => {
                   value={category.description}
                   onChange={handleChange}
                   placeholder="Enter Category Description"
+                  isInvalid={!!errors.description}
                 />
+                <Form.Control.Feedback type="invalid">
+                  {errors.description}
+                </Form.Control.Feedback>
               </Form.Group>
             </Col>
           </Row>
@@ -137,7 +183,11 @@ const CropCategoryForm = () => {
                     value={crop.name}
                     onChange={handleChange}
                     placeholder="Enter Crop Name"
+                    isInvalid={!!errors[`crop-${cropIndex}-name`]}
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {errors[`crop-${cropIndex}-name`]}
+                  </Form.Control.Feedback>
                 </Form.Group>
                 <br />
                 <Form.Group controlId={`formCropSoilType-${cropIndex}`}>
@@ -148,7 +198,11 @@ const CropCategoryForm = () => {
                     value={crop.soilType}
                     onChange={handleChange}
                     placeholder="Enter Soil Type"
+                    isInvalid={!!errors[`crop-${cropIndex}-soilType`]}
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {errors[`crop-${cropIndex}-soilType`]}
+                  </Form.Control.Feedback>
                 </Form.Group>
                 <br />
                 <Form.Group controlId={`formCropGrowthStage-${cropIndex}`}>
@@ -159,7 +213,11 @@ const CropCategoryForm = () => {
                     value={crop.growthStage}
                     onChange={handleChange}
                     placeholder="Enter Growth Stage"
+                    isInvalid={!!errors[`crop-${cropIndex}-growthStage`]}
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {errors[`crop-${cropIndex}-growthStage`]}
+                  </Form.Control.Feedback>
                 </Form.Group>
                 <br />
                 <Form.Group controlId={`formCropWeatherCondition-${cropIndex}`}>
@@ -170,12 +228,16 @@ const CropCategoryForm = () => {
                     value={crop.weatherCondition}
                     onChange={handleChange}
                     placeholder="Enter Weather Condition"
+                    isInvalid={!!errors[`crop-${cropIndex}-weatherCondition`]}
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {errors[`crop-${cropIndex}-weatherCondition`]}
+                  </Form.Control.Feedback>
                 </Form.Group>
                 <br />
                 <Button
                   variant="dark"
-                  className="text-danger d-flex align-items-center" // Red text
+                  className="text-danger d-flex align-items-center"
                   onClick={() => handleRemoveCrop(cropIndex)}
                 >
                   Remove Crop
@@ -183,15 +245,14 @@ const CropCategoryForm = () => {
                     className="bi bi-dash-circle-fill ml-2"
                     style={{ marginLeft: "8px" }}
                   ></i>{" "}
-                  {/* Minus-circle icon */}
                 </Button>
               </ListGroup.Item>
             </ListGroup>
           ))}
           <Col className="d-flex justify-content-between">
             <Button
-              variant="dark" // Use 'dark' variant for a black background
-              className="text-primary d-flex align-items-center" // Apply blue text and align items
+              variant="dark"
+              className="text-primary d-flex align-items-center"
               onClick={handleAddCrop}
             >
               Add Crop

@@ -4,8 +4,11 @@ import { AdminAuthContext } from "../../../context/AdminAuthContext"; // Import 
 import { useNavigate } from "react-router-dom";
 
 function NavAvatar() {
-  const [adminProfile, setAdminProfile] = useState({ name: "", designation: "" });
-  const { adminId,designation,logout } = useContext(AdminAuthContext); // Get the adminId from context
+  const [adminProfile, setAdminProfile] = useState({
+    name: "",
+    designation: "",
+  });
+  const { adminId, designation, logout } = useContext(AdminAuthContext); // Get the adminId from context
   const navigate = useNavigate(); // To navigate after logout
 
   useEffect(() => {
@@ -13,12 +16,15 @@ function NavAvatar() {
     const fetchProfile = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/admin-profile/adminbyId/${adminId}`
+          `${process.env.REACT_APP_BACKEND_URL}/api/admin-profile/adminbyId/${adminId}`
         );
         if (response.ok) {
           const profileData = await response.json();
           console.log("Profile data:", profileData);
-          setAdminProfile({ name: profileData.name, designation: profileData.designation });
+          setAdminProfile({
+            name: profileData.name,
+            designation: profileData.designation,
+          });
         } else {
           console.error("Error fetching profile:", response.statusText);
         }
@@ -76,7 +82,10 @@ function NavAvatar() {
         </li>
 
         <li>
-          <a className="dropdown-item d-flex align-items-center" onClick={handleLogout}>
+          <a
+            className="dropdown-item d-flex align-items-center"
+            onClick={handleLogout}
+          >
             <i className="bi bi-box-arrow-right"></i>
             <span>Sign Out</span>
           </a>

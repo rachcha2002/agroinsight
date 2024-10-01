@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 // Define the schema for storing farmer data
 const FarmerFertilizerSchema = new mongoose.Schema({
@@ -6,19 +6,19 @@ const FarmerFertilizerSchema = new mongoose.Schema({
     type: String,
     required: true,
     //unique: true, // Ensures each farmer has a unique ID
-    default:"F00000001"
+    default: "F00000001",
   },
   email: {
     type: String,
     required: true,
-    unique: true, // Ensures that the email is unique
-    match: [/.+\@.+\..+/, 'Please enter a valid email address'], // Simple email validation
-    default: 'abc@gmail.com', // Default email is 'Unknown'
+    //unique: true, // Ensures that the email is unique
+    match: [/.+\@.+\..+/, "Please enter a valid email address"], // Simple email validation
+    default: "abc@gmail.com", // Default email is 'Unknown'
   },
   region: {
     type: String,
     required: true,
-    default: 'Unknown', // Default region is 'Unknown'
+    default: "Unknown", // Default region is 'Unknown'
   },
   crop: {
     type: String,
@@ -31,11 +31,11 @@ const FarmerFertilizerSchema = new mongoose.Schema({
   amount: {
     type: Number,
     required: true,
-    min: [0, 'Amount cannot be negative'], // Ensures that the amount is non-negative
+    min: [0, "Amount cannot be negative"], // Ensures that the amount is non-negative
   },
   comment: {
     type: String,
-    default: '', // Optional comment field, defaulting to an empty string
+    default: "", // Optional comment field, defaulting to an empty string
   },
   createdAt: {
     type: Date,
@@ -44,6 +44,9 @@ const FarmerFertilizerSchema = new mongoose.Schema({
 });
 
 // Create the Farmer model from the schema
-const FarmerFertilizers = mongoose.model('Farmer', FarmerFertilizerSchema);
+const FarmerFertilizers = mongoose.model(
+  "FarmerFertilizers",
+  FarmerFertilizerSchema
+);
 
 module.exports = FarmerFertilizers;

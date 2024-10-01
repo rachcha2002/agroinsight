@@ -6,6 +6,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useGlobalContext } from '../../context/GlobalProvider';
 import { images } from '../../constants';
+import CustomButton from '../../components/CustomButton';
 
 const RotatorDashboard = () => {
   const { user, setUser, setIsLogged } = useGlobalContext();
@@ -14,6 +15,7 @@ const RotatorDashboard = () => {
   const [error, setError] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const router = useRouter();
+  const [uploading, setUploading] = useState(false);
   const pathname = usePathname();
 
   const fetchAlerts = async () => {
@@ -35,7 +37,7 @@ const RotatorDashboard = () => {
     router.push(`/rotator/${id}`);
   };
 
-  const handleComplaintPress = () => {
+  const handleRotatorModelPress = () => {
     router.push('/rotator/farmerdetails'); // Navigate to the create complaint screen
   };
 
@@ -69,30 +71,32 @@ const RotatorDashboard = () => {
             <View className="flex-1 items-center pl-7">
               <Image
                 source={images.agroinsightlogo}
-                className="w-15 h-10"
+                className="w-15 h-10 ml-8"
                 resizeMode="contain"
               />
             </View>
-            <View className="mt-1.5">
-              <TouchableOpacity onPress={handleComplaintPress}>
+            <View className="mr-1.5">
+              <TouchableOpacity onPress={handleRotatorModelPress}>
                 <Image
                   source={images.complaint}
                   className="w-10 h-11"
                   resizeMode="contain"
                 />
+                <Text className="text-xs text-black font-semibold">Details</Text>
               </TouchableOpacity>
             </View>
           </View>
           
           <ScrollView
-            className="p-4"
+            className="p-3"
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
           >
+        <Text className="text-2xl text-black font-semibold" style={{textAlign:'center'}}>Crop Rotation Newsfeed</Text>
             {alerts.map(alert => (
               <TouchableOpacity key={alert._id} onPress={() => handleAlertPress(alert._id)}>
-                <View className="mb-4 p-4 bg-white rounded-lg shadow">
+                <View className="mt-4 mb-4 p-4 bg-white rounded-lg shadow">
                   <Image
                     source={{ uri: alert.imageURL }}
                     className="w-full h-48 rounded-lg"

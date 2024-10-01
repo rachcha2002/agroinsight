@@ -32,6 +32,18 @@ const agrochemicalsLayout = () => {
             headerShown: false,
           }}
         />
+        <Stack.Screen
+          name="createffertilizer"
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="createfpesticide"
+          options={{
+            headerShown: false,
+          }}
+        />
       </Stack>
 
       <StatusBar backgroundColor="#f3f6f4" style="dark" />

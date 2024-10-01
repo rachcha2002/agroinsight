@@ -62,9 +62,8 @@ const TabsLayout = () => {
           headerShown: false,
           tabBarIcon: ({ color, focused }) => (
             <TabIcon
-              icon={icons.bookmark}
+              icon={icons.rotator}
               color={color}
-              name="Crop Rotator"
               focused={focused}
             />
           ),
