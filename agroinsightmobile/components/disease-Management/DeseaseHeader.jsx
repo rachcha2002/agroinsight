@@ -13,7 +13,7 @@ const DeseaseHeader = () => {
     <View style={styles.headerContainer}>
       {/* Back button with Ionicons */}
       <TouchableOpacity
-        onPress={() => router.back()} // Use router.back() for back functionality
+        onPress={() => router.push('/disease')} // Use router.back() for back functionality
         style={styles.backButton}
         activeOpacity={0.7} // Add an activeOpacity to give visual feedback on press
       >
